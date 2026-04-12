@@ -2,7 +2,7 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <title>Universal Control Panel v11.0</title>
+    <title>Universal Control Panel v12.0</title>
     <style>
         :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; }
         body { background: var(--bg); color: var(--text); font-family: Arial, sans-serif; padding: 20px; margin: 0; }
@@ -10,43 +10,44 @@
         .main { flex: 3; background: var(--card); padding: 20px; border-radius: 10px; border: 1px solid var(--border); }
         .sidebar { flex: 1; }
         
-        input, select, textarea { width: 100%; background: #0d1117; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 6px; margin-bottom: 10px; box-sizing: border-box; }
+        input, select, textarea { width: 100%; background: #0d1117; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 6px; margin-bottom: 10px; box-sizing: border-box; outline: none; }
         textarea { min-height: 300px; font-family: monospace; font-size: 14px; }
         
         .toolbar { background: #21262d; padding: 10px; border-radius: 6px; margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 5px; }
-        .toolbar button { background: #30363d; color: white; border: 1px solid var(--border); padding: 5px 10px; cursor: pointer; border-radius: 4px; }
+        .toolbar button { background: #30363d; color: white; border: 1px solid var(--border); padding: 5px 10px; cursor: pointer; border-radius: 4px; font-weight: bold; }
         .toolbar button:hover { background: #484f58; }
         
-        .btn-save { background: #238636; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        .btn-save { background: #238636; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; }
+        .btn-save:hover { background: #2ea043; }
         
-        .post-item { background: #0d1117; border: 1px solid var(--border); padding: 10px; margin-top: 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-del { background: #da3633; border: none; color: white; padding: 5px; border-radius: 4px; cursor: pointer; }
-        .btn-edit { background: #1f6feb; border: none; color: white; padding: 5px; border-radius: 4px; cursor: pointer; margin-right: 5px; }
+        .post-item { background: #0d1117; border: 1px solid var(--border); padding: 15px; margin-top: 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-del { background: #da3633; border: none; color: white; padding: 8px; border-radius: 4px; cursor: pointer; }
+        .btn-edit { background: #1f6feb; border: none; color: white; padding: 8px; border-radius: 4px; cursor: pointer; margin-right: 5px; }
         
         .box { background: var(--card); border: 1px solid var(--border); padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center; }
         #preview { background: white; color: black; padding: 15px; border-radius: 6px; margin-top: 10px; min-height: 100px; overflow-wrap: break-word; }
-        img { max-width: 100px; height: auto; }
+        #preview img { max-width: 100%; height: auto; display: block; margin: 10px 0; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="main">
-        <h2>✍️ Мақола қўшиш</h2>
+        <h2 id="formTitle">✍️ Мақола қўшиш</h2>
         <input type="text" id="title" placeholder="Сарлавҳа...">
         <select id="cat">
             <option value="news">Янгиликлар</option>
             <option value="med">Табобат</option>
-             <option value="baliq-ovi" >Балик ови</option>
-            <option value="hikoyalar">Хикоялар</option>
+            <option value="baliq-ovi">Балиқ ови</option>
+            <option value="hikoyalar">Ҳикоялар</option>
             <option value="creative">Ижод</option>
             <option value="poetic">Шеърият</option>
         </select>
 
         <div class="toolbar">
-            <button onclick="addTag('b')"><b>B</b></button>
-            <button onclick="addTag('i')"><i>I</i></button>
-            <button onclick="addTag('u')"><u>U</u></button>
+            <button onclick="addTag('b')">B</button>
+            <button onclick="addTag('i')">I</button>
+            <button onclick="addTag('u')">U</button>
             <button onclick="addTag('center')">Center</button>
             <button onclick="document.getElementById('imgInp').click()">🖼 Расм</button>
             <input type="file" id="imgInp" hidden accept="image/*" onchange="uploadImg()">
@@ -57,9 +58,9 @@
         <div style="color: gray; font-size: 12px;">Кўриниши (Preview):</div>
         <div id="preview"></div>
 
-        <button class="btn-save" onclick="savePost()">САЙТГА ЖОЙЛАШ</button>
+        <button class="btn-save" id="mainBtn" onclick="savePost()">САЙТГА ЖОЙЛАШ</button>
 
-        <h3 style="margin-top: 30px;">📁 Мақолалар:</h3>
+        <h3 style="margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px;">📁 Мақолалар бошқаруви:</h3>
         <div id="postList"></div>
     </div>
 
@@ -67,7 +68,7 @@
         <div class="box">
             <h3>🎵 MP3 Плеер</h3>
             <input type="file" id="mp3" accept="audio/*" onchange="document.getElementById('aud').src=URL.createObjectURL(this.files[0])">
-            <audio id="aud" controls style="width: 100%;"></audio>
+            <audio id="aud" controls style="width: 100%; margin-top: 10px;"></audio>
         </div>
         <div class="box">
             <h3>📊 Статистика</h3>
@@ -77,6 +78,7 @@
 </div>
 
 <script>
+    // Маълумотларни юклаш
     let posts = JSON.parse(localStorage.getItem('myPosts') || '[]');
     let editIdx = -1;
 
@@ -85,20 +87,21 @@
         const start = area.selectionStart;
         const end = area.selectionEnd;
         const sel = area.value.substring(start, end);
-        const text = area.value.substring(0, start) + `<${tag}>` + sel + `</${tag}>` + area.value.substring(end);
-        area.value = text;
+        area.value = area.value.substring(0, start) + `<${tag}>` + sel + `</${tag}>` + area.value.substring(end);
         updatePreview();
     }
 
     function uploadImg() {
         const file = document.getElementById('imgInp').files[0];
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const area = document.getElementById('text');
-            area.value += `<img src="${e.target.result}" style="width:100%">`;
-            updatePreview();
-        };
-        reader.readAsDataURL(file);
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const area = document.getElementById('text');
+                area.value += `\n<img src="${e.target.result}">\n`;
+                updatePreview();
+            };
+            reader.readAsDataURL(file);
+        }
     }
 
     function updatePreview() {
@@ -110,62 +113,72 @@
         const txt = document.getElementById('text').value;
         const c = document.getElementById('cat').value;
 
-        if(!t || !txt) return alert("Тўлдиринг!");
+        if(!t || !txt) return alert("Сарлавҳа ва матнни тўлдиринг!");
 
         const newPost = { title: t, content: txt, cat: c, date: new Date().toLocaleString() };
 
         if(editIdx > -1) {
-            posts[editIdx] = newPost;
+            posts[editIdx] = newPost; // Таҳрирлаш
             editIdx = -1;
+            document.getElementById('mainBtn').innerText = "САЙТГА ЖОЙЛАШ";
+            document.getElementById('formTitle').innerText = "✍️ Мақола қўшиш";
         } else {
-            posts.unshift(newPost);
+            posts.unshift(newPost); // Янги қўшиш
         }
 
         localStorage.setItem('myPosts', JSON.stringify(posts));
-        reset();
+        resetForm();
         showPosts();
-        alert("Сақланди!");
+        alert("Маълумот сақланди!");
     }
 
     function showPosts() {
         const list = document.getElementById('postList');
         list.innerHTML = '';
+        if (posts.length === 0) {
+            list.innerHTML = '<p style="color:gray; text-align:center;">Мақолалар мавжуд эмас.</p>';
+        }
         posts.forEach((p, i) => {
             list.innerHTML += `
                 <div class="post-item">
-                    <span>${p.title} <br><small>${p.date}</small></span>
+                    <span><b>${p.title}</b> <br><small style="color:#8b949e;">${p.date} | ${p.cat}</small></span>
                     <div>
-                        <button class="btn-edit" onclick="edit(${i})">✏️</button>
-                        <button class="btn-del" onclick="del(${i})">🗑</button>
+                        <button class="btn-edit" onclick="editPost(${i})">✏️</button>
+                        <button class="btn-del" onclick="delPost(${i})">🗑</button>
                     </div>
                 </div>`;
         });
     }
 
-    function edit(i) {
+    function editPost(i) {
         const p = posts[i];
         document.getElementById('title').value = p.title;
         document.getElementById('text').value = p.content;
         document.getElementById('cat').value = p.cat;
         editIdx = i;
+        
+        document.getElementById('mainBtn').innerText = "ЎЗГАРИШНИ САҚЛАШ";
+        document.getElementById('formTitle').innerText = "📝 Таҳрирлаш режими";
         updatePreview();
         window.scrollTo(0,0);
     }
 
-    function del(i) {
-        if(confirm("Ўчирилсинми?")) {
+    function delPost(i) {
+        if(confirm("Ростдан ҳам ўчирмоқчимисиз?")) {
             posts.splice(i, 1);
             localStorage.setItem('myPosts', JSON.stringify(posts));
             showPosts();
         }
     }
 
-    function reset() {
+    function resetForm() {
         document.getElementById('title').value = '';
         document.getElementById('text').value = '';
         document.getElementById('preview').innerHTML = '';
+        editIdx = -1;
     }
 
+    // Илк бор юкланганда рўйхатни чиқариш
     showPosts();
 </script>
 
