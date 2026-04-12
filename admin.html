@@ -3,35 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universal Control Center v5.5</title>
+    <title>Universal Admin v6.0 - Real Statistics</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <style>
-        body { background: #010409; color: #e6edf3; font-family: 'Segoe UI', sans-serif; min-height: 100vh; padding: 20px; }
+        body { background: #010409; color: #e6edf3; font-family: 'Segoe UI', sans-serif; padding: 20px; }
         .glass-panel { background: #0d1117; border: 1px solid #30363d; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
-        #editor-container { height: 350px; background: #ffffff; color: #000000; border-radius: 0 0 12px 12px; }
-        .ql-toolbar.ql-snow { background: #f8f9fa; border-radius: 12px 12px 0 0; border: 1px solid #30363d !important; }
-        .stat-card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 10px; text-align: center; }
-        select option { background: #0d1117; color: white; }
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 10px; }
+        #editor-container { height: 300px; background: #ffffff; color: #000000; border-radius: 0 0 12px 12px; }
+        .stat-card { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px; text-align: center; }
     </style>
 </head>
 <body>
 
     <div class="flex justify-between items-center mb-6">
-        <h1 class="text-xl font-bold text-blue-500 uppercase tracking-widest">Universal Studio Admin</h1>
-        <button onclick="window.location.href='index.html'" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-xs font-bold uppercase transition">Чиқиш</button>
+        <h1 class="text-xl font-bold text-blue-500 uppercase">Universal Admin</h1>
+        <button onclick="window.location.href='index.html'" class="bg-red-600 px-4 py-2 rounded-lg text-xs font-bold uppercase">Чиқиш</button>
     </div>
 
     <div class="grid grid-cols-12 gap-6">
         
         <div class="col-span-12 lg:col-span-8">
-            <div class="glass-panel">
+            <div class="glass-panel shadow-2xl">
                 <div class="grid grid-cols-2 gap-4 mb-4">
-                    <input type="text" id="postTitle" placeholder="Сарлавҳа..." class="col-span-2 md:col-span-1 bg-[#161b22] border border-[#30363d] rounded-xl p-3 text-sm text-white outline-none focus:border-blue-500 transition">
-                    <select id="postCat" class="col-span-2 md:col-span-1 bg-[#161b22] border border-[#30363d] rounded-xl p-3 text-sm text-white outline-none focus:border-blue-500">
+                    <input type="text" id="postTitle" placeholder="Сарлавҳа..." class="col-span-2 md:col-span-1 bg-[#161b22] border border-[#30363d] rounded-xl p-3 text-sm text-white outline-none focus:border-blue-500">
+                    <select id="postCat" class="col-span-2 md:col-span-1 bg-[#161b22] border border-[#30363d] rounded-xl p-3 text-sm text-white outline-none">
                         <option value="index.html">Асосий саҳифа</option>
                         <option value="news.html">Янгиликлар</option>
                         <option value="tabobat.html">Табобат</option>
@@ -39,46 +35,45 @@
                     </select>
                 </div>
                 <div id="editor-container"></div>
-                <button onclick="savePost()" class="w-full mt-4 bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-bold uppercase text-xs transition shadow-lg shadow-blue-900/20">
-                    <i class="fas fa-paper-plane mr-2"></i> Нашр қилиш / Сақлаш
+                <button onclick="savePost()" class="w-full mt-4 bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-bold uppercase text-xs transition">
+                    <i class="fas fa-check-circle mr-2"></i> Нашр қилиш
                 </button>
             </div>
 
             <div class="glass-panel">
-                <h3 class="text-xs font-bold text-gray-500 uppercase mb-4 flex justify-between items-center">
-                    Нашр этилганлар 
-                    <span id="postCount" class="bg-blue-900 text-blue-200 px-2 py-1 rounded text-[10px]">0</span>
-                </h3>
-                <div id="admin-posts-list" class="space-y-2 max-h-[400px] overflow-y-auto pr-2">
-                    </div>
+                <h3 class="text-xs font-bold text-gray-500 uppercase mb-4">Мақолаларни таҳрирлаш</h3>
+                <div id="admin-posts-list" class="space-y-2"></div>
             </div>
         </div>
 
         <div class="col-span-12 lg:col-span-4 space-y-6">
             
             <div class="glass-panel">
-                <h3 class="text-purple-400 font-bold mb-4 uppercase text-[10px] flex items-center gap-2">
-                    <i class="fas fa-music"></i> Мусиқа (Радио)
+                <h3 class="text-emerald-400 font-bold mb-4 uppercase text-[10px] flex items-center gap-2">
+                    <i class="fas fa-users"></i> Кирувчилар ва Кўришлар
                 </h3>
-                <audio id="mainAudio" controls class="w-full mb-4 h-8"></audio>
-                <label class="block bg-purple-600 hover:bg-purple-700 p-3 rounded-xl cursor-pointer text-center text-[10px] font-bold uppercase transition">
-                    MP3 Файл танлаш <input type="file" id="audioInput" hidden multiple accept="audio/*">
-                </label>
-                <div id="playlist" class="mt-4 max-h-[150px] overflow-y-auto space-y-1"></div>
+                
+                <div class="stat-card bg-[#0d1117] flex flex-col items-center">
+                    <p class="text-[10px] text-gray-400 mb-3 uppercase">Реал вақтдаги статистика:</p>
+                    
+                    <a href="https://info.flagcounter.com/8uM1">
+                        <img src="https://s11.flagcounter.com/count2/8uM1/bg_0D1117/txt_FFFFFF/border_30363D/columns_2/maxflags_10/viewers_3/labels_1/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0">
+                    </a>
+                    
+                    <p class="text-[9px] text-gray-500 mt-4 leading-relaxed">
+                        Юқоридаги жадвалда сайтга кирганлар сони (Viewers) ва жами кўрилган саҳифалар (Pageviews) реал вақтда ҳисобланади.
+                    </p>
+                </div>
             </div>
 
             <div class="glass-panel">
-                <h3 class="text-emerald-400 font-bold mb-4 uppercase text-[10px] flex items-center gap-2">
-                    <i class="fas fa-chart-line"></i> Статистика (Insights)
+                <h3 class="text-purple-400 font-bold mb-4 uppercase text-[10px] flex items-center gap-2">
+                    <i class="fas fa-music"></i> Плеер
                 </h3>
-                <div class="stat-card mb-4">
-                    <p class="text-[10px] text-gray-500 uppercase">Жами мақолалар</p>
-                    <p id="totalPosts" class="text-2xl font-bold text-white">0</p>
-                </div>
-                <p class="text-[9px] text-gray-400 italic text-center leading-relaxed">
-                    Эслатма: Ташрифлар статистикасини GitHub -> Insights -> Traffic бўлимида кўришингиз мумкин.
-                </p>
+                <audio id="mainAudio" controls class="w-full mb-4 h-8"></audio>
+                <div id="playlist" class="mt-4 max-h-[100px] overflow-y-auto space-y-1"></div>
             </div>
+
         </div>
     </div>
 
@@ -86,124 +81,55 @@
     <script>
         var quill = new Quill('#editor-container', {
             theme: 'snow',
-            modules: {
-                toolbar: [
-                    [{ 'header': [1, 2, false] }],
-                    ['bold', 'italic', 'underline'],
-                    [{ 'color': [] }, { 'background': [] }],
-                    ['image', 'link', 'clean']
-                ]
-            }
+            modules: { toolbar: [[{ 'header': [1, 2, false] }], ['bold', 'italic', 'underline'], ['image', 'clean']] }
         });
 
-        // 1. Мақолани Сақлаш ва Янгилаш
         function savePost() {
             const title = document.getElementById('postTitle').value;
             const category = document.getElementById('postCat').value;
             const content = quill.root.innerHTML;
-            const date = new Date().toLocaleString();
+            if (!title || content === '<p><br></p>') return alert("Тўлдиринг!");
 
-            if (!title || content === '<p><br></p>') {
-                alert("Илтимос, сарлавҳа ва матнни тўлдиринг!");
-                return;
-            }
-
-            const newPost = { title, category, content, date };
             let posts = JSON.parse(localStorage.getItem('myPosts') || '[]');
-            
-            posts.unshift(newPost);
+            posts.unshift({ title, category, content, date: new Date().toLocaleString() });
             localStorage.setItem('myPosts', JSON.stringify(posts));
-
-            alert("Сақланди: " + category);
             
-            document.getElementById('postTitle').value = '';
-            quill.setContents([]);
-            renderAdminPosts();
+            alert("Сақланди!");
+            location.reload();
         }
 
-        // 2. Таҳрирлаш (Edit)
-        function editPost(index) {
-            let posts = JSON.parse(localStorage.getItem('myPosts') || '[]');
-            const post = posts[index];
-
-            document.getElementById('postTitle').value = post.title;
-            document.getElementById('postCat').value = post.category;
-            quill.root.innerHTML = post.content;
-
-            // Эскисини ўчириш (янгилангани тепага тушади)
-            posts.splice(index, 1);
-            localStorage.setItem('myPosts', JSON.stringify(posts));
-            renderAdminPosts();
-            
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        // 3. Рўйхатни чиқариш
         function renderAdminPosts() {
             const list = document.getElementById('admin-posts-list');
             const posts = JSON.parse(localStorage.getItem('myPosts') || '[]');
-            
-            document.getElementById('postCount').innerText = posts.length;
-            document.getElementById('totalPosts').innerText = posts.length;
-
-            if (posts.length === 0) {
-                list.innerHTML = '<p class="text-center text-gray-600 text-[10px] py-4">Ҳозирча мақолалар йўқ</p>';
-                return;
-            }
-
             list.innerHTML = posts.map((post, i) => `
-                <div class="flex justify-between items-center bg-[#161b22] p-3 rounded-xl border border-[#30363d] hover:border-gray-500 transition">
-                    <div class="truncate pr-4">
-                        <p class="text-xs font-bold text-gray-200 truncate">${post.title}</p>
-                        <p class="text-[9px] text-blue-400 uppercase tracking-tighter">${post.category} • ${post.date}</p>
-                    </div>
+                <div class="flex justify-between items-center bg-[#161b22] p-3 rounded-xl border border-[#30363d]">
+                    <div class="truncate"><p class="text-xs font-bold text-gray-200">${post.title}</p></div>
                     <div class="flex gap-2">
-                        <button onclick="editPost(${i})" class="text-blue-500 hover:bg-blue-900/30 w-8 h-8 rounded-lg transition">
-                            <i class="fas fa-edit text-xs"></i>
-                        </button>
-                        <button onclick="deletePost(${i})" class="text-red-500 hover:bg-red-900/30 w-8 h-8 rounded-lg transition">
-                            <i class="fas fa-trash text-xs"></i>
-                        </button>
+                        <button onclick="editPost(${i})" class="text-blue-500 p-2 hover:bg-blue-900/20 rounded-lg"><i class="fas fa-edit text-xs"></i></button>
+                        <button onclick="deletePost(${i})" class="text-red-500 p-2 hover:bg-red-900/20 rounded-lg"><i class="fas fa-trash text-xs"></i></button>
                     </div>
                 </div>
             `).join('');
         }
 
-        // 4. Ўчириш
-        function deletePost(index) {
-            if (confirm("Мақолани ўчирамизми?")) {
+        function editPost(i) {
+            const posts = JSON.parse(localStorage.getItem('myPosts') || '[]');
+            const p = posts[i];
+            document.getElementById('postTitle').value = p.title;
+            document.getElementById('postCat').value = p.category;
+            quill.root.innerHTML = p.content;
+            posts.splice(i, 1);
+            localStorage.setItem('myPosts', JSON.stringify(posts));
+            renderAdminPosts();
+        }
+
+        function deletePost(i) {
+            if(confirm("Ўчирилсинми?")) {
                 let posts = JSON.parse(localStorage.getItem('myPosts') || '[]');
-                posts.splice(index, 1);
+                posts.splice(i, 1);
                 localStorage.setItem('myPosts', JSON.stringify(posts));
                 renderAdminPosts();
             }
-        }
-
-        // 5. MP3 Плеер
-        const audioInput = document.getElementById('audioInput');
-        const audioPlayer = document.getElementById('mainAudio');
-        const playlistDiv = document.getElementById('playlist');
-        let tracks = [];
-
-        audioInput.onchange = (e) => {
-            Array.from(e.target.files).forEach(f => {
-                tracks.push({ name: f.name, url: URL.createObjectURL(f) });
-            });
-            renderPlaylist();
-        };
-
-        function renderPlaylist() {
-            playlistDiv.innerHTML = tracks.map((t, i) => `
-                <div class="flex justify-between items-center bg-[#161b22] p-2 rounded border border-gray-800 hover:border-purple-500 transition">
-                    <span onclick="playT(${i})" class="text-[10px] cursor-pointer text-gray-400 truncate w-4/5">▶ ${t.name}</span>
-                    <i onclick="tracks.splice(${i},1);renderPlaylist()" class="fas fa-times text-red-800 cursor-pointer text-[9px]"></i>
-                </div>
-            `).join('');
-        }
-
-        function playT(i) {
-            audioPlayer.src = tracks[i].url;
-            audioPlayer.play();
         }
 
         window.onload = renderAdminPosts;
