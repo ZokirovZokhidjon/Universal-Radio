@@ -1,113 +1,212 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-    <meta charset="UTF-8" />
-    <title>Zokirov Control Panel</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zokirov Creative Admin Panel</title>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <style>
-        body { background: #0f172a; color: #f8fafc; font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 20px; }
-        .admin-container { max-width: 900px; margin: 0 auto; background: #1e293b; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h1 { color: #38bdf8; text-align: center; border-bottom: 2px solid #334155; padding-bottom: 10px; }
-        label { display: block; margin-top: 15px; color: #94a3b8; font-weight: bold; }
-        input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 8px; box-sizing: border-box; }
-        textarea { height: 200px; resize: vertical; }
+        :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #38bdf8; --danger: #ef4444; }
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; margin: 0; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        
+        /* Header & Logout */
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #334155; padding-bottom: 10px; }
+        .btn-logout { background: var(--danger); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
+
+        /* Form Elements */
+        .admin-card { background: var(--card); padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin-bottom: 30px; }
+        label { display: block; margin: 15px 0 5px; color: #94a3b8; font-size: 14px; }
+        input[type="text"], select, .editor-container { background: #0f172a !important; color: white !important; border: 1px solid #334155 !important; border-radius: 8px; }
+        input[type="text"], select { width: 100%; padding: 12px; box-sizing: border-box; }
+        
+        /* Text Editor Height */
+        #editor { height: 300px; margin-bottom: 20px; color: white; }
+
+        /* Buttons */
         .btn-group { display: flex; gap: 10px; margin-top: 20px; }
         .btn { flex: 1; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-save { background: #0ea5e9; color: white; }
-        .btn-save:hover { background: #0284c7; }
-        .btn-clear { background: #64748b; color: white; }
+        .btn-post { background: var(--accent); color: #000; }
+        .btn-post:hover { opacity: 0.8; }
 
-        /* For the list */
-        .post-list { margin-top: 40px; }
-        .post-card { background: #334155; padding: 15px; border-radius: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .post-info b { font-size: 18px; color: #38bdf8; }
-        .post-info p { margin: 5px 0 0; font-size: 13px; color: #cbd5e1; }
-        .actions button { padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; margin-left: 5px; font-weight: bold; }
-        .edit { background: #fbbf24; color: #000; }
-        .delete { background: #ef4444; color: white; }
+        /* Stats & List */
+        .post-card { background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid var(--accent); }
+        .post-header { display: flex; justify-content: space-between; align-items: flex-start; }
+        .stats { font-size: 12px; color: #64748b; margin-top: 10px; display: flex; gap: 15px; }
+        .actions { margin-top: 15px; display: flex; gap: 8px; }
+        .actions button { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
+        .edit-btn { background: #fbbf24; }
+        .delete-btn { background: var(--danger); color: white; }
+
+        /* Custom Audio Style */
+        .audio-preview { margin-top: 10px; display: block; width: 100%; }
     </style>
 </head>
 <body>
-<div class="admin-container">
-    <h1>Админ Кабинет</h1>
 
-    <label>Мақола сарлавҳаси:</label>
-    <input type="text" id="title" placeholder="Бу ерга сарлавҳа ёзинг...">
-
-    <label>Бўлимни танланг:</label>
-    <select id="category">
-        <option value="news">Янгиликлар</option>
-        <option value="med">Табобат</option>
-        <option value="baliq-ovi">Балик ови</option>
-        <option value="hikoyalar">Хикоялар</option>
-        <option value="creative">Ижод</option>
-        <option value="poetic">Шеърият</option>
-    </select>
-
-    <label>Расм қўшиш (Компьютердан):</label>
-    <input type="file" id="fileInput" accept="image/*">
-
-    <label>Мақола матни:</label>
-   
-    <textarea id="content" placeholder="Мақола матнини шу ерга ёзинг... HTML теглар ишлайди."></textarea>
-
-    <div class="btn-group">
-        <button class="btn btn-save" onclick="savePost()" id="mainBtn">САЙТГА ЖОЙЛАШ</button>
-        <button class="btn btn-clear" onclick="clearAll()">ТОЗАЛАШ</button>
+<div class="container">
+    <div class="header">
+        <h1>Панель управления</h1>
+        <button class="btn-logout" onclick="window.location.href='index.html'">ЧИҚИШ</button>
     </div>
 
-    <div class="post-list">
-        <h2>Сақланган мақолалар</h2>
-        <div id="displayArea"></div>
+    <div class="admin-card">
+        <label>Мақола сарлавҳаси:</label>
+        <input type="text" id="postTitle" placeholder="Сарлавҳани киритинг...">
+
+        <label>Категория:</label>
+        <select id="postCategory">
+            <option value="Янгиликлар">Янгиликлар</option>
+            <option value="Табобат">Табобат</option>
+            <option value="Балиқ ови">Балиқ ови</option>
+            <option value="Ҳикоялар">Ҳикоялар</option>
+            <option value="Шеърият">Шеърият</option>
+        </select>
+
+        <label>Расм ёки MP3 юклаш:</label>
+        <input type="file" id="mediaInput" accept="image/*, audio/mp3">
+
+        <label>Мақола матни (Ранглар ва стиллар билан):</label>
+        <div id="editor"></div>
+
+        <div class="btn-group">
+            <button class="btn btn-post" onclick="handleSave()" id="saveBtn">САЙТГА ЖОЙЛАШ</button>
+        </div>
     </div>
+
+    <h2>Мақолалар ва Статистика</h2>
+    <div id="postContainer"></div>
 </div>
 
+<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
 <script>
-    let posts = JSON.parse(localStorage.getItem('zokirov_posts') || '[]');
-    let currentId = -1;
+    // Матн муҳарририни созлаш (Ранглар, форматлаш)
+    var quill = new Quill('#editor', {
+        theme: 'snow',
+        modules: {
+            toolbar: [
+                [{ 'header': [1, 2, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'color': [] }, { 'background': [] }],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link', 'clean']
+            ]
+        }
+    });
 
-    function savePost() {
-        const title = document.getElementById('title').value;
-        const content = document.getElementById('content').value;
-        const category = document.getElementById('category').value;
-        const file = document.getElementById('fileInput').files[0];
+    let posts = JSON.parse(localStorage.getItem('my_site_posts') || '[]');
+    let editIndex = -1;
 
-        if(!title || !content) {
-            alert("Илтимос, сарлавҳа ва матнни тўлдиринг!");
+    // Сақлаш функцияси
+    function handleSave() {
+        const title = document.getElementById('postTitle').value;
+        const category = document.getElementById('postCategory').value;
+        const content = quill.root.innerHTML;
+        const mediaFile = document.getElementById('mediaInput').files[0];
+
+        if (!title || quill.getText().trim().length === 0) {
+            alert("Сарлавҳа ва матнни тўлдиринг!");
             return;
         }
 
-        if(file) {
+        if (mediaFile) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                processSave(title, content + `<br><img src="${e.target.result}" style="width:100%; border-radius:10px;">`, category);
+                saveData(title, category, content, e.target.result, mediaFile.type);
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(mediaFile);
         } else {
-            processSave(title, content, category);
+            saveData(title, category, content, null, null);
         }
     }
 
-    function processSave(title, content, category) {
-        const postData = { title, content, category, date: new Date().toLocaleString() };
+    function saveData(title, category, content, mediaSrc, mediaType) {
+        const newPost = {
+            title,
+            category,
+            content,
+            media: mediaSrc,
+            type: mediaType,
+            date: new Date().toLocaleString(),
+            views: Math.floor(Math.random() * 50) + 1 // Статистика учун бошланғич тасодифий сон
+        };
 
-        if(currentId > -1) {
-            posts[currentId] = postData;
-            currentId = -1;
-            document.getElementById('mainBtn').innerText = "САЙТГА ЖОЙЛАШ";
+        if (editIndex > -1) {
+            posts[editIndex] = newPost;
+            editIndex = -1;
+            document.getElementById('saveBtn').innerText = "САЙТГА ЖОЙЛАШ";
         } else {
-            posts.unshift(postData);
+            posts.unshift(newPost);
         }
 
-        localStorage.setItem('zokirov_posts', JSON.stringify(posts));
-        clearAll();
+        localStorage.setItem('my_site_posts', JSON.stringify(posts));
+        resetForm();
         renderPosts();
-        alert("Муваффақиятли бажарилди!");
     }
 
     function renderPosts() {
-        const area = document.getElementById('displayArea');
-        area.innerHTML = posts.length === 0 ? '<p>Мақолалар мавжуд эмас.</p>' : '';
+        const container = document.getElementById('postContainer');
+        container.innerHTML = '';
 
-        posts.forEach((p, index) => {
-            area.innerHTML += `
-                <div class="
+        posts.forEach((post, index) => {
+            let mediaHtml = '';
+            if(post.media) {
+                if(post.type.includes('image')) {
+                    mediaHtml = `<img src="${post.media}" style="width:100px; border-radius:5px; margin-top:10px;">`;
+                } else if(post.type.includes('audio')) {
+                    mediaHtml = `<p>🎵 MP3 файл қўшилган</p>`;
+                }
+            }
+
+            container.innerHTML += `
+                <div class="post-card">
+                    <div class="post-header">
+                        <div>
+                            <strong style="font-size:18px; color:var(--accent);">${post.title}</strong>
+                            <div class="stats">
+                                <span>📅 ${post.date}</span>
+                                <span>👁 Кўришлар: ${post.views}</span>
+                                <span>📁 ${post.category}</span>
+                            </div>
+                            ${mediaHtml}
+                        </div>
+                    </div>
+                    <div class="actions">
+                        <button class="edit-btn" onclick="editPost(${index})">Таҳрирлаш</button>
+                        <button class="delete-btn" onclick="deletePost(${index})">Ўчириш</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function deletePost(index) {
+        if(confirm("Бу мақолани ўчирмоқчимисиз?")) {
+            posts.splice(index, 1);
+            localStorage.setItem('my_site_posts', JSON.stringify(posts));
+            renderPosts();
+        }
+    }
+
+    function editPost(index) {
+        const p = posts[index];
+        document.getElementById('postTitle').value = p.title;
+        document.getElementById('postCategory').value = p.category;
+        quill.root.innerHTML = p.content;
+        editIndex = index;
+        document.getElementById('saveBtn').innerText = "ЎЗГАРИШНИ САҚЛАШ";
+        window.scrollTo(0,0);
+    }
+
+    function resetForm() {
+        document.getElementById('postTitle').value = '';
+        quill.root.innerHTML = '';
+        document.getElementById('mediaInput').value = '';
+    }
+
+    renderPosts();
+</script>
+
+</body>
+</html>
