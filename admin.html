@@ -1,130 +1,113 @@
 <!DOCTYPE html>
-<html>
+<html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Panel</title>
+    <title>Zokirov Control Panel</title>
     <style>
-        body { background: #1a1a1a; color: white; font-family: sans-serif; padding: 20px; }
-        .card { background: #252525; padding: 20px; border-radius: 10px; border: 1px solid #444; margin-bottom: 20px; }
-        input, select, textarea { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; background: #000; color: white; border: 1px solid #555; box-sizing: border-box; }
-        textarea { height: 200px; }
-        .save-btn { background: #28a745; color: white; border: none; padding: 15px; width: 100%; cursor: pointer; font-weight: bold; }
-        .post-item { border-bottom: 1px solid #444; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .edit-btn { background: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-right: 5px; }
-        .del-btn { background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
+        body { background: #0f172a; color: #f8fafc; font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 20px; }
+        .admin-container { max-width: 900px; margin: 0 auto; background: #1e293b; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h1 { color: #38bdf8; text-align: center; border-bottom: 2px solid #334155; padding-bottom: 10px; }
+        label { display: block; margin-top: 15px; color: #94a3b8; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 12px; margin-top: 5px; background: #0f172a; border: 1px solid #334155; color: white; border-radius: 8px; box-sizing: border-box; }
+        textarea { height: 200px; resize: vertical; }
+        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
+        .btn { flex: 1; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-save { background: #0ea5e9; color: white; }
+        .btn-save:hover { background: #0284c7; }
+        .btn-clear { background: #64748b; color: white; }
+        
+        /* Рўйхат учун */
+        .post-list { margin-top: 40px; }
+        .post-card { background: #334155; padding: 15px; border-radius: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .post-info b { font-size: 18px; color: #38bdf8; }
+        .post-info p { margin: 5px 0 0; font-size: 13px; color: #cbd5e1; }
+        .actions button { padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; margin-left: 5px; font-weight: bold; }
+        .edit { background: #fbbf24; color: #000; }
+        .delete { background: #ef4444; color: white; }
     </style>
 </head>
 <body>
 
-    <div class="card">
-        <h2>✍️ Мақола қўшиш</h2>
-        <input type="text" id="post_title" placeholder="Сарлавҳа...">
-        <select id="post_cat">
-            <option value="news">Янгиликлар</option>
+<div class="admin-container">
+    <h1>Админ Кабинет</h1>
+    
+    <label>Мақола сарлавҳаси:</label>
+    <input type="text" id="title" placeholder="Бу ерга сарлавҳа ёзинг...">
+
+    <label>Бўлимни танланг:</label>
+    <select id="category">
+        <option value="news">Янгиликлар</option>
             <option value="med">Табобат</option>
-            <option value="fish">Балиқ ови</option>
-        </select>
-        
-        <label>🖼 Расм танлаш:</label>
-        <input type="file" id="img_input" accept="image/*" onchange="uploadImage()">
-        
-        <textarea id="post_text" placeholder="Матнни шу ерга ёзинг..."></textarea>
-        
-        <button class="save-btn" id="save_button" onclick="saveData()">САҚЛАШ / ЖОЙЛАШ</button>
+             <option value="baliq-ovi" >Балик ови</option>
+            <option value="hikoyalar">Хикоялар</option>
+            <option value="creative">Ижод</option>
+            <option value="poetic">Шеърият</option>
+    </select>
+
+    <label>Расм қўшиш (Компьютердан):</label>
+    <input type="file" id="fileInput" accept="image/*">
+
+    <label>Мақола матни:</label>
+    <textarea id="content" placeholder="Мақола матнини шу ерга ёзинг... HTML теглар ишлайди."></textarea>
+
+    <div class="btn-group">
+        <button class="btn btn-save" onclick="savePost()" id="mainBtn">САЙТГА ЖОЙЛАШ</button>
+        <button class="btn btn-clear" onclick="clearAll()">ТОЗАЛАШ</button>
     </div>
 
-    <div class="card">
-        <h3>📁 Сақланган мақолалар:</h3>
-        <div id="posts_display"></div>
+    <div class="post-list">
+        <h2>Сақланган мақолалар</h2>
+        <div id="displayArea"></div>
     </div>
+</div>
 
 <script>
-    // Маълумотларни хотирадан олиш
-    var all_posts = JSON.parse(localStorage.getItem('my_site_data') || '[]');
-    var current_edit_id = -1;
+    let posts = JSON.parse(localStorage.getItem('zokirov_posts') || '[]');
+    let currentId = -1;
 
-    // Расмни матнга айлантириш
-    function uploadImage() {
-        var file = document.getElementById('img_input').files[0];
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            var area = document.getElementById('post_text');
-            area.value += '\n<img src="' + e.target.result + '" style="width:100%">\n';
-        };
-        if(file) reader.readAsDataURL(file);
-    }
+    function savePost() {
+        const title = document.getElementById('title').value;
+        const content = document.getElementById('content').value;
+        const category = document.getElementById('category').value;
+        const file = document.getElementById('fileInput').files[0];
 
-    // Сақлаш функцияси
-    function saveData() {
-        var t = document.getElementById('post_title').value;
-        var m = document.getElementById('post_text').value;
-        var c = document.getElementById('post_cat').value;
-
-        if(!t || !m) { alert('Илтимос, тўлдиринг!'); return; }
-
-        var item = { title: t, text: m, cat: c, time: new Date().toLocaleString() };
-
-        if(current_edit_id > -1) {
-            all_posts[current_edit_id] = item;
-            current_edit_id = -1;
-            document.getElementById('save_button').innerText = "САҚЛАШ / ЖОЙЛАШ";
-        } else {
-            all_posts.unshift(item);
-        }
-
-        localStorage.setItem('my_site_data', JSON.stringify(all_posts));
-        alert('Сақланди!');
-        
-        // Формани тозалаш
-        document.getElementById('post_title').value = '';
-        document.getElementById('post_text').value = '';
-        showData();
-    }
-
-    // Рўйхатни чиқариш
-    function showData() {
-        var container = document.getElementById('posts_display');
-        var html = '';
-        
-        if(all_posts.length === 0) {
-            container.innerHTML = "Ҳозирча мақолалар йўқ.";
+        if(!title || !content) {
+            alert("Илтимос, сарлавҳа ва матнни тўлдиринг!");
             return;
         }
 
-        for(var i=0; i < all_posts.length; i++) {
-            html += '<div class="post-item">' +
-                    '<div><b>' + all_posts[i].title + '</b><br><small>' + all_posts[i].time + '</small></div>' +
-                    '<div>' +
-                    '<button class="edit-btn" onclick="editItem(' + i + ')">✏️</button>' +
-                    '<button class="del-btn" onclick="deleteItem(' + i + ')">🗑</button>' +
-                    '</div></div>';
+        if(file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                processSave(title, content + `<br><img src="${e.target.result}" style="width:100%; border-radius:10px;">`, category);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            processSave(title, content, category);
         }
-        container.innerHTML = html;
     }
 
-    // Таҳрирлаш
-    window.editItem = function(index) {
-        var p = all_posts[index];
-        document.getElementById('post_title').value = p.title;
-        document.getElementById('post_text').value = p.text;
-        document.getElementById('post_cat').value = p.cat;
-        current_edit_id = index;
-        document.getElementById('save_button').innerText = "ЎЗГАРИШНИ САҚЛАШ";
-        window.scrollTo(0,0);
-    };
+    function processSave(title, content, category) {
+        const postData = { title, content, category, date: new Date().toLocaleString() };
 
-    // Ўчириш
-    window.deleteItem = function(index) {
-        if(confirm('Ўчирилсинми?')) {
-            all_posts.splice(index, 1);
-            localStorage.setItem('my_site_data', JSON.stringify(all_posts));
-            showData();
+        if(currentId > -1) {
+            posts[currentId] = postData;
+            currentId = -1;
+            document.getElementById('mainBtn').innerText = "САЙТГА ЖОЙЛАШ";
+        } else {
+            posts.unshift(postData);
         }
-    };
 
-    // Ишни бошлаш
-    showData();
-</script>
+        localStorage.setItem('zokirov_posts', JSON.stringify(posts));
+        clearAll();
+        renderPosts();
+        alert("Муваффақиятли бажарилди!");
+    }
 
-</body>
-</html>
+    function renderPosts() {
+        const area = document.getElementById('displayArea');
+        area.innerHTML = posts.length === 0 ? '<p>Мақолалар мавжуд эмас.</p>' : '';
+
+        posts.forEach((p, index) => {
+            area.innerHTML += `
+                <div class="
