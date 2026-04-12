@@ -3,240 +3,187 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universal Control Center v5.0</title>
+    <title>Universal Control Center v5.2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
     <style>
-        body { background: #010409; color: #e6edf3; font-family: 'Segoe UI', sans-serif; min-height: 100vh; margin: 0; padding: 20px; }
+        body { background: #010409; color: #e6edf3; font-family: 'Segoe UI', sans-serif; min-height: 100vh; padding: 20px; }
         .glass-panel { background: #0d1117; border: 1px solid #30363d; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
-        #editor-container { height: 250px; background: #fff; color: #000; border-radius: 0 0 10px 10px; }
-        .ql-toolbar { background: #f3f4f6; border-radius: 10px 10px 0 0; }
-        .post-item { background: #161b22; border: 1px solid #30363d; border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-action { padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; transition: 0.3s; }
-        .magic-logo { width: 80px; height: 80px; border-radius: 50%; border: 2px solid #2563eb; overflow: hidden; }
-        .magic-logo img { width: 100%; height: 100%; object-fit: cover; }
+        #editor-container { height: 350px; background: #ffffff; color: #000000; border-radius: 0 0 12px 12px; }
+        .ql-toolbar.ql-snow { background: #f8f9fa; border-radius: 12px 12px 0 0; border: 1px solid #30363d !important; }
+        .stat-card { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 10px; text-align: center; }
+        select option { background: #0d1117; color: white; }
     </style>
 </head>
 <body>
 
     <div class="flex justify-between items-center mb-6">
         <div class="flex items-center gap-4">
-            <div class="magic-logo"><img src="logo.jpg" alt="U"></div>
-            <div>
-                <h1 class="text-xl font-bold text-blue-500 uppercase">Universal Admin v5.0</h1>
-                <p class="text-[10px] text-gray-500">БОШҚАРУВ ПАНЕЛИ</p>
-            </div>
+            <h1 class="text-xl font-bold text-blue-500 uppercase tracking-widest">Universal Studio Admin</h1>
         </div>
-        <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-6 py-2 rounded-xl text-xs font-bold uppercase">Чиқиш</button>
+        <button onclick="logout()" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-xs font-bold uppercase transition">Чиқиш</button>
     </div>
 
     <div class="grid grid-cols-12 gap-6">
         
         <div class="col-span-12 lg:col-span-8">
             <div class="glass-panel">
-                <h3 class="text-blue-400 font-bold mb-4 uppercase text-sm"><i class="fas fa-edit mr-2"></i>Мақола яратиш / Таҳрирлаш</h3>
-                
                 <div class="grid grid-cols-2 gap-4 mb-4">
-                    <input type="text" id="postTitle" placeholder="Мақола сарлавҳаси" class="col-span-2 md:col-span-1 bg-[#161b22] border border-[#30363d] rounded-xl p-3 text-sm outline-none focus:border-blue-500">
-                    <select id="postCat" class="col-span-2 md:col-span-1 bg-[#161b22] border border-[#30363d] rounded-xl p-3 text-sm outline-none focus:border-blue-500">
-                        <option value="Янгиликлар">Янгиликлар</option>
-                        <option value="Ҳикоялар">Ҳикоялар</option>
-                        <option value="Табобат олами">Табобат</option>
-                        <option value="Балиқ ови">Балиқ ови</option>
-                        <option value="Шеърият">Шеърият</option>
-                        <option value="Кулинария">Кулинария</option>
+                    <input type="text" id="postTitle" placeholder="Сарлавҳа..." class="col-span-2 md:col-span-1 bg-[#161b22] border border-[#30363d] rounded-xl p-3 text-sm text-white outline-none">
+                    <select id="postCat" class="col-span-2 md:col-span-1 bg-[#161b22] border border-[#30363d] rounded-xl p-3 text-sm text-white outline-none">
+                        <option value="index.html">Асосий саҳифа</option>
+                        <option value="news.html">Янгиликлар</option>
+                        <option value="tabobat.html">Табобат</option>
+                        <option value="she'riyat.html">Шеърият</option>
                     </select>
                 </div>
-
                 <div id="editor-container"></div>
-                
-                <div class="mt-4 flex gap-2">
-                    <button id="saveBtn" onclick="savePost()" class="bg-blue-600 hover:bg-blue-500 w-full py-3 rounded-xl font-bold uppercase text-xs">Сайтга чиқариш</button>
-                    <button id="updateBtn" onclick="updatePost()" class="hidden bg-green-600 hover:bg-green-500 w-full py-3 rounded-xl font-bold uppercase text-xs">Ўзгаришларни сақлаш</button>
-                    <button id="cancelBtn" onclick="resetForm()" class="hidden bg-gray-600 hover:bg-gray-500 px-6 py-3 rounded-xl font-bold uppercase text-xs">Бекор қилиш</button>
-                </div>
+                <button onclick="savePost()" class="w-full mt-4 bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-bold uppercase text-xs transition">Нашр қилиш</button>
             </div>
 
             <div class="glass-panel">
-                <h3 class="text-emerald-400 font-bold mb-4 uppercase text-sm"><i class="fas fa-list mr-2"></i>Мавжуд мақолалар</h3>
-                <div id="admin-posts-list"></div>
-            </div>
-        </div>
-
-        <div class="col-span-12 lg:col-span-4">
-            <div class="glass-panel text-center">
-                <h3 class="text-purple-400 font-bold mb-4 uppercase text-sm"><i class="fas fa-broadcast-tower mr-2"></i>Радио Эфир</h3>
-                <div id="playingName" class="text-[10px] text-blue-400 mb-2 italic">Эфир танланмаган</div>
-                <audio id="mainAudio" controls class="w-full mb-4"></audio>
-                
-                <label class="block bg-blue-600 hover:bg-blue-700 p-3 rounded-xl cursor-pointer text-xs font-bold uppercase">
-                    МП3 Файлларни юклаш <input type="file" id="audioInput" hidden multiple accept="audio/*">
-                </label>
-                
-                <div id="playlist" class="mt-4 max-h-[300px] overflow-y-auto space-y-2">
+                <h3 class="text-xs font-bold text-gray-500 uppercase mb-4">Нашр этилганлар</h3>
+                <div id="admin-posts-list" class="space-y-2">
                     </div>
             </div>
         </div>
 
+        <div class="col-span-12 lg:col-span-4 space-y-6">
+            
+            <div class="glass-panel">
+                <h3 class="text-purple-400 font-bold mb-4 uppercase text-[10px] flex items-center gap-2">
+                    <i class="fas fa-music"></i> Мусиқа бошқаруви
+                </h3>
+                <audio id="mainAudio" controls class="w-full mb-4 h-8"></audio>
+                <label class="block bg-purple-600 hover:bg-purple-700 p-3 rounded-xl cursor-pointer text-center text-[10px] font-bold uppercase transition">
+                    Файл танлаш (MP3) <input type="file" id="audioInput" hidden multiple accept="audio/*">
+                </label>
+                <div id="playlist" class="mt-4 max-h-[150px] overflow-y-auto space-y-2"></div>
+            </div>
+
+            <div class="glass-panel">
+                <h3 class="text-emerald-400 font-bold mb-4 uppercase text-[10px] flex items-center gap-2">
+                    <i class="fas fa-chart-line"></i> Статистика (Просмотр)
+                </h3>
+                <div class="grid grid-cols-2 gap-2 mb-4">
+                    <div class="stat-card">
+                        <p class="text-[9px] text-gray-500 uppercase">Бугунги ташриф</p>
+                        <p class="text-lg font-bold text-white">1,240</p>
+                    </div>
+                    <div class="stat-card">
+                        <p class="text-[9px] text-gray-500 uppercase">Умумий кўриш</p>
+                        <p class="text-lg font-bold text-blue-400">45,892</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
     <script>
-        // Хавфсизлик текшируви
-        if(localStorage.getItem('admin_auth') !== 'true') window.location.href = "index.html";
-
-        // Quill Редакторини созлаш (Ранглар ва тугмалар билан)
+        // 1. Редакторни созлаш
         var quill = new Quill('#editor-container', {
             theme: 'snow',
             modules: {
                 toolbar: [
-                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'header': [1, 2, false] }],
+                    ['bold', 'italic', 'underline'],
                     [{ 'color': [] }, { 'background': [] }],
-                    [{ 'header': [1, 2, 3, false] }],
-                    ['link', 'blockquote', 'code-block'],
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    ['clean']
+                    [{ 'align': [] }],
+                    ['image', 'clean']
                 ]
-            },
-            placeholder: 'Мақола матнини ёзинг, ранг беринг ёки силка қўйинг...'
+            }
         });
 
-        let currentEditingId = null;
-
-        // 1. МАҚОЛАНИ САҚЛАШ
+        // 2. Мақолани сақлаш функцияси
         function savePost() {
             const title = document.getElementById('postTitle').value;
-            const content = quill.root.innerHTML;
             const category = document.getElementById('postCat').value;
+            const content = quill.root.innerHTML;
+            const date = new Date().toLocaleString();
 
-            if(!title || quill.getText().trim().length < 5) { alert("Сарлавҳа ва матнни тўлдиринг!"); return; }
+            if (!title || content === '<p><br></p>') {
+                alert("Сарлавҳа ва матнни тўлдиринг!");
+                return;
+            }
 
-            const newPost = {
-                id: Date.now(),
-                title: title,
-                category: category,
-                content: content,
-                date: new Date().toLocaleString('uz-UZ')
-            };
-
-            let posts = JSON.parse(localStorage.getItem('myPosts')) || [];
+            const newPost = { title, category, content, date };
+            let posts = JSON.parse(localStorage.getItem('myPosts') || '[]');
             posts.unshift(newPost);
             localStorage.setItem('myPosts', JSON.stringify(posts));
+
+            alert("Мақола " + category + " бўлимига сақланди!");
             
-            resetForm();
+            // Тозалаш
+            document.getElementById('postTitle').value = '';
+            quill.setContents([]);
             renderAdminPosts();
-            alert("Мақола муваффақиятли қўшилди!");
         }
 
-        // 2. МАҚОЛАЛАРНИ АДМИНДА ЧИҚАРИШ
+        // 3. Админ панелда мақолаларни чиқариш
         function renderAdminPosts() {
             const list = document.getElementById('admin-posts-list');
-            const posts = JSON.parse(localStorage.getItem('myPosts')) || [];
-            list.innerHTML = posts.length === 0 ? "<p class='text-gray-500 text-xs'>Мақолалар мавжуд эмас.</p>" : "";
-
-            posts.forEach(post => {
-                list.innerHTML += `
-                    <div class="post-item">
-                        <div>
-                            <div class="text-[10px] text-blue-400 font-bold uppercase">${post.category}</div>
-                            <div class="text-sm font-bold text-white">${post.title}</div>
-                            <div class="text-[9px] text-gray-500">${post.date}</div>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="editPost(${post.id})" class="btn-action bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white"><i class="fas fa-pen"></i></button>
-                            <button onclick="deletePost(${post.id})" class="btn-action bg-red-600/20 text-red-400 hover:bg-red-600 hover:text-white"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        // 3. ЎЧИРИШ ФУНКЦИЯСИ
-        function deletePost(id) {
-            if(confirm("Бу мақолани ўчиришни хоҳлайсизми?")) {
-                let posts = JSON.parse(localStorage.getItem('myPosts')) || [];
-                posts = posts.filter(p => p.id !== id);
-                localStorage.setItem('myPosts', JSON.stringify(posts));
-                renderAdminPosts();
-            }
-        }
-
-        // 4. ТАҲРИРЛАШНИ БОШЛАШ
-        function editPost(id) {
-            let posts = JSON.parse(localStorage.getItem('myPosts')) || [];
-            const post = posts.find(p => p.id === id);
+            const posts = JSON.parse(localStorage.getItem('myPosts') || '[]');
             
-            if(post) {
-                currentEditingId = id;
-                document.getElementById('postTitle').value = post.title;
-                document.getElementById('postCat').value = post.category;
-                quill.root.innerHTML = post.content;
-
-                document.getElementById('saveBtn').classList.add('hidden');
-                document.getElementById('updateBtn').classList.remove('hidden');
-                document.getElementById('cancelBtn').classList.remove('hidden');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (posts.length === 0) {
+                list.innerHTML = '<p class="text-center text-gray-600 text-xs italic">Ҳозирча мақолалар йўқ</p>';
+                return;
             }
+
+            list.innerHTML = posts.map((post, i) => `
+                <div class="flex justify-between items-center bg-[#161b22] p-3 rounded-lg border border-[#30363d]">
+                    <div>
+                        <p class="text-sm font-bold text-white">${post.title}</p>
+                        <p class="text-[10px] text-blue-500 uppercase">${post.category}</p>
+                    </div>
+                    <button onclick="deletePost(${i})" class="text-red-500 hover:text-red-400 p-2">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `).join('');
         }
 
-        // 5. ТАҲРИРЛАНГАННИ САҚЛАШ
-        function updatePost() {
-            let posts = JSON.parse(localStorage.getItem('myPosts')) || [];
-            const index = posts.findIndex(p => p.id === currentEditingId);
-
-            if(index !== -1) {
-                posts[index].title = document.getElementById('postTitle').value;
-                posts[index].category = document.getElementById('postCat').value;
-                posts[index].content = quill.root.innerHTML;
-                
+        // 4. Мақолани ўчириш
+        function deletePost(index) {
+            if (confirm("Ушбу мақолани ўчиришни хоҳлайсизми?")) {
+                let posts = JSON.parse(localStorage.getItem('myPosts') || '[]');
+                posts.splice(index, 1);
                 localStorage.setItem('myPosts', JSON.stringify(posts));
-                resetForm();
                 renderAdminPosts();
-                alert("Ўзгаришлар сақланди!");
             }
         }
 
-        // Фармани тозалаш
-        function resetForm() {
-            currentEditingId = null;
-            document.getElementById('postTitle').value = "";
-            quill.setContents([]);
-            document.getElementById('saveBtn').classList.remove('hidden');
-            document.getElementById('updateBtn').classList.add('hidden');
-            document.getElementById('cancelBtn').classList.add('hidden');
-        }
-
-        // РАДИО ПЛЕЕР ҚИСМИ
+        // 5. MP3 Плеер логикаси
         const audioInput = document.getElementById('audioInput');
         const audioPlayer = document.getElementById('mainAudio');
         const playlistDiv = document.getElementById('playlist');
         let tracks = [];
 
         audioInput.onchange = (e) => {
-            const files = Array.from(e.target.files);
-            files.forEach(f => tracks.push({ name: f.name, url: URL.createObjectURL(f) }));
+            Array.from(e.target.files).forEach(f => {
+                tracks.push({ name: f.name, url: URL.createObjectURL(f) });
+            });
             renderPlaylist();
         };
 
         function renderPlaylist() {
-            playlistDiv.innerHTML = "";
-            tracks.forEach((t, i) => {
-                playlistDiv.innerHTML += `
-                <div class="flex justify-between items-center bg-[#161b22] p-2 rounded-lg border border-gray-800">
-                    <span onclick="playTrack(${i})" class="text-[11px] truncate cursor-pointer hover:text-blue-400">▶ ${t.name}</span>
-                    <i onclick="tracks.splice(${i},1);renderPlaylist()" class="fas fa-times text-red-500 cursor-pointer text-xs ml-2"></i>
-                </div>`;
-            });
+            playlistDiv.innerHTML = tracks.map((t, i) => `
+                <div class="flex justify-between items-center bg-[#161b22] p-2 rounded border border-gray-800 hover:border-purple-500 transition">
+                    <span onclick="playT(${i})" class="text-[10px] cursor-pointer text-gray-300 truncate w-4/5">▶ ${t.name}</span>
+                    <i onclick="tracks.splice(${i},1);renderPlaylist()" class="fas fa-trash text-red-500 cursor-pointer text-[9px]"></i>
+                </div>
+            `).join('');
         }
 
-        function playTrack(i) {
+        function playT(i) {
             audioPlayer.src = tracks[i].url;
             audioPlayer.play();
-            document.getElementById('playingName').innerText = "ЭФИРДА: " + tracks[i].name;
         }
 
-        function logout() { localStorage.removeItem('admin_auth'); window.location.href = "index.html"; }
+        function logout() {
+            window.location.href = "index.html";
+        }
 
         window.onload = renderAdminPosts;
     </script>
