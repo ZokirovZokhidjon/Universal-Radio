@@ -2,184 +2,103 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <title>Universal Control Panel v12.0</title>
+    <title>Universal Admin v13.0</title>
     <style>
-        :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; }
-        body { background: var(--bg); color: var(--text); font-family: Arial, sans-serif; padding: 20px; margin: 0; }
-        .container { max-width: 1100px; margin: 0 auto; display: flex; gap: 20px; }
-        .main { flex: 3; background: var(--card); padding: 20px; border-radius: 10px; border: 1px solid var(--border); }
-        .sidebar { flex: 1; }
-        
-        input, select, textarea { width: 100%; background: #0d1117; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 6px; margin-bottom: 10px; box-sizing: border-box; outline: none; }
-        textarea { min-height: 300px; font-family: monospace; font-size: 14px; }
-        
-        .toolbar { background: #21262d; padding: 10px; border-radius: 6px; margin-bottom: 10px; display: flex; flex-wrap: wrap; gap: 5px; }
-        .toolbar button { background: #30363d; color: white; border: 1px solid var(--border); padding: 5px 10px; cursor: pointer; border-radius: 4px; font-weight: bold; }
-        .toolbar button:hover { background: #484f58; }
-        
-        .btn-save { background: #238636; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; margin-top: 10px; }
-        .btn-save:hover { background: #2ea043; }
-        
-        .post-item { background: #0d1117; border: 1px solid var(--border); padding: 15px; margin-top: 10px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-del { background: #da3633; border: none; color: white; padding: 8px; border-radius: 4px; cursor: pointer; }
-        .btn-edit { background: #1f6feb; border: none; color: white; padding: 8px; border-radius: 4px; cursor: pointer; margin-right: 5px; }
-        
-        .box { background: var(--card); border: 1px solid var(--border); padding: 15px; border-radius: 10px; margin-bottom: 20px; text-align: center; }
-        #preview { background: white; color: black; padding: 15px; border-radius: 6px; margin-top: 10px; min-height: 100px; overflow-wrap: break-word; }
-        #preview img { max-width: 100%; height: auto; display: block; margin: 10px 0; }
+        body { background: #0d1117; color: #c9d1d9; font-family: Arial, sans-serif; padding: 20px; }
+        .box { background: #161b22; border: 1px solid #30363d; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
+        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: white; box-sizing: border-box; }
+        textarea { height: 250px; }
+        .btn { background: #238636; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .post { border-bottom: 1px solid #30363d; padding: 10px; display: flex; justify-content: space-between; }
+        .del-btn { background: #da3633; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+        .edit-btn { background: #1f6feb; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 5px; }
+        img { max-width: 100%; height: auto; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="main">
-        <h2 id="formTitle">✍️ Мақола қўшиш</h2>
-        <input type="text" id="title" placeholder="Сарлавҳа...">
-        <select id="cat">
+    <div class="box">
+        <h2>✍️ Янги мақола</h2>
+        <input type="text" id="t" placeholder="Сарлавҳа...">
+        <select id="c">
             <option value="news">Янгиликлар</option>
             <option value="med">Табобат</option>
             <option value="baliq-ovi">Балиқ ови</option>
             <option value="hikoyalar">Ҳикоялар</option>
-            <option value="creative">Ижод</option>
-            <option value="poetic">Шеърият</option>
         </select>
-
-        <div class="toolbar">
-            <button onclick="addTag('b')">B</button>
-            <button onclick="addTag('i')">I</button>
-            <button onclick="addTag('u')">U</button>
-            <button onclick="addTag('center')">Center</button>
-            <button onclick="document.getElementById('imgInp').click()">🖼 Расм</button>
-            <input type="file" id="imgInp" hidden accept="image/*" onchange="uploadImg()">
-        </div>
-
-        <textarea id="text" oninput="updatePreview()" placeholder="Матнни шу ерга ёзинг..."></textarea>
         
-        <div style="color: gray; font-size: 12px;">Кўриниши (Preview):</div>
-        <div id="preview"></div>
+        <input type="file" id="i" accept="image/*" onchange="uploadImg()">
+        <p style="font-size: 11px; color: gray;">(Расм танласангиз, коди матнга автоматик тушади)</p>
 
-        <button class="btn-save" id="mainBtn" onclick="savePost()">САЙТГА ЖОЙЛАШ</button>
-
-        <h3 style="margin-top: 30px; border-top: 1px solid var(--border); padding-top: 20px;">📁 Мақолалар бошқаруви:</h3>
-        <div id="postList"></div>
+        <textarea id="txt" placeholder="Матн ёзинг..."></textarea>
+        <button class="btn" onclick="save()">САЙТГА ЖОЙЛАШ</button>
     </div>
 
-    <div class="sidebar">
-        <div class="box">
-            <h3>🎵 MP3 Плеер</h3>
-            <input type="file" id="mp3" accept="audio/*" onchange="document.getElementById('aud').src=URL.createObjectURL(this.files[0])">
-            <audio id="aud" controls style="width: 100%; margin-top: 10px;"></audio>
-        </div>
-        <div class="box">
-            <h3>📊 Статистика</h3>
-            <img src="https://s11.flagcounter.com/count2/8uM1/bg_161B22/txt_FFFFFF/border_30363D/columns_1/maxflags_1/viewers_3/labels_1/pageviews_1/flags_0/percent_0/" alt="counter">
-        </div>
+    <div class="box">
+        <h3>📁 Мақолалар рўйхати</h3>
+        <div id="list"></div>
     </div>
-</div>
 
 <script>
-    // Маълумотларни юклаш
-    let posts = JSON.parse(localStorage.getItem('myPosts') || '[]');
-    let editIdx = -1;
-
-    function addTag(tag) {
-        const area = document.getElementById('text');
-        const start = area.selectionStart;
-        const end = area.selectionEnd;
-        const sel = area.value.substring(start, end);
-        area.value = area.value.substring(0, start) + `<${tag}>` + sel + `</${tag}>` + area.value.substring(end);
-        updatePreview();
-    }
+    var posts = JSON.parse(localStorage.getItem('myPosts') || '[]');
+    var editId = -1;
 
     function uploadImg() {
-        const file = document.getElementById('imgInp').files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const area = document.getElementById('text');
-                area.value += `\n<img src="${e.target.result}">\n`;
-                updatePreview();
-            };
-            reader.readAsDataURL(file);
-        }
+        var file = document.getElementById('i').files[0];
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('txt').value += '\n<img src="' + e.target.result + '">\n';
+        };
+        reader.readAsDataURL(file);
     }
 
-    function updatePreview() {
-        document.getElementById('preview').innerHTML = document.getElementById('text').value;
-    }
+    function save() {
+        var t = document.getElementById('t').value;
+        var m = document.getElementById('txt').value;
+        var c = document.getElementById('c').value;
 
-    function savePost() {
-        const t = document.getElementById('title').value;
-        const txt = document.getElementById('text').value;
-        const c = document.getElementById('cat').value;
+        if(!t || !m) { alert('Тўлдиринг!'); return; }
 
-        if(!t || !txt) return alert("Сарлавҳа ва матнни тўлдиринг!");
+        var p = { title: t, text: m, cat: c, date: new Date().toLocaleString() };
 
-        const newPost = { title: t, content: txt, cat: c, date: new Date().toLocaleString() };
-
-        if(editIdx > -1) {
-            posts[editIdx] = newPost; // Таҳрирлаш
-            editIdx = -1;
-            document.getElementById('mainBtn').innerText = "САЙТГА ЖОЙЛАШ";
-            document.getElementById('formTitle').innerText = "✍️ Мақола қўшиш";
+        if(editId > -1) {
+            posts[editId] = p;
+            editId = -1;
         } else {
-            posts.unshift(newPost); // Янги қўшиш
+            posts.unshift(p);
         }
 
         localStorage.setItem('myPosts', JSON.stringify(posts));
-        resetForm();
-        showPosts();
-        alert("Маълумот сақланди!");
+        location.reload(); // Саҳифани янгилаб, маълумотни янгилаймиз
     }
 
-    function showPosts() {
-        const list = document.getElementById('postList');
-        list.innerHTML = '';
-        if (posts.length === 0) {
-            list.innerHTML = '<p style="color:gray; text-align:center;">Мақолалар мавжуд эмас.</p>';
+    function show() {
+        var out = '';
+        for(var i=0; i<posts.length; i++) {
+            out += '<div class="post"><span><b>' + posts[i].title + '</b><br><small>' + posts[i].date + '</small></span>' +
+                   '<div><button class="edit-btn" onclick="edit(' + i + ')">✏️</button>' +
+                   '<button class="del-btn" onclick="del(' + i + ')">🗑</button></div></div>';
         }
-        posts.forEach((p, i) => {
-            list.innerHTML += `
-                <div class="post-item">
-                    <span><b>${p.title}</b> <br><small style="color:#8b949e;">${p.date} | ${p.cat}</small></span>
-                    <div>
-                        <button class="btn-edit" onclick="editPost(${i})">✏️</button>
-                        <button class="btn-del" onclick="delPost(${i})">🗑</button>
-                    </div>
-                </div>`;
-        });
+        document.getElementById('list').innerHTML = out || 'Мақолалар йўқ.';
     }
 
-    function editPost(i) {
-        const p = posts[i];
-        document.getElementById('title').value = p.title;
-        document.getElementById('text').value = p.content;
-        document.getElementById('cat').value = p.cat;
-        editIdx = i;
-        
-        document.getElementById('mainBtn').innerText = "ЎЗГАРИШНИ САҚЛАШ";
-        document.getElementById('formTitle').innerText = "📝 Таҳрирлаш режими";
-        updatePreview();
+    window.edit = function(i) {
+        document.getElementById('t').value = posts[i].title;
+        document.getElementById('txt').value = posts[i].text;
+        document.getElementById('c').value = posts[i].cat;
+        editId = i;
         window.scrollTo(0,0);
-    }
+    };
 
-    function delPost(i) {
-        if(confirm("Ростдан ҳам ўчирмоқчимисиз?")) {
+    window.del = function(i) {
+        if(confirm('Ўчирилсинми?')) {
             posts.splice(i, 1);
             localStorage.setItem('myPosts', JSON.stringify(posts));
-            showPosts();
+            location.reload();
         }
-    }
+    };
 
-    function resetForm() {
-        document.getElementById('title').value = '';
-        document.getElementById('text').value = '';
-        document.getElementById('preview').innerHTML = '';
-        editIdx = -1;
-    }
-
-    // Илк бор юкланганда рўйхатни чиқариш
-    showPosts();
+    show();
 </script>
 
 </body>
