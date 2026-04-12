@@ -3,40 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universal Control Panel v7.0</title>
+    <title>Universal Control Panel v9.0</title>
     <style>
         :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; }
         body { background: var(--bg); color: var(--text); font-family: Arial, sans-serif; margin: 0; padding: 20px; }
         .wrapper { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 3fr 1fr; gap: 20px; }
         .main-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 15px; }
         
-        /* Blogger стилидаги асбоблар панели */
-        .toolbar { background: #f1f3f4; padding: 5px; border-radius: 8px 8px 0 0; border: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
-        .toolbar button, .toolbar input[type="color"] { background: white; border: 1px solid #ccc; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-weight: bold; }
-        .toolbar button:hover { background: #e8eaed; }
+        /* Toolbar */
+        .toolbar { background: #f1f3f4; padding: 8px; border-radius: 8px 8px 0 0; border: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+        .toolbar button, .toolbar input[type="color"] { background: white; border: 1px solid #ccc; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-weight: bold; font-size: 14px; }
         
-        /* Текст ёзиш жойи */
-        #editor { min-height: 400px; background: white; color: black; padding: 15px; border: 1px solid var(--border); border-top: none; overflow-y: auto; outline: none; border-radius: 0 0 8px 8px; }
+        /* Editor */
+        #editor { min-height: 350px; background: white; color: black; padding: 15px; border: 1px solid var(--border); border-top: none; overflow-y: auto; outline: none; border-radius: 0 0 8px 8px; }
+        #editor img { max-width: 100%; height: auto; border-radius: 5px; margin: 10px 0; }
         
         input[type="text"], select { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 6px; border: 1px solid var(--border); background: #0d1117; color: white; box-sizing: border-box; }
         
-        .btn-save { background: #238636; color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .btn-save { background: #238636; color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 16px; }
         
-        /* Плеер ва Статистика */
-        .side-panel { display: flex; flex-direction: column; gap: 20px; }
-        .stat-box { background: var(--card); border: 1px solid var(--border); padding: 15px; border-radius: 8px; text-align: center; }
+        /* Рўйхат */
+        .post-list { margin-top: 25px; background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 15px; }
+        .post-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border); }
+        .post-actions { display: flex; gap: 10px; }
+        .btn-edit { background: #1f6feb; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+        .btn-delete { background: #da3633; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
+
+        /* Онг панель */
+        .stat-box { background: var(--card); border: 1px solid var(--border); padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
         audio { width: 100%; margin-top: 10px; }
-        
-        .upload-area { border: 2px dashed #58a6ff; padding: 20px; text-align: center; cursor: pointer; border-radius: 8px; }
+        .upload-area { border: 2px dashed #58a6ff; padding: 15px; text-align: center; cursor: pointer; border-radius: 8px; margin-bottom: 10px; font-size: 13px; }
     </style>
 </head>
 <body>
 
 <div class="wrapper">
     <div class="main-card">
-        <h2 style="color: #58a6ff; margin-top: 0;">Янги мақола яратиш</h2>
-        <input type="text" id="postTitle" placeholder="Сарлавҳа киритинг...">
-      <select id="post-category">
+        <h2 style="color: #58a6ff; margin-top: 0;">МАҚОЛА БОШҚАРУВИ (РАСМЛИ)</h2>
+        
+        <input type="text" id="postTitle" placeholder="Мақола сарлавҳаси...">
+         <select id="post-category">
             <option value="news">Янгиликлар</option>
             <option value="med">Табобат</option>
              <option value="baliq-ovi" >Балик ови</option>
@@ -47,31 +53,32 @@
 
         <div class="toolbar">
             <button onclick="execCmd('bold')">B</button>
-            <button onclick="execCmd('italic')"><i>I</i></button>
-            <button onclick="execCmd('underline')"><u>U</u></button>
-            <button onclick="execCmd('strikeThrough')">S</button>
+            <button onclick="execCmd('italic')">I</button>
+            <button onclick="execCmd('underline')">U</button>
+            <input type="color" onchange="execCmd('foreColor', this.value)" title="Текст ранги">
+            <input type="color" onchange="execCmd('hiliteColor', this.value)" title="Орқа ранг">
+            <button onclick="document.getElementById('postImg').click()" style="background: #fffbe6; border: 1px solid #ffe58f;">🖼 Расм қўшиш</button>
+            <input type="file" id="postImg" hidden accept="image/*" onchange="insertImage(this)">
+            
             <button onclick="execCmd('justifyLeft')">⬅</button>
             <button onclick="execCmd('justifyCenter')">⬆</button>
-            <button onclick="execCmd('justifyRight')">➡</button>
-            <button onclick="execCmd('insertUnorderedList')">• Лист</button>
-            <input type="color" onchange="execCmd('foreColor', this.value)" title="Матн ранги">
-            <input type="color" onchange="execCmd('hiliteColor', this.value)" title="Орқа ранг">
             <button onclick="execCmd('removeFormat')">Тозалаш</button>
         </div>
         
         <div id="editor" contenteditable="true"></div>
-        
-        <button class="btn-save" onclick="publishPost()">САЙТГА ЖОЙЛАШ</button>
+        <button class="btn-save" id="saveBtn" onclick="publishPost()">САЙТГА ЖОЙЛАШ</button>
+
+        <div class="post-list">
+            <h3 style="margin-top:0; font-size: 14px; color: #8b949e;">МАҚОЛАЛАР РЎЙХАТИ:</h3>
+            <div id="postsContainer"></div>
+        </div>
     </div>
 
     <div class="side-panel">
         <div class="stat-box">
-            <h3 style="color: #a371f7;">🎵 МУСИҚА МАРКАЗИ</h3>
-            <div class="upload-area" onclick="document.getElementById('audioFile').click()">
-                Файл танлаш
-                <input type="file" id="audioFile" hidden accept="audio/*" onchange="playTrack(this)">
-            </div>
-            <p id="nowPlaying" style="font-size: 11px; margin: 10px 0;">Танланмаган</p>
+            <h3 style="color: #a371f7;">🎵 MP3 ПЛЕЕР</h3>
+            <div class="upload-area" onclick="document.getElementById('audioFile').click()">Мусиқа юклаш</div>
+            <input type="file" id="audioFile" hidden accept="audio/*" onchange="playTrack(this)">
             <audio id="player" controls></audio>
         </div>
 
@@ -85,50 +92,99 @@
 </div>
 
 <script>
-    // 1. Форматлаш функцияси (Ранг ва Word учун)
+    let editIndex = -1;
+
     function execCmd(command, value = null) {
         document.execCommand(command, false, value);
     }
 
-    // 2. Плеерни ишга тушириш
+    // РАСМНИ ЭДИТОРГА ЖОЙЛАШ
+    function insertImage(input) {
+        const file = input.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = `<img src="${e.target.result}" />`;
+                document.execCommand('insertHTML', false, img);
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
     function playTrack(input) {
         const file = input.files[0];
         if (file) {
-            document.getElementById('nowPlaying').innerText = "Ижро: " + file.name;
             const url = URL.createObjectURL(file);
             const player = document.getElementById('player');
-            player.src = url;
-            player.play();
+            player.src = url; player.play();
         }
     }
 
-    // 3. Сақлаш функцияси
+    function loadPosts() {
+        const container = document.getElementById('postsContainer');
+        const posts = JSON.parse(localStorage.getItem('myPosts') || '[]');
+        container.innerHTML = posts.length === 0 ? '<p style="font-size:12px; color:gray;">Мақолалар йўқ</p>' : '';
+        
+        posts.forEach((post, index) => {
+            container.innerHTML += `
+                <div class="post-item">
+                    <div class="post-info">
+                        <div style="font-weight:bold; font-size:13px;">${post.title}</div>
+                        <div style="font-size:11px; color:gray;">${post.date}</div>
+                    </div>
+                    <div class="post-actions">
+                        <button class="btn-edit" onclick="editPost(${index})">📝</button>
+                        <button class="btn-delete" onclick="deletePost(${index})">🗑</button>
+                    </div>
+                </div>`;
+        });
+    }
+
     function publishPost() {
         const title = document.getElementById('postTitle').value;
         const body = document.getElementById('editor').innerHTML;
+        const category = document.getElementById('postCat').value;
         
-        if(!title || body === "") {
-            alert("Сарлавҳа ва матнни тўлдиринг!");
-            return;
+        if(!title || body === "") return alert("Сарлавҳа ва матнни тўлдиринг!");
+
+        let posts = JSON.parse(localStorage.getItem('myPosts') || '[]');
+
+        if (editIndex > -1) {
+            posts[editIndex] = { title, content: body, category, date: "Янгиланди: " + new Date().toLocaleString() };
+            editIndex = -1;
+            document.getElementById('saveBtn').innerText = "САЙТГА ЖОЙЛАШ";
+        } else {
+            posts.unshift({ title, content: body, category, date: new Date().toLocaleString() });
         }
 
-        // Сақлаш алгоритми (LocalStorage учун)
-        let myPosts = JSON.parse(localStorage.getItem('myPosts') || '[]');
-        myPosts.unshift({
-            title: title,
-            content: body,
-            date: new Date().toLocaleString()
-        });
-        localStorage.setItem('myPosts', JSON.stringify(myPosts));
-
-        alert("Муваффақиятли жойланди!");
-        location.reload(); 
+        localStorage.setItem('myPosts', JSON.stringify(posts));
+        alert("Муваффақиятли сақланди!");
+        document.getElementById('postTitle').value = '';
+        document.getElementById('editor').innerHTML = '';
+        loadPosts();
     }
 
-    // Wordдан нусха олганда ортиқча кодларни тозалаш
-    document.getElementById('editor').addEventListener('paste', function(e) {
-        // Бу ерда Word стилларини браузер автоматик равишда таҳрирлайди
-    });
+    function editPost(index) {
+        const posts = JSON.parse(localStorage.getItem('myPosts') || '[]');
+        const post = posts[index];
+        document.getElementById('postTitle').value = post.title;
+        document.getElementById('editor').innerHTML = post.content;
+        document.getElementById('postCat').value = post.category;
+        editIndex = index;
+        document.getElementById('saveBtn').innerText = "ЎЗГАРИШНИ САҚЛАШ";
+        window.scrollTo(0, 0);
+    }
+
+    function deletePost(index) {
+        if(confirm("Ўчирмоқчимисиз?")) {
+            let posts = JSON.parse(localStorage.getItem('myPosts') || '[]');
+            posts.splice(index, 1);
+            localStorage.setItem('myPosts', JSON.stringify(posts));
+            loadPosts();
+        }
+    }
+
+    window.onload = loadPosts;
 </script>
 
 </body>
