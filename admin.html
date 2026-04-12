@@ -3,44 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>UNIVERSAL ADMIN V6.0</title>
-    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <title>Universal Control Panel v7.0</title>
     <style>
-        :root { --bg: #0d1117; --card: #161b22; --blue: #238636; --text: #c9d1d9; }
-        body { background-color: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr; gap: 20px; }
-        .card { background: var(--card); border: 1px solid #30363d; border-radius: 8px; padding: 20px; }
-        h2 { margin-top: 0; font-size: 18px; color: #58a6ff; }
+        :root { --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; }
+        body { background: var(--bg); color: var(--text); font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        .wrapper { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 3fr 1fr; gap: 20px; }
+        .main-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 15px; }
         
-        /* Муҳаррир (Editor) созламалари */
-        #editor-container { height: 400px; background: white; color: black; border-radius: 0 0 8px 8px; }
-        .ql-toolbar { background: #f0f0f0; border-radius: 8px 8px 0 0; }
-        input, select { width: 100%; padding: 10px; margin-bottom: 15px; background: #0d1117; border: 1px solid #30363d; color: white; border-radius: 5px; }
-
-        .btn { width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn-post { background: #238636; color: white; margin-top: 15px; }
-        .btn-post:hover { background: #2ea043; }
+        /* Blogger стилидаги асбоблар панели */
+        .toolbar { background: #f1f3f4; padding: 5px; border-radius: 8px 8px 0 0; border: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
+        .toolbar button, .toolbar input[type="color"] { background: white; border: 1px solid #ccc; padding: 5px 10px; cursor: pointer; border-radius: 4px; font-weight: bold; }
+        .toolbar button:hover { background: #e8eaed; }
         
-        /* Плеер блоки */
-        .player-box { text-align: center; }
+        /* Текст ёзиш жойи */
+        #editor { min-height: 400px; background: white; color: black; padding: 15px; border: 1px solid var(--border); border-top: none; overflow-y: auto; outline: none; border-radius: 0 0 8px 8px; }
+        
+        input[type="text"], select { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 6px; border: 1px solid var(--border); background: #0d1117; color: white; box-sizing: border-box; }
+        
+        .btn-save { background: #238636; color: white; border: none; padding: 15px; width: 100%; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        
+        /* Плеер ва Статистика */
+        .side-panel { display: flex; flex-direction: column; gap: 20px; }
+        .stat-box { background: var(--card); border: 1px solid var(--border); padding: 15px; border-radius: 8px; text-align: center; }
         audio { width: 100%; margin-top: 10px; }
-        .file-label { display: block; background: #21262d; padding: 10px; border: 1px dashed #58a6ff; cursor: pointer; margin-bottom: 10px; }
         
-        @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
+        .upload-area { border: 2px dashed #58a6ff; padding: 20px; text-align: center; cursor: pointer; border-radius: 8px; }
     </style>
 </head>
 <body>
 
-<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-    <h1>UNIVERSAL ADMIN <span style="color: #58a6ff;">V6.0</span></h1>
-    <button class="btn" style="width: auto; background: #da3633; color: white;">ЧИҚИШ</button>
-</div>
-
-<div class="container">
-    <div class="card">
-        <h2>📝 МАҚОЛА ЯРАТИШ (WORD ВА РАНГЛАР БИЛАН)</h2>
-        <input type="text" id="post-title" placeholder="Мақола сарлавҳаси...">
-       <select id="post-category">
+<div class="wrapper">
+    <div class="main-card">
+        <h2 style="color: #58a6ff; margin-top: 0;">Янги мақола яратиш</h2>
+        <input type="text" id="postTitle" placeholder="Сарлавҳа киритинг...">
+      <select id="post-category">
             <option value="news">Янгиликлар</option>
             <option value="med">Табобат</option>
              <option value="baliq-ovi" >Балик ови</option>
@@ -48,82 +44,91 @@
             <option value="creative">Ижод</option>
             <option value="poetic">Шеърият</option>
         </select>
+
+        <div class="toolbar">
+            <button onclick="execCmd('bold')">B</button>
+            <button onclick="execCmd('italic')"><i>I</i></button>
+            <button onclick="execCmd('underline')"><u>U</u></button>
+            <button onclick="execCmd('strikeThrough')">S</button>
+            <button onclick="execCmd('justifyLeft')">⬅</button>
+            <button onclick="execCmd('justifyCenter')">⬆</button>
+            <button onclick="execCmd('justifyRight')">➡</button>
+            <button onclick="execCmd('insertUnorderedList')">• Лист</button>
+            <input type="color" onchange="execCmd('foreColor', this.value)" title="Матн ранги">
+            <input type="color" onchange="execCmd('hiliteColor', this.value)" title="Орқа ранг">
+            <button onclick="execCmd('removeFormat')">Тозалаш</button>
+        </div>
         
-        <div id="editor-container"></div>
+        <div id="editor" contenteditable="true"></div>
         
-        <button class="btn btn-post" onclick="savePost()">САЙТГА ЧИҚАРИШ</button>
+        <button class="btn-save" onclick="publishPost()">САЙТГА ЖОЙЛАШ</button>
     </div>
 
-    <div class="card">
-        <div class="player-box">
-            <h2>📻 РАДИО ЭФИР / ПЛЕЕР</h2>
-            <p id="track-name" style="font-size: 12px; color: #8b949e;">Файл танланмаган</p>
-            <label class="file-label">
-                🎵 MP3 ФАЙЛ ЮКЛАШ
-                <input type="file" id="audio-input" accept="audio/mp3" hidden onchange="handleAudio(this)">
-            </label>
-            <audio id="main-player" controls>
-                Сизнинг браузерингиз аудио қўллаб-қувватламайди.
-            </audio>
+    <div class="side-panel">
+        <div class="stat-box">
+            <h3 style="color: #a371f7;">🎵 МУСИҚА МАРКАЗИ</h3>
+            <div class="upload-area" onclick="document.getElementById('audioFile').click()">
+                Файл танлаш
+                <input type="file" id="audioFile" hidden accept="audio/*" onchange="playTrack(this)">
+            </div>
+            <p id="nowPlaying" style="font-size: 11px; margin: 10px 0;">Танланмаган</p>
+            <audio id="player" controls></audio>
         </div>
 
-        <hr style="border: 0.5px solid #30363d; margin: 20px 0;">
-
-        <h2>📊 КИРУВЧИЛАР СТАТИСТИКАСИ</h2>
-        <div style="background: #0d1117; padding: 10px; border-radius: 5px; text-align: center;">
+        <div class="stat-box">
+            <h3 style="color: #3fb950;">📈 СТАТИСТИКА</h3>
             <a href="https://info.flagcounter.com/8uM1">
-                <img src="https://s11.flagcounter.com/count2/8uM1/bg_0D1117/txt_FFFFFF/border_30363D/columns_1/maxflags_1/viewers_3/labels_1/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0">
+                <img src="https://s11.flagcounter.com/count2/8uM1/bg_161B22/txt_FFFFFF/border_30363D/columns_1/maxflags_1/viewers_3/labels_1/pageviews_1/flags_0/percent_0/" alt="Flag Counter" border="0">
             </a>
         </div>
     </div>
 </div>
 
-<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <script>
-    // 1. Муҳаррирни созлаш (Ранглар ва Word формати учун)
-    var quill = new Quill('#editor-container', {
-        modules: {
-            toolbar: [
-                [{ 'header': [1, 2, 3, false] }],
-                ['bold', 'italic', 'underline', 'strike'],
-                [{ 'color': [] }, { 'background': [] }], // Ранг танлаш
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                [{ 'align': [] }],
-                ['link', 'image', 'clean'] // Тозалаш тугмаси Word форматини тўғрилайди
-            ]
-        },
-        theme: 'snow',
-        placeholder: 'Мақола матнини ёзинг ёки Wordдан кўчириб қўйинг...'
-    });
+    // 1. Форматлаш функцияси (Ранг ва Word учун)
+    function execCmd(command, value = null) {
+        document.execCommand(command, false, value);
+    }
 
-    // 2. Плеер функцияси
-    function handleAudio(input) {
+    // 2. Плеерни ишга тушириш
+    function playTrack(input) {
         const file = input.files[0];
-        const player = document.getElementById('main-player');
-        const trackName = document.getElementById('track-name');
-        
         if (file) {
-            trackName.innerText = "Ижро этилмоқда: " + file.name;
+            document.getElementById('nowPlaying').innerText = "Ижро: " + file.name;
             const url = URL.createObjectURL(file);
+            const player = document.getElementById('player');
             player.src = url;
             player.play();
         }
     }
 
-    // 3. Сақлаш функцияси (Консолга чиқаради)
-    function savePost() {
-        const title = document.getElementById('post-title').value;
-        const content = quill.root.innerHTML; // HTML форматда олади (ранглари билан)
+    // 3. Сақлаш функцияси
+    function publishPost() {
+        const title = document.getElementById('postTitle').value;
+        const body = document.getElementById('editor').innerHTML;
         
-        if(!title || content === "<p><br></p>") {
-            alert("Илтимос, сарлавҳа ва матнни тўлдиринг!");
+        if(!title || body === "") {
+            alert("Сарлавҳа ва матнни тўлдиринг!");
             return;
         }
 
-        console.log("Мақола сарлавҳаси:", title);
-        console.log("Мақола матни (HTML):", content);
-        alert("Мақола тайёр! Энди уни базага юбориш мумкин.");
+        // Сақлаш алгоритми (LocalStorage учун)
+        let myPosts = JSON.parse(localStorage.getItem('myPosts') || '[]');
+        myPosts.unshift({
+            title: title,
+            content: body,
+            date: new Date().toLocaleString()
+        });
+        localStorage.setItem('myPosts', JSON.stringify(myPosts));
+
+        alert("Муваффақиятли жойланди!");
+        location.reload(); 
     }
+
+    // Wordдан нусха олганда ортиқча кодларни тозалаш
+    document.getElementById('editor').addEventListener('paste', function(e) {
+        // Бу ерда Word стилларини браузер автоматик равишда таҳрирлайди
+    });
 </script>
 
 </body>
