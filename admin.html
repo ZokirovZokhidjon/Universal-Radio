@@ -2,211 +2,104 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zokirov Creative Admin Panel</title>
+    <title>Zokirov Creative - Admin Panel</title>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <style>
         :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #38bdf8; --danger: #ef4444; }
-        body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; margin: 0; padding: 20px; }
-        .container { max-width: 1000px; margin: 0 auto; }
-        
-        /* Header & Logout */
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 2px solid #334155; padding-bottom: 10px; }
-        .btn-logout { background: var(--danger); color: white; border: none; padding: 8px 15px; border-radius: 6px; cursor: pointer; font-weight: bold; }
-
-        /* Form Elements */
-        .admin-card { background: var(--card); padding: 25px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); margin-bottom: 30px; }
-        label { display: block; margin: 15px 0 5px; color: #94a3b8; font-size: 14px; }
-        input[type="text"], select, .editor-container { background: #0f172a !important; color: white !important; border: 1px solid #334155 !important; border-radius: 8px; }
-        input[type="text"], select { width: 100%; padding: 12px; box-sizing: border-box; }
-        
-        /* Text Editor Height */
-        #editor { height: 300px; margin-bottom: 20px; color: white; }
-
-        /* Buttons */
-        .btn-group { display: flex; gap: 10px; margin-top: 20px; }
-        .btn { flex: 1; padding: 15px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .btn-post { background: var(--accent); color: #000; }
-        .btn-post:hover { opacity: 0.8; }
-
-        /* Stats & List */
-        .post-card { background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid var(--accent); }
-        .post-header { display: flex; justify-content: space-between; align-items: flex-start; }
-        .stats { font-size: 12px; color: #64748b; margin-top: 10px; display: flex; gap: 15px; }
-        .actions { margin-top: 15px; display: flex; gap: 8px; }
-        .actions button { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
-        .edit-btn { background: #fbbf24; }
-        .delete-btn { background: var(--danger); color: white; }
-
-        /* Custom Audio Style */
-        .audio-preview { margin-top: 10px; display: block; width: 100%; }
+        body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+        .card { background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        input, select { width: 100%; padding: 10px; margin: 10px 0; background: #0f172a; color: white; border: 1px solid #334155; border-radius: 5px; }
+        #editor { height: 200px; background: #0f172a; color: white; }
+        .btn { width: 100%; padding: 15px; background: var(--accent); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .post-item { background: var(--card); padding: 15px; margin-top: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--accent); }
+        .del-btn { background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="header">
-        <h1>Панель управления</h1>
-        <button class="btn-logout" onclick="window.location.href='index.html'">ЧИҚИШ</button>
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+        <h1>Админ Панель</h1>
+        <a href="news.html" style="color:var(--accent); text-decoration:none;">Сайтни кўриш →</a>
     </div>
 
-    <div class="admin-card">
-        <label>Мақола сарлавҳаси:</label>
-        <input type="text" id="postTitle" placeholder="Сарлавҳани киритинг...">
-
-        <label>Категория:</label>
-        <select id="postCategory">
-            <option value="Янгиликлар">Янгиликлар</option>
-            <option value="Табобат">Табобат</option>
-            <option value="Балиқ ови">Балиқ ови</option>
-            <option value="Ҳикоялар">Ҳикоялар</option>
-            <option value="Шеърият">Шеърият</option>
+    <div class="card">
+        <label>Сарлавҳа:</label>
+        <input type="text" id="title">
+        
+        <label>Бўлим:</label>
+        <select id="category">
+            <option>Янгиликлар</option>
+            <option>Табобат</option>
+            <option>Балиқ ови</option>
+            <option>Ҳикоялар</option>
+            <option>Шеърият</option>
         </select>
 
         <label>Расм ёки MP3 юклаш:</label>
-        <input type="file" id="mediaInput" accept="image/*, audio/mp3">
+        <input type="file" id="mediaFile" accept="image/*, audio/mp3">
 
-        <label>Мақола матни (Ранглар ва стиллар билан):</label>
+        <label>Матн:</label>
         <div id="editor"></div>
 
-        <div class="btn-group">
-            <button class="btn btn-post" onclick="handleSave()" id="saveBtn">САЙТГА ЖОЙЛАШ</button>
-        </div>
+        <button class="btn" onclick="savePost()">САЙТГА ЖОЙЛАШ</button>
     </div>
 
-    <h2>Мақолалар ва Статистика</h2>
-    <div id="postContainer"></div>
+    <h3>Бошқарув</h3>
+    <div id="adminList"></div>
 </div>
 
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-
 <script>
-    // Матн муҳарририни созлаш (Ранглар, форматлаш)
-    var quill = new Quill('#editor', {
-        theme: 'snow',
-        modules: {
-            toolbar: [
-                [{ 'header': [1, 2, false] }],
-                ['bold', 'italic', 'underline', 'strike'],
-                [{ 'color': [] }, { 'background': [] }],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                ['link', 'clean']
-            ]
-        }
-    });
+    var quill = new Quill('#editor', { theme: 'snow' });
+    const storageKey = 'my_site_posts';
 
-    let posts = JSON.parse(localStorage.getItem('my_site_posts') || '[]');
-    let editIndex = -1;
-
-    // Сақлаш функцияси
-    function handleSave() {
-        const title = document.getElementById('postTitle').value;
-        const category = document.getElementById('postCategory').value;
+    function savePost() {
+        const title = document.getElementById('title').value;
+        const category = document.getElementById('category').value;
         const content = quill.root.innerHTML;
-        const mediaFile = document.getElementById('mediaInput').files[0];
+        const file = document.getElementById('mediaFile').files[0];
 
-        if (!title || quill.getText().trim().length === 0) {
-            alert("Сарлавҳа ва матнни тўлдиринг!");
-            return;
-        }
+        if(!title || quill.getText().trim() === "") return alert("Тўлдиринг!");
 
-        if (mediaFile) {
+        if(file) {
             const reader = new FileReader();
-            reader.onload = function(e) {
-                saveData(title, category, content, e.target.result, mediaFile.type);
-            };
-            reader.readAsDataURL(mediaFile);
+            reader.onload = (e) => finishSave(title, category, content, e.target.result, file.type);
+            reader.readAsDataURL(file);
         } else {
-            saveData(title, category, content, null, null);
+            finishSave(title, category, content, null, null);
         }
     }
 
-    function saveData(title, category, content, mediaSrc, mediaType) {
-        const newPost = {
-            title,
-            category,
-            content,
-            media: mediaSrc,
-            type: mediaType,
-            date: new Date().toLocaleString(),
-            views: Math.floor(Math.random() * 50) + 1 // Статистика учун бошланғич тасодифий сон
-        };
-
-        if (editIndex > -1) {
-            posts[editIndex] = newPost;
-            editIndex = -1;
-            document.getElementById('saveBtn').innerText = "САЙТГА ЖОЙЛАШ";
-        } else {
-            posts.unshift(newPost);
-        }
-
-        localStorage.setItem('my_site_posts', JSON.stringify(posts));
-        resetForm();
-        renderPosts();
+    function finishSave(title, category, content, media, type) {
+        let posts = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        posts.unshift({ title, category, content, media, type, date: new Date().toLocaleString(), views: 0 });
+        localStorage.setItem(storageKey, JSON.stringify(posts));
+        alert("Сақланди!");
+        location.reload();
     }
 
-    function renderPosts() {
-        const container = document.getElementById('postContainer');
-        container.innerHTML = '';
-
-        posts.forEach((post, index) => {
-            let mediaHtml = '';
-            if(post.media) {
-                if(post.type.includes('image')) {
-                    mediaHtml = `<img src="${post.media}" style="width:100px; border-radius:5px; margin-top:10px;">`;
-                } else if(post.type.includes('audio')) {
-                    mediaHtml = `<p>🎵 MP3 файл қўшилган</p>`;
-                }
-            }
-
+    function renderAdmin() {
+        let posts = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        const container = document.getElementById('adminList');
+        posts.forEach((p, i) => {
             container.innerHTML += `
-                <div class="post-card">
-                    <div class="post-header">
-                        <div>
-                            <strong style="font-size:18px; color:var(--accent);">${post.title}</strong>
-                            <div class="stats">
-                                <span>📅 ${post.date}</span>
-                                <span>👁 Кўришлар: ${post.views}</span>
-                                <span>📁 ${post.category}</span>
-                            </div>
-                            ${mediaHtml}
-                        </div>
-                    </div>
-                    <div class="actions">
-                        <button class="edit-btn" onclick="editPost(${index})">Таҳрирлаш</button>
-                        <button class="delete-btn" onclick="deletePost(${index})">Ўчириш</button>
-                    </div>
-                </div>
-            `;
+                <div class="post-item">
+                    <div><b>${p.title}</b><br><small>${p.date}</small></div>
+                    <button class="del-btn" onclick="deletePost(${i})">Ўчириш</button>
+                </div>`;
         });
     }
 
-    function deletePost(index) {
-        if(confirm("Бу мақолани ўчирмоқчимисиз?")) {
-            posts.splice(index, 1);
-            localStorage.setItem('my_site_posts', JSON.stringify(posts));
-            renderPosts();
-        }
+    function deletePost(i) {
+        let posts = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        posts.splice(i, 1);
+        localStorage.setItem(storageKey, JSON.stringify(posts));
+        location.reload();
     }
 
-    function editPost(index) {
-        const p = posts[index];
-        document.getElementById('postTitle').value = p.title;
-        document.getElementById('postCategory').value = p.category;
-        quill.root.innerHTML = p.content;
-        editIndex = index;
-        document.getElementById('saveBtn').innerText = "ЎЗГАРИШНИ САҚЛАШ";
-        window.scrollTo(0,0);
-    }
-
-    function resetForm() {
-        document.getElementById('postTitle').value = '';
-        quill.root.innerHTML = '';
-        document.getElementById('mediaInput').value = '';
-    }
-
-    renderPosts();
+    renderAdmin();
 </script>
-
 </body>
 </html>

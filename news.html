@@ -86,58 +86,52 @@
     </div>
 
     <script>
-        // МАҚОЛАЛАРНИ ШУ ЕРГА ҚЎШИНГ
-        const newsData = [
-            {
-                id: 1,
-                title: "ОТАМ НОСИР ЗОКИРГА БАҒИШЛАНАДИ",
-                date: "11.04.2026",
-                image: "", // Расм коди бўлса шу ерга қўйинг
-                audio: "", // Аудио коди бўлса шу ерга қўйинг
-                body: "Бу ерда отангиз ҳақидаги мақоланинг тўлиқ ва батафсил матни бўлади. Энди у ҳеч қандай чекловларсиз, тўлиқ кенгликда кўринади."
-            },
-            {
-                id: 2,
-                title: "Қизиқ манзара...",
-                date: "10.04.2026",
-                image: "",
-                audio: "",
-                body: "Иккинчи мақоланинг мазмуни шу ерда."
-            }
-        ];
+    // 1. LocalStorage-дан мақолаларни ўқиб оламиз
+    const storageKey = 'my_site_posts'; 
+    const savedPosts = JSON.parse(localStorage.getItem(storageKey) || '[]');
 
-        const list = document.getElementById('news-list');
-        const side = document.getElementById('side-list');
-        
-        // СТАТИСТИКАНИ ҲИСОБЛАШ
-        document.getElementById('stat-total').innerText = newsData.length;
-        document.getElementById('stat-audio').innerText = newsData.filter(p => p.audio).length;
+    // 2. Агар хотирада мақола бўлса, ўшани ишлатамиз, бўлмаса код ичидагини
+    const newsData = savedPosts.length > 0 ? savedPosts : [
+        {
+            title: "Мақолалар топилмади",
+            date: "11.04.2026",
+            content: "Админ панел орқали мақола қўшинг.",
+            category: "Тизим"
+        }
+    ];
 
-        newsData.forEach(post => {
-            // Асосий блок
-            list.innerHTML += `
-                <div class="glass-card p-6 md:p-10">
-                    ${post.image ? `<img src="${post.image}" class="main-img">` : ''}
-                    <div class="text-blue-400 font-mono text-xs mb-4">${post.date}</div>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-8 leading-tight">${post.title}</h2>
-                    ${post.audio ? `<audio controls src="${post.audio}"></audio>` : ''}
-                    <div class="post-content">${post.body}</div>
+    const list = document.getElementById('news-list');
+    const side = document.getElementById('side-list');
+            
+    // СТАТИСТИКАНИ ҲИСОБЛАШ
+    document.getElementById('stat-total').innerText = newsData.length;
+    document.getElementById('stat-audio').innerText = newsData.filter(p => p.media && p.type.includes('audio')).length;
+
+    newsData.forEach(post => {
+        // Асосий блок
+        list.innerHTML += `
+            <div class="glass-card p-6 md:p-10">
+                ${post.media && post.type.includes('image') ? `<img src="${post.media}" class="main-img">` : ''}
+                <div class="text-blue-400 font-mono text-xs mb-4">${post.date} | ${post.category || ''}</div>
+                <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-8 leading-tight">${post.title}</h2>
+                ${post.media && post.type.includes('audio') ? `<audio controls src="${post.media}"></audio>` : ''}
+                <div class="post-content">${post.content || post.body}</div>
+            </div>
+        `;
+
+        // Ён блок
+        side.innerHTML += `
+            <div class="flex gap-4 items-center border-b border-gray-800 pb-4 last:border-0">
+                <div class="w-12 h-12 bg-gray-800 rounded-lg flex-shrink-0 flex items-center justify-center">
+                    <i class="fas fa-bolt text-gray-600 text-xs"></i>
                 </div>
-            `;
-
-            // Ён блок
-            side.innerHTML += `
-                <div class="flex gap-4 items-center border-b border-gray-800 pb-4 last:border-0">
-                    <div class="w-12 h-12 bg-gray-800 rounded-lg flex-shrink-0 flex items-center justify-center">
-                        <i class="fas fa-bolt text-gray-600 text-xs"></i>
-                    </div>
-                    <div>
-                        <h4 class="text-xs font-bold text-gray-300 line-clamp-2">${post.title}</h4>
-                        <span class="text-[9px] text-gray-600 uppercase">${post.date}</span>
-                    </div>
+                <div>
+                    <h4 class="text-xs font-bold text-gray-300 line-clamp-2">${post.title}</h4>
+                    <span class="text-[9px] text-gray-600 uppercase">${post.date}</span>
                 </div>
-            `;
-        });
-    </script>
+            </div>
+        `;
+    });
+</script>
 </body>
 </html>
