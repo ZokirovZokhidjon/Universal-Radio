@@ -1,104 +1,129 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html>
 <head>
     <meta charset="UTF-8">
-    <title>Universal Admin v13.0</title>
+    <title>Admin Panel</title>
     <style>
-        body { background: #0d1117; color: #c9d1d9; font-family: Arial, sans-serif; padding: 20px; }
-        .box { background: #161b22; border: 1px solid #30363d; padding: 20px; border-radius: 10px; margin-bottom: 20px; }
-        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 6px; border: 1px solid #30363d; background: #0d1117; color: white; box-sizing: border-box; }
-        textarea { height: 250px; }
-        .btn { background: #238636; color: white; border: none; padding: 15px; width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .post { border-bottom: 1px solid #30363d; padding: 10px; display: flex; justify-content: space-between; }
-        .del-btn { background: #da3633; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
-        .edit-btn { background: #1f6feb; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-right: 5px; }
-        img { max-width: 100%; height: auto; margin-top: 10px; }
+        body { background: #1a1a1a; color: white; font-family: sans-serif; padding: 20px; }
+        .card { background: #252525; padding: 20px; border-radius: 10px; border: 1px solid #444; margin-bottom: 20px; }
+        input, select, textarea { width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; background: #000; color: white; border: 1px solid #555; box-sizing: border-box; }
+        textarea { height: 200px; }
+        .save-btn { background: #28a745; color: white; border: none; padding: 15px; width: 100%; cursor: pointer; font-weight: bold; }
+        .post-item { border-bottom: 1px solid #444; padding: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .edit-btn { background: #007bff; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; margin-right: 5px; }
+        .del-btn { background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="box">
-        <h2>✍️ Янги мақола</h2>
-        <input type="text" id="t" placeholder="Сарлавҳа...">
-        <select id="c">
+    <div class="card">
+        <h2>✍️ Мақола қўшиш</h2>
+        <input type="text" id="post_title" placeholder="Сарлавҳа...">
+        <select id="post_cat">
             <option value="news">Янгиликлар</option>
             <option value="med">Табобат</option>
-            <option value="baliq-ovi">Балиқ ови</option>
-            <option value="hikoyalar">Ҳикоялар</option>
+            <option value="fish">Балиқ ови</option>
         </select>
         
-        <input type="file" id="i" accept="image/*" onchange="uploadImg()">
-        <p style="font-size: 11px; color: gray;">(Расм танласангиз, коди матнга автоматик тушади)</p>
-
-        <textarea id="txt" placeholder="Матн ёзинг..."></textarea>
-        <button class="btn" onclick="save()">САЙТГА ЖОЙЛАШ</button>
+        <label>🖼 Расм танлаш:</label>
+        <input type="file" id="img_input" accept="image/*" onchange="uploadImage()">
+        
+        <textarea id="post_text" placeholder="Матнни шу ерга ёзинг..."></textarea>
+        
+        <button class="save-btn" id="save_button" onclick="saveData()">САҚЛАШ / ЖОЙЛАШ</button>
     </div>
 
-    <div class="box">
-        <h3>📁 Мақолалар рўйхати</h3>
-        <div id="list"></div>
+    <div class="card">
+        <h3>📁 Сақланган мақолалар:</h3>
+        <div id="posts_display"></div>
     </div>
 
 <script>
-    var posts = JSON.parse(localStorage.getItem('myPosts') || '[]');
-    var editId = -1;
+    // Маълумотларни хотирадан олиш
+    var all_posts = JSON.parse(localStorage.getItem('my_site_data') || '[]');
+    var current_edit_id = -1;
 
-    function uploadImg() {
-        var file = document.getElementById('i').files[0];
+    // Расмни матнга айлантириш
+    function uploadImage() {
+        var file = document.getElementById('img_input').files[0];
         var reader = new FileReader();
         reader.onload = function(e) {
-            document.getElementById('txt').value += '\n<img src="' + e.target.result + '">\n';
+            var area = document.getElementById('post_text');
+            area.value += '\n<img src="' + e.target.result + '" style="width:100%">\n';
         };
-        reader.readAsDataURL(file);
+        if(file) reader.readAsDataURL(file);
     }
 
-    function save() {
-        var t = document.getElementById('t').value;
-        var m = document.getElementById('txt').value;
-        var c = document.getElementById('c').value;
+    // Сақлаш функцияси
+    function saveData() {
+        var t = document.getElementById('post_title').value;
+        var m = document.getElementById('post_text').value;
+        var c = document.getElementById('post_cat').value;
 
-        if(!t || !m) { alert('Тўлдиринг!'); return; }
+        if(!t || !m) { alert('Илтимос, тўлдиринг!'); return; }
 
-        var p = { title: t, text: m, cat: c, date: new Date().toLocaleString() };
+        var item = { title: t, text: m, cat: c, time: new Date().toLocaleString() };
 
-        if(editId > -1) {
-            posts[editId] = p;
-            editId = -1;
+        if(current_edit_id > -1) {
+            all_posts[current_edit_id] = item;
+            current_edit_id = -1;
+            document.getElementById('save_button').innerText = "САҚЛАШ / ЖОЙЛАШ";
         } else {
-            posts.unshift(p);
+            all_posts.unshift(item);
         }
 
-        localStorage.setItem('myPosts', JSON.stringify(posts));
-        location.reload(); // Саҳифани янгилаб, маълумотни янгилаймиз
+        localStorage.setItem('my_site_data', JSON.stringify(all_posts));
+        alert('Сақланди!');
+        
+        // Формани тозалаш
+        document.getElementById('post_title').value = '';
+        document.getElementById('post_text').value = '';
+        showData();
     }
 
-    function show() {
-        var out = '';
-        for(var i=0; i<posts.length; i++) {
-            out += '<div class="post"><span><b>' + posts[i].title + '</b><br><small>' + posts[i].date + '</small></span>' +
-                   '<div><button class="edit-btn" onclick="edit(' + i + ')">✏️</button>' +
-                   '<button class="del-btn" onclick="del(' + i + ')">🗑</button></div></div>';
+    // Рўйхатни чиқариш
+    function showData() {
+        var container = document.getElementById('posts_display');
+        var html = '';
+        
+        if(all_posts.length === 0) {
+            container.innerHTML = "Ҳозирча мақолалар йўқ.";
+            return;
         }
-        document.getElementById('list').innerHTML = out || 'Мақолалар йўқ.';
+
+        for(var i=0; i < all_posts.length; i++) {
+            html += '<div class="post-item">' +
+                    '<div><b>' + all_posts[i].title + '</b><br><small>' + all_posts[i].time + '</small></div>' +
+                    '<div>' +
+                    '<button class="edit-btn" onclick="editItem(' + i + ')">✏️</button>' +
+                    '<button class="del-btn" onclick="deleteItem(' + i + ')">🗑</button>' +
+                    '</div></div>';
+        }
+        container.innerHTML = html;
     }
 
-    window.edit = function(i) {
-        document.getElementById('t').value = posts[i].title;
-        document.getElementById('txt').value = posts[i].text;
-        document.getElementById('c').value = posts[i].cat;
-        editId = i;
+    // Таҳрирлаш
+    window.editItem = function(index) {
+        var p = all_posts[index];
+        document.getElementById('post_title').value = p.title;
+        document.getElementById('post_text').value = p.text;
+        document.getElementById('post_cat').value = p.cat;
+        current_edit_id = index;
+        document.getElementById('save_button').innerText = "ЎЗГАРИШНИ САҚЛАШ";
         window.scrollTo(0,0);
     };
 
-    window.del = function(i) {
+    // Ўчириш
+    window.deleteItem = function(index) {
         if(confirm('Ўчирилсинми?')) {
-            posts.splice(i, 1);
-            localStorage.setItem('myPosts', JSON.stringify(posts));
-            location.reload();
+            all_posts.splice(index, 1);
+            localStorage.setItem('my_site_data', JSON.stringify(all_posts));
+            showData();
         }
     };
 
-    show();
+    // Ишни бошлаш
+    showData();
 </script>
 
 </body>
