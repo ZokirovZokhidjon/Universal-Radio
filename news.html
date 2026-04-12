@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Universal Studio - Янгиликлар</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background: #010409; color: #e6edf3; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        
+        /* Статистика блоклари */
+        .stat-box { background: #0d1117; border: 1px solid #30363d; border-radius: 15px; padding: 15px; text-align: center; }
+        
+        /* Асосий мақола карточкаси */
+        .glass-card { 
+            background: #0d1117; 
+            border: 1px solid #30363d; 
+            border-radius: 24px; 
+            margin-bottom: 40px; 
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Мақола матни - Тўлиқ ва ўқишга қулай */
+        .post-content { 
+            font-size: 19px; 
+            line-height: 1.8; 
+            color: #d1d5db; 
+        }
+        .post-content p { margin-bottom: 20px; }
+        .post-content b, .post-content strong { color: #ffcc00; font-weight: 700; }
+        
+        /* Расмлар тўлиқ кенгликда */
+        .post-content img, .main-img { 
+            width: 100%; 
+            height: auto; 
+            border-radius: 16px; 
+            margin: 25px 0; 
+            border: 1px solid #30363d;
+        }
+
+        /* Аудио плеер */
+        audio { width: 100%; filter: invert(1); height: 40px; margin: 20px 0; }
+        
+        .gold-text { color: #ffcc00; }
+    </style>
+</head>
+<body class="p-4 md:p-10">
+
+    <div class="max-w-7xl mx-auto">
+        <header class="flex justify-between items-center mb-10 border-b border-gray-800 pb-8">
+            <div>
+                <h1 class="text-3xl font-bold uppercase tracking-tighter">Universal <span class="gold-text">Studio</span></h1>
+                <p class="text-[10px] text-gray-500 uppercase tracking-[4px]">Янгиликлар Портали</p>
+            </div>
+            <a href="index.html" class="bg-[#161b22] px-6 py-2 rounded-xl border border-[#30363d] text-sm font-bold hover:border-yellow-500 transition-all">АСОСИЙ</a>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+            <div class="stat-box">
+                <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Жами мақолалар</p>
+                <h3 id="stat-total" class="text-2xl font-black text-blue-500">0</h3>
+            </div>
+            <div class="stat-box">
+                <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Аудио хабарлар</p>
+                <h3 id="stat-audio" class="text-2xl font-black text-purple-500">0</h3>
+            </div>
+            <div class="stat-box">
+                <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Бугунги сана</p>
+                <h3 class="text-lg font-bold text-green-500">11.04.2026</h3>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <div class="lg:col-span-2" id="news-list">
+                </div>
+
+            <div class="lg:col-span-1">
+                <div class="glass-card p-6 sticky top-10">
+                    <h3 class="text-sm font-bold gold-text uppercase mb-6 border-l-4 border-yellow-500 pl-4">Сўнгги хабарлар</h3>
+                    <div id="side-list" class="space-y-6"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // МАҚОЛАЛАРНИ ШУ ЕРГА ҚЎШИНГ
+        const newsData = [
+            {
+                id: 1,
+                title: "ОТАМ НОСИР ЗОКИРГА БАҒИШЛАНАДИ",
+                date: "11.04.2026",
+                image: "", // Расм коди бўлса шу ерга қўйинг
+                audio: "", // Аудио коди бўлса шу ерга қўйинг
+                body: "Бу ерда отангиз ҳақидаги мақоланинг тўлиқ ва батафсил матни бўлади. Энди у ҳеч қандай чекловларсиз, тўлиқ кенгликда кўринади."
+            },
+            {
+                id: 2,
+                title: "Қизиқ манзара...",
+                date: "10.04.2026",
+                image: "",
+                audio: "",
+                body: "Иккинчи мақоланинг мазмуни шу ерда."
+            }
+        ];
+
+        const list = document.getElementById('news-list');
+        const side = document.getElementById('side-list');
+        
+        // СТАТИСТИКАНИ ҲИСОБЛАШ
+        document.getElementById('stat-total').innerText = newsData.length;
+        document.getElementById('stat-audio').innerText = newsData.filter(p => p.audio).length;
+
+        newsData.forEach(post => {
+            // Асосий блок
+            list.innerHTML += `
+                <div class="glass-card p-6 md:p-10">
+                    ${post.image ? `<img src="${post.image}" class="main-img">` : ''}
+                    <div class="text-blue-400 font-mono text-xs mb-4">${post.date}</div>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-8 leading-tight">${post.title}</h2>
+                    ${post.audio ? `<audio controls src="${post.audio}"></audio>` : ''}
+                    <div class="post-content">${post.body}</div>
+                </div>
+            `;
+
+            // Ён блок
+            side.innerHTML += `
+                <div class="flex gap-4 items-center border-b border-gray-800 pb-4 last:border-0">
+                    <div class="w-12 h-12 bg-gray-800 rounded-lg flex-shrink-0 flex items-center justify-center">
+                        <i class="fas fa-bolt text-gray-600 text-xs"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-gray-300 line-clamp-2">${post.title}</h4>
+                        <span class="text-[9px] text-gray-600 uppercase">${post.date}</span>
+                    </div>
+                </div>
+            `;
+        });
+    </script>
+</body>
+</html>

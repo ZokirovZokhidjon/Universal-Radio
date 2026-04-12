@@ -12,20 +12,55 @@
         .logo-wrapper img { width: 100%; height: 100%; object-fit: cover; }
         .main-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; width: 100%; }
         .card { background: #0d1117; border: 1px solid #30363d; border-radius: 24px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .news-card { grid-column: 1 / -1; background: #0d1117; border: 1px solid #30363d; border-radius: 24px; padding: 25px; margin-top: 10px; }
+        
+        /* Янгиланган меню блоки */
+        .custom-news-section { 
+            grid-column: 1 / -1; 
+            background: #0d1117; 
+            border: 1px solid #30363d; 
+            border-radius: 24px; 
+            padding: 30px; 
+            margin-top: 10px;
+        }
+
+        .menu-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
+            list-style: none;
+            padding: 0;
+        }
+
+        .menu-list li a {
+            display: block;
+            background: #161b22;
+            border: 1px solid #30363d;
+            padding: 15px;
+            border-radius: 15px;
+            color: #2563eb;
+            text-align: center;
+            font-weight: bold;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .menu-list li a:hover {
+            background: #2563eb;
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(37, 99, 235, 0.3);
+        }
+
         .clock { width: 100px; height: 100px; border: 3px solid #30363d; border-radius: 50%; margin: 0 auto 15px; position: relative; background: #161b22; }
         .dot { position: absolute; top: 50%; left: 50%; width: 6px; height: 6px; background: #2563eb; border-radius: 50%; transform: translate(-50%, -50%); z-index: 10; }
         .hour, .minute, .second { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom; border-radius: 10px; transform: translateX(-50%); }
         .hour { width: 4px; height: 25px; background: #e6edf3; }
         .minute { width: 3px; height: 35px; background: #8b949e; }
         .second { width: 2px; height: 40px; background: #ff0000; }
-        .category-item { margin: 5px 0; background: linear-gradient(45deg, #2563eb, #8e44ad); text-align: center; border-radius: 12px; border: 1px solid rgba(255,215,0,0.3); transition: 0.3s; cursor: pointer; padding: 10px; font-weight: bold; font-size: 13px; }
-        .category-item:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4); }
-        .post-box { background: #161b22; border: 1px solid #30363d; border-radius: 15px; padding: 15px; margin-bottom: 15px; }
-        .badge { background: #2563eb; color: white; padding: 2px 8px; border-radius: 5px; font-size: 10px; text-transform: uppercase; }
     </style>
 </head>
 <body>
+
     <div class="logo-wrapper">
         <img src="logo.jpg" alt="Logo" onerror="this.src='https://via.placeholder.com/120?text=Radio'">
     </div>
@@ -55,25 +90,15 @@
             </form>
         </div>
 
-        <div class="news-card">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div>
-                    <h3 id="news-title" class="text-blue-500 font-black uppercase text-xs mb-4 border-b border-gray-800 pb-2">Янги мақолалар</h3>
-                    <div id="posts-container" class="max-h-[500px] overflow-y-auto pr-2"></div>
-                </div>
-                <div>
-                    <h3 class="text-emerald-500 font-black uppercase text-xs mb-4 border-b border-gray-800 pb-2">Блог рукнлари</h3>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div class="category-item" onclick="renderByCat('Ҳикоялар')">Ҳикоялар</div>
-                        <div class="category-item" onclick="renderByCat('Табобат олами')">Табобат</div>
-                        <div class="category-item" onclick="renderByCat('Балиқ ови')">Балиқ Ови</div>
-                        <div class="category-item" onclick="renderByCat('Янгиликлар')">Янгиликлар</div>
-                        <div class="category-item" onclick="renderByCat('Кулинария')">Кулинария</div>
-                        <div class="category-item" onclick="renderByCat('Шеърият')">Шеърият</div>
-                        <div class="category-item" style="background: #333;" onclick="renderByCat('all')">Ҳаммаси</div>
-                    </div>
-                </div>
-            </div>
+        <div class="custom-news-section">
+            <h3 class="text-center text-gray-500 uppercase text-xs font-bold mb-6 tracking-widest">Бўлимлар</h3>
+            <ul class="menu-list">
+                <li><a href="news.html"><i class="fas fa-newspaper mr-2"></i>Янгиликлар</a></li> 
+                <li><a href="hikoyalar.html"><i class="fas fa-book-open mr-2"></i>Ҳикоялар</a></li> 
+                <li><a href="poetic.html"><i class="fas fa-feather-alt mr-2"></i>Шеърият</a></li> 
+                <li><a href="baliq-ovi.html"><i class="fas fa-fish mr-2"></i>Балиқ ови</a></li> 
+                <li><a href="med.html"><i class="fas fa-heartbeat mr-2"></i>Табобат</a></li> 
+            </ul>
         </div>
     </div>
 
@@ -93,29 +118,6 @@
                 window.location.href = "admin.html";
             } else { alert("Хато пароль!"); }
         }
-
-        function renderByCat(cat = 'all') {
-            const container = document.getElementById('posts-container');
-            const posts = JSON.parse(localStorage.getItem('myPosts')) || [];
-            container.innerHTML = "";
-            const filtered = cat === 'all' ? posts : posts.filter(p => p.category === cat);
-            document.getElementById('news-title').innerText = cat === 'all' ? "Янги мақолалар" : cat;
-            
-            if(filtered.length === 0) { 
-                container.innerHTML = "<p class='text-xs text-gray-500 mt-4'>Ҳозирча бу бўлимда мақолалар йўқ.</p>"; 
-                return; 
-            }
-            
-            filtered.forEach(post => {
-                container.innerHTML += `
-                    <div class="post-box">
-                        <div class="flex justify-between"><span class="badge">${post.category}</span><span class="text-[9px] text-gray-500">${post.date}</span></div>
-                        <h4 class="text-white font-bold my-2 text-sm">${post.title}</h4>
-                        <div class="text-[11px] text-gray-400 mb-3">${post.content}</div>
-                    </div>`;
-            });
-        }
-        window.onload = () => renderByCat('all');
     </script>
 </body>
 </html>

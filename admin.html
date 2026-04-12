@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>Zokirov Control Panel</title>
     <style>
         body { background: #0f172a; color: #f8fafc; font-family: 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 20px; }
@@ -15,8 +15,8 @@
         .btn-save { background: #0ea5e9; color: white; }
         .btn-save:hover { background: #0284c7; }
         .btn-clear { background: #64748b; color: white; }
-        
-        /* Рўйхат учун */
+
+        /* For the list */
         .post-list { margin-top: 40px; }
         .post-card { background: #334155; padding: 15px; border-radius: 10px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
         .post-info b { font-size: 18px; color: #38bdf8; }
@@ -27,27 +27,27 @@
     </style>
 </head>
 <body>
-
 <div class="admin-container">
     <h1>Админ Кабинет</h1>
-    
+
     <label>Мақола сарлавҳаси:</label>
     <input type="text" id="title" placeholder="Бу ерга сарлавҳа ёзинг...">
 
     <label>Бўлимни танланг:</label>
     <select id="category">
         <option value="news">Янгиликлар</option>
-            <option value="med">Табобат</option>
-             <option value="baliq-ovi" >Балик ови</option>
-            <option value="hikoyalar">Хикоялар</option>
-            <option value="creative">Ижод</option>
-            <option value="poetic">Шеърият</option>
+        <option value="med">Табобат</option>
+        <option value="baliq-ovi">Балик ови</option>
+        <option value="hikoyalar">Хикоялар</option>
+        <option value="creative">Ижод</option>
+        <option value="poetic">Шеърият</option>
     </select>
 
     <label>Расм қўшиш (Компьютердан):</label>
     <input type="file" id="fileInput" accept="image/*">
 
     <label>Мақола матни:</label>
+   
     <textarea id="content" placeholder="Мақола матнини шу ерга ёзинг... HTML теглар ишлайди."></textarea>
 
     <div class="btn-group">
