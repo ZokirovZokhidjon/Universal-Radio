@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Radio & Studio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background: #010409; color: #e6edf3; font-family: 'Segoe UI', sans-serif; min-height: 100vh; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .logo-wrapper { width: 120px; height: 120px; border-radius: 50%; border: 3px solid #30363d; display: flex; align-items: center; justify-content: center; background: #161b22; box-shadow: 0 0 20px rgba(37, 99, 235, 0.4); margin-bottom: 30px; overflow: hidden; }
+        .logo-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .main-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; max-width: 1200px; width: 100%; }
+        .card { background: #0d1117; border: 1px solid #30363d; border-radius: 24px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .news-card { grid-column: 1 / -1; background: #0d1117; border: 1px solid #30363d; border-radius: 24px; padding: 25px; margin-top: 10px; }
+        .clock { width: 100px; height: 100px; border: 3px solid #30363d; border-radius: 50%; margin: 0 auto 15px; position: relative; background: #161b22; }
+        .dot { position: absolute; top: 50%; left: 50%; width: 6px; height: 6px; background: #2563eb; border-radius: 50%; transform: translate(-50%, -50%); z-index: 10; }
+        .hour, .minute, .second { position: absolute; bottom: 50%; left: 50%; transform-origin: bottom; border-radius: 10px; transform: translateX(-50%); }
+        .hour { width: 4px; height: 25px; background: #e6edf3; }
+        .minute { width: 3px; height: 35px; background: #8b949e; }
+        .second { width: 2px; height: 40px; background: #ff0000; }
+        .category-item { margin: 5px 0; background: linear-gradient(45deg, #2563eb, #8e44ad); text-align: center; border-radius: 12px; border: 1px solid rgba(255,215,0,0.3); transition: 0.3s; cursor: pointer; padding: 10px; font-weight: bold; font-size: 13px; }
+        .category-item:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4); }
+        .post-box { background: #161b22; border: 1px solid #30363d; border-radius: 15px; padding: 15px; margin-bottom: 15px; }
+        .badge { background: #2563eb; color: white; padding: 2px 8px; border-radius: 5px; font-size: 10px; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+    <div class="logo-wrapper">
+        <img src="logo.jpg" alt="Logo" onerror="this.src='https://via.placeholder.com/120?text=Radio'">
+    </div>
+    
+    <div class="main-container">
+        <div class="card text-center">
+            <div class="clock"><div class="dot"></div><div class="hour" id="hour"></div><div class="minute" id="minute"></div><div class="second" id="second"></div></div>
+            <h2 class="text-sm font-black uppercase mb-2">Админ панел</h2>
+            <input type="password" id="passInput" placeholder="ПАРОЛ" class="w-full bg-[#161b22] border border-[#30363d] rounded-xl p-3 mb-4 text-center outline-none text-white focus:border-blue-500 transition">
+            <button onclick="handleLogin()" class="w-full bg-blue-600 hover:bg-blue-500 py-3 rounded-xl font-bold transition text-xs">КИРИШ</button>
+        </div>
+
+        <div class="card text-center flex flex-col items-center justify-between">
+            <h2 class="text-xl font-black text-blue-400 uppercase tracking-tighter">Universal Radio</h2>
+            <div class="relative my-4 w-full">
+                <iframe src="https://listen.zeno.fm/player/radio1" frameBorder="0" scrolling="no" height="150" width="100%" style="border-radius: 15px;"></iframe>
+            </div>
+            <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">Live Broadcast System</p>
+        </div>
+
+        <div class="card">
+            <h2 class="text-sm font-black text-blue-500 uppercase mb-4 text-center">Мурожаат</h2>
+            <form action="https://formspree.io/f/mbdzaopz" method="POST" class="space-y-3">
+                <input type="text" name="name" placeholder="Исмингиз" class="w-full bg-[#161b22] border border-[#30363d] rounded-xl p-2 text-sm outline-none text-white focus:border-blue-500" required>
+                <textarea name="message" rows="2" placeholder="Хабарингиз..." class="w-full bg-[#161b22] border border-[#30363d] rounded-xl p-2 text-sm outline-none text-white focus:border-blue-500" required></textarea>
+                <button type="submit" class="w-full bg-gray-800 hover:bg-gray-700 py-3 rounded-xl text-[10px] font-bold uppercase transition">Юбориш</button>
+            </form>
+        </div>
+
+        <div class="news-card">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h3 id="news-title" class="text-blue-500 font-black uppercase text-xs mb-4 border-b border-gray-800 pb-2">Янги мақолалар</h3>
+                    <div id="posts-container" class="max-h-[500px] overflow-y-auto pr-2"></div>
+                </div>
+                <div>
+                    <h3 class="text-emerald-500 font-black uppercase text-xs mb-4 border-b border-gray-800 pb-2">Блог рукнлари</h3>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div class="category-item" onclick="renderByCat('Ҳикоялар')">Ҳикоялар</div>
+                        <div class="category-item" onclick="renderByCat('Табобат олами')">Табобат</div>
+                        <div class="category-item" onclick="renderByCat('Балиқ ови')">Балиқ Ови</div>
+                        <div class="category-item" onclick="renderByCat('Янгиликлар')">Янгиликлар</div>
+                        <div class="category-item" onclick="renderByCat('Кулинария')">Кулинария</div>
+                        <div class="category-item" onclick="renderByCat('Шеърият')">Шеърият</div>
+                        <div class="category-item" style="background: #333;" onclick="renderByCat('all')">Ҳаммаси</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            const s = now.getSeconds() * 6, m = now.getMinutes() * 6, h = (now.getHours() % 12) * 30 + now.getMinutes() * 0.5;
+            document.getElementById('second').style.transform = `translateX(-50%) rotate(${s}deg)`;
+            document.getElementById('minute').style.transform = `translateX(-50%) rotate(${m}deg)`;
+            document.getElementById('hour').style.transform = `translateX(-50%) rotate(${h}deg)`;
+        }
+        setInterval(updateClock, 1000); updateClock();
+
+        function handleLogin() {
+            if(document.getElementById('passInput').value === "1975") {
+                localStorage.setItem('admin_auth', 'true');
+                window.location.href = "admin.html";
+            } else { alert("Хато пароль!"); }
+        }
+
+        function renderByCat(cat = 'all') {
+            const container = document.getElementById('posts-container');
+            const posts = JSON.parse(localStorage.getItem('myPosts')) || [];
+            container.innerHTML = "";
+            const filtered = cat === 'all' ? posts : posts.filter(p => p.category === cat);
+            document.getElementById('news-title').innerText = cat === 'all' ? "Янги мақолалар" : cat;
+            
+            if(filtered.length === 0) { 
+                container.innerHTML = "<p class='text-xs text-gray-500 mt-4'>Ҳозирча бу бўлимда мақолалар йўқ.</p>"; 
+                return; 
+            }
+            
+            filtered.forEach(post => {
+                container.innerHTML += `
+                    <div class="post-box">
+                        <div class="flex justify-between"><span class="badge">${post.category}</span><span class="text-[9px] text-gray-500">${post.date}</span></div>
+                        <h4 class="text-white font-bold my-2 text-sm">${post.title}</h4>
+                        <div class="text-[11px] text-gray-400 mb-3">${post.content}</div>
+                    </div>`;
+            });
+        }
+        window.onload = () => renderByCat('all');
+    </script>
+</body>
+</html>
