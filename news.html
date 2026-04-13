@@ -9,10 +9,8 @@
     <style>
         body { background: #010409; color: #e6edf3; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
-        /* Статистика блоклари */
         .stat-box { background: #0d1117; border: 1px solid #30363d; border-radius: 15px; padding: 15px; text-align: center; }
         
-        /* Асосий мақола карточкаси */
         .glass-card { 
             background: #0d1117; 
             border: 1px solid #30363d; 
@@ -22,7 +20,6 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* Мақола матни - Тўлиқ ва ўқишга қулай */
         .post-content { 
             font-size: 19px; 
             line-height: 1.8; 
@@ -31,7 +28,6 @@
         .post-content p { margin-bottom: 20px; }
         .post-content b, .post-content strong { color: #ffcc00; font-weight: 700; }
         
-        /* Расмлар тўлиқ кенгликда */
         .post-content img, .main-img { 
             width: 100%; 
             height: auto; 
@@ -40,10 +36,16 @@
             border: 1px solid #30363d;
         }
 
-        /* Аудио плеер */
         audio { width: 100%; filter: invert(1); height: 40px; margin: 20px 0; }
-        
         .gold-text { color: #ffcc00; }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body class="p-4 md:p-10">
@@ -68,13 +70,12 @@
             </div>
             <div class="stat-box">
                 <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Бугунги сана</p>
-                <h3 class="text-lg font-bold text-green-500">11.04.2026</h3>
+                <h3 class="text-lg font-bold text-green-500">13.04.2026</h3>
             </div>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
-            <div class="lg:col-span-2" id="news-list">
-                </div>
+            <div class="lg:col-span-2" id="news-list"></div>
 
             <div class="lg:col-span-1">
                 <div class="glass-card p-6 sticky top-10">
@@ -86,52 +87,82 @@
     </div>
 
     <script>
-    // 1. LocalStorage-дан мақолаларни ўқиб оламиз
-    const storageKey = 'my_site_posts'; 
-    const savedPosts = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        const storageKey = 'my_site_posts'; 
+        const savedPosts = JSON.parse(localStorage.getItem(storageKey) || '[]');
 
-    // 2. Агар хотирада мақола бўлса, ўшани ишлатамиз, бўлмаса код ичидагини
-    const newsData = savedPosts.length > 0 ? savedPosts : [
-        {
-            title: "Мақолалар топилмади",
-            date: "11.04.2026",
-            content: "Админ панел орқали мақола қўшинг.",
-            category: "Тизим"
+        const newsData = savedPosts.length > 0 ? savedPosts : [
+            {
+                title: "Мақолалар топилмади",
+                date: "13.04.2026",
+                content: "Админ панел орқали мақола қўшинг.",
+                category: "Тизим",
+                media: "",
+                type: ""
+            }
+        ];
+
+        const list = document.getElementById('news-list');
+        const side = document.getElementById('side-list');
+
+        // Статистикани янгилаш
+        document.getElementById('stat-total').innerText = newsData.length;
+        document.getElementById('stat-audio').innerText = newsData.filter(p => p.media && p.type && p.type.includes('audio')).length;
+
+        // БАРЧА МАҚОЛАЛАРНИ ЧИҚАРИШ
+        function displayAllPosts() {
+            list.innerHTML = "";
+            newsData.forEach((post, index) => {
+                list.innerHTML += `
+                    <div class="glass-card p-6 md:p-10 animate-fade-in">
+                        ${post.media && post.type && post.type.includes('image') ? `<img src="${post.media}" class="main-img">` : ''}
+                        <div class="text-blue-400 font-mono text-xs mb-4">${post.date} | ${post.category || 'Умумий'}</div>
+                        <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-8 leading-tight">${post.title}</h2>
+                        ${post.media && post.type && post.type.includes('audio') ? `<audio controls src="${post.media}"></audio>` : ''}
+                        <div class="post-content">${post.content || post.body}</div>
+                    </div>
+                `;
+            });
         }
-    ];
 
-    const list = document.getElementById('news-list');
-    const side = document.getElementById('side-list');
-            
-    // СТАТИСТИКАНИ ҲИСОБЛАШ
-    document.getElementById('stat-total').innerText = newsData.length;
-    document.getElementById('stat-audio').innerText = newsData.filter(p => p.media && p.type.includes('audio')).length;
-
-    newsData.forEach(post => {
-        // Асосий блок
-        list.innerHTML += `
-            <div class="glass-card p-6 md:p-10">
-                ${post.media && post.type.includes('image') ? `<img src="${post.media}" class="main-img">` : ''}
-                <div class="text-blue-400 font-mono text-xs mb-4">${post.date} | ${post.category || ''}</div>
-                <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-8 leading-tight">${post.title}</h2>
-                ${post.media && post.type.includes('audio') ? `<audio controls src="${post.media}"></audio>` : ''}
-                <div class="post-content">${post.content || post.body}</div>
-            </div>
-        `;
-
-        // Ён блок
-        side.innerHTML += `
-            <div class="flex gap-4 items-center border-b border-gray-800 pb-4 last:border-0">
-                <div class="w-12 h-12 bg-gray-800 rounded-lg flex-shrink-0 flex items-center justify-center">
-                    <i class="fas fa-bolt text-gray-600 text-xs"></i>
+        // БИТТА МАҚОЛАНИ КЎРСАТИШ (Ён блок босилганда)
+        function showSinglePost(index) {
+            const post = newsData[index];
+            list.innerHTML = `
+                <div class="glass-card p-6 md:p-10 animate-fade-in">
+                    <button onclick="displayAllPosts()" class="bg-gray-800 text-yellow-500 text-[10px] font-bold px-4 py-2 rounded-lg mb-6 hover:bg-yellow-500 hover:text-black transition-all uppercase">
+                        ← Барча янгиликларга қайтиш
+                    </button>
+                    ${post.media && post.type && post.type.includes('image') ? `<img src="${post.media}" class="main-img">` : ''}
+                    <div class="text-blue-400 font-mono text-xs mb-4">${post.date} | ${post.category || 'Умумий'}</div>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-8 leading-tight">${post.title}</h2>
+                    ${post.media && post.type && post.type.includes('audio') ? `<audio controls src="${post.media}"></audio>` : ''}
+                    <div class="post-content">${post.content || post.body}</div>
                 </div>
-                <div>
-                    <h4 class="text-xs font-bold text-gray-300 line-clamp-2">${post.title}</h4>
-                    <span class="text-[9px] text-gray-600 uppercase">${post.date}</span>
-                </div>
-            </div>
-        `;
-    });
-</script>
+            `;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ЎНГ ТОМОННИ ТЎЛДИРИШ
+        function loadSideMenu() {
+            side.innerHTML = "";
+            newsData.slice(0, 10).forEach((post, index) => {
+                side.innerHTML += `
+                    <div onclick="showSinglePost(${index})" class="flex gap-4 items-center border-b border-gray-800 pb-4 last:border-0 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-all">
+                        <div class="w-10 h-10 bg-gray-800 rounded-lg flex-shrink-0 flex items-center justify-center group-hover:bg-yellow-500 transition-colors">
+                            <i class="fas fa-bolt text-gray-600 group-hover:text-black text-[10px]"></i>
+                        </div>
+                        <div class="overflow-hidden">
+                            <h4 class="text-[11px] font-bold text-gray-300 line-clamp-2 group-hover:text-yellow-500 transition-colors">${post.title}</h4>
+                            <span class="text-[9px] text-gray-600 uppercase font-mono">${post.date}</span>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Ишни бошлаш
+        displayAllPosts();
+        loadSideMenu();
+    </script>
 </body>
 </html>
