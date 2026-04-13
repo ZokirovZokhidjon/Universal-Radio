@@ -10,30 +10,27 @@
         .container { max-width: 800px; margin: 0 auto; }
         .card { background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
         input, select { width: 100%; padding: 10px; margin: 10px 0; background: #0f172a; color: white; border: 1px solid #334155; border-radius: 5px; }
-        #editor { height: 200px; background: #0f172a; color: white; }
+        #editor { height: 200px; background: white; color: black; border-radius: 5px; } /* Матн кўриниши учун оқ ранг қилинди */
         .btn { width: 100%; padding: 15px; background: var(--accent); border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; }
         .post-item { background: var(--card); padding: 15px; margin-top: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--accent); }
         .del-btn { background: var(--danger); color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; }
-    .container a{
-        font-family: Georgia, 'Times New Roman', Times, serif;
-        font-size: 18px;
-        text-decoration: solid;
-        color: gold;
-    }
+        .container a { color: gold; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
         <h1>Админ Панель</h1>
-        <a href="news.html" style="color:var(--accent); text-decoration:none;">Сайтни кўриш →</a>
-        <a href="index.html">exit</a>
+        <div>
+            <a href="news.html">Сайтни кўриш →</a> | 
+            <a href="index.html">Exit</a>
+        </div>
     </div>
 
     <div class="card">
         <label>Сарлавҳа:</label>
-        <input type="text" id="title">
+        <input type="text" id="title" placeholder="Мақола номини ёзинг...">
         
         <label>Бўлим:</label>
         <select id="category">
@@ -53,32 +50,80 @@
         <button class="btn" onclick="savePost()">САЙТГА ЖОЙЛАШ</button>
     </div>
 
-    <h3>Бошқарув</h3>
+    <h3>Мақолаларни бошқариш</h3>
     <div id="adminList"></div>
 </div>
 
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <script>
+    // Quill муҳарририни ишга тушириш
+    var quill = new Quill('#editor', { theme: 'snow' });
     const storageKey = 'my_site_posts';
-    let posts = JSON.parse(localStorage.getItem(storageKey) || '[]');
-    const container = document.getElementById('news-container'); // Мақолалар чиқадиган блок ID-си
 
-    // Филтрлаш: Фақат "Табобат" категориясини танлаб оламиз
-    const medPosts = posts.filter(p => p.category === "Табобат");
+    // Мақолани сақлаш функцияси
+    function savePost() {
+        const title = document.getElementById('title').value;
+        const category = document.getElementById('category').value;
+        const content = quill.root.innerHTML;
+        const file = document.getElementById('mediaFile').files[0];
 
-    if (medPosts.length === 0) {
-        container.innerHTML = "<p class='text-center'>Ҳозирча мақолалар йўқ.</p>";
-    } else {
-        medPosts.forEach(p => {
+        if(!title || quill.getText().trim() === "") return alert("Илтимос, сарлавҳа ва матнни тўлдиринг!");
+
+        if(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => finishSave(title, category, content, e.target.result, file.type);
+            reader.readAsDataURL(file);
+        } else {
+            finishSave(title, category, content, null, null);
+        }
+    }
+
+    function finishSave(title, category, content, media, type) {
+        let posts = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        posts.unshift({ 
+            title, 
+            category, 
+            content, 
+            media, 
+            type, 
+            date: new Date().toLocaleString(), 
+            views: 0 
+        });
+        localStorage.setItem(storageKey, JSON.stringify(posts));
+        alert("Мақола муваффақиятли сақланди!");
+        location.reload();
+    }
+
+    // Рўйхатни кўрсатиш функцияси
+    function renderAdmin() {
+        let posts = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        const container = document.getElementById('adminList');
+        container.innerHTML = ""; // Тозалаб олиш
+
+        posts.forEach((p, i) => {
             container.innerHTML += `
-                <div class="glass-card p-6 mb-6">
-                    <h2 class="text-xl font-bold gold-text">${p.title}</h2>
-                    <p class="text-xs text-gray-500 mb-4">${p.date}</p>
-                    ${p.media ? `<img src="${p.media}" class="w-full rounded-xl mb-4">` : ''}
-                    <div class="text-sm leading-relaxed">${p.content}</div>
+                <div class="post-item">
+                    <div>
+                        <b>[${p.category}] ${p.title}</b><br>
+                        <small>${p.date}</small>
+                    </div>
+                    <button class="del-btn" onclick="deletePost(${i})">Ўчириш</button>
                 </div>`;
         });
     }
+
+    function deletePost(i) {
+        if(confirm("Ростан ҳам ўчирмоқчимисиз?")) {
+            let posts = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            posts.splice(i, 1);
+            localStorage.setItem(storageKey, JSON.stringify(posts));
+            renderAdmin();
+        }
+    }
+
+    // Саҳифа юкланганда рўйхатни чиқариш
+    renderAdmin();
 </script>
+
 </body>
 </html>
