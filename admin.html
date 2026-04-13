@@ -79,6 +79,83 @@
                 <h2 class="text-sm font-bold uppercase tracking-widest text-gray-400">Юборилган мақолалар таҳрири</h2>
                 <span id="post-count" class="text-[10px] bg-yellow-500/10 text-yellow-500 px-3 py-1 rounded-full">Жами: 0</span>
             </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+    
+    <div class="panel-card lg:col-span-1 flex items-center justify-center">
+        <div style="width: 250px; height: 250px;">
+            <canvas id="statsChart"></canvas>
+        </div>
+    </div>
+
+    <div class="panel-card lg:col-span-2 grid grid-cols-2 md:grid-cols-4 gap-4 bg-transparent border-none p-0">
+        <div class="panel-card items-center justify-center border-t-4 border-blue-500">
+            <span class="text-[10px] text-gray-500 uppercase font-bold">Янгиликлар</span>
+            <h2 id="count-news" class="text-2xl font-black">0</h2>
+        </div>
+        <div class="panel-card items-center justify-center border-t-4 border-green-500">
+            <span class="text-[10px] text-gray-500 uppercase font-bold">Табобат</span>
+            <h2 id="count-med" class="text-2xl font-black">0</h2>
+        </div>
+        <div class="panel-card items-center justify-center border-t-4 border-purple-500">
+            <span class="text-[10px] text-gray-500 uppercase font-bold">Ҳикоялар</span>
+            <h2 id="count-story" class="text-2xl font-black">0</h2>
+        </div>
+        <div class="panel-card items-center justify-center border-t-4 border-yellow-500">
+            <span class="text-[10px] text-gray-500 uppercase font-bold">Шеърият</span>
+            <h2 id="count-poem" class="text-2xl font-black">0</h2>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    // Статистикани ҳисоблаш ва тортни чизиш функцияси
+    function updateStatistics() {
+        const posts = JSON.parse(localStorage.getItem('my_site_posts') || '[]');
+        
+        const stats = {
+            news: posts.filter(p => p.category === 'Янгиликлар').length,
+            med: posts.filter(p => p.category === 'Табобат').length,
+            story: posts.filter(p => p.category === 'Ҳикоялар').length,
+            poem: posts.filter(p => p.category === 'Шеърият').length
+        };
+
+        // Рақамларни янгилаш
+        document.getElementById('count-news').innerText = stats.news;
+        document.getElementById('count-med').innerText = stats.med;
+        document.getElementById('count-story').innerText = stats.story;
+        document.getElementById('count-poem').innerText = stats.poem;
+
+        // Торт (Chart) чизиш
+        const ctx = document.getElementById('statsChart').getContext('2d');
+        
+        // Агар олдин график чизилган бўлса, уни ўчириб қайта чизамиз
+        if (window.myChart) window.myChart.destroy();
+
+        window.myChart = new Chart(ctx, {
+            type: 'doughnut', // 'pie' қилсангиз тўлиқ торт бўлади, 'doughnut' ўртаси очиқ торт
+            data: {
+                labels: ['Янгиликлар', 'Табобат', 'Ҳикоялар', 'Шеърият'],
+                datasets: [{
+                    data: [stats.news, stats.med, stats.story, stats.poem],
+                    backgroundColor: ['#3b82f6', '#10b981', '#a855f7', '#f59e0b'],
+                    borderColor: '#0d1117',
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { display: false } // Ранглар тагидаги ёзувни яшириб турамиз (кардларда борлиги учун)
+                },
+                cutout: '70%' // Ўртасини кенгайтириш
+            }
+        });
+    }
+
+    // Бу функцияни loadAdminList() ичида чақириб қўйинг
+    // window.onload = function() { loadAdminList(); updateStatistics(); }
+</script>
             <div class="overflow-x-auto">
                 <table class="admin-table">
                     <thead>
