@@ -59,54 +59,26 @@
 
 <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
 <script>
-    var quill = new Quill('#editor', { theme: 'snow' });
     const storageKey = 'my_site_posts';
+    let posts = JSON.parse(localStorage.getItem(storageKey) || '[]');
+    const container = document.getElementById('news-container'); // Мақолалар чиқадиган блок ID-си
 
-    function savePost() {
-        const title = document.getElementById('title').value;
-        const category = document.getElementById('category').value;
-        const content = quill.root.innerHTML;
-        const file = document.getElementById('mediaFile').files[0];
+    // Филтрлаш: Фақат "Табобат" категориясини танлаб оламиз
+    const medPosts = posts.filter(p => p.category === "Табобат");
 
-        if(!title || quill.getText().trim() === "") return alert("Тўлдиринг!");
-
-        if(file) {
-            const reader = new FileReader();
-            reader.onload = (e) => finishSave(title, category, content, e.target.result, file.type);
-            reader.readAsDataURL(file);
-        } else {
-            finishSave(title, category, content, null, null);
-        }
-    }
-
-    function finishSave(title, category, content, media, type) {
-        let posts = JSON.parse(localStorage.getItem(storageKey) || '[]');
-        posts.unshift({ title, category, content, media, type, date: new Date().toLocaleString(), views: 0 });
-        localStorage.setItem(storageKey, JSON.stringify(posts));
-        alert("Сақланди!");
-        location.reload();
-    }
-
-    function renderAdmin() {
-        let posts = JSON.parse(localStorage.getItem(storageKey) || '[]');
-        const container = document.getElementById('adminList');
-        posts.forEach((p, i) => {
+    if (medPosts.length === 0) {
+        container.innerHTML = "<p class='text-center'>Ҳозирча мақолалар йўқ.</p>";
+    } else {
+        medPosts.forEach(p => {
             container.innerHTML += `
-                <div class="post-item">
-                    <div><b>${p.title}</b><br><small>${p.date}</small></div>
-                    <button class="del-btn" onclick="deletePost(${i})">Ўчириш</button>
+                <div class="glass-card p-6 mb-6">
+                    <h2 class="text-xl font-bold gold-text">${p.title}</h2>
+                    <p class="text-xs text-gray-500 mb-4">${p.date}</p>
+                    ${p.media ? `<img src="${p.media}" class="w-full rounded-xl mb-4">` : ''}
+                    <div class="text-sm leading-relaxed">${p.content}</div>
                 </div>`;
         });
     }
-
-    function deletePost(i) {
-        let posts = JSON.parse(localStorage.getItem(storageKey) || '[]');
-        posts.splice(i, 1);
-        localStorage.setItem(storageKey, JSON.stringify(posts));
-        location.reload();
-    }
-
-    renderAdmin();
 </script>
 </body>
 </html>
