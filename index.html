@@ -93,6 +93,7 @@
             <div class="lg:col-span-3 mt-4">
                 <h3 class="text-center text-gray-500 uppercase text-[10px] font-bold mb-8 tracking-[10px]">Бўлимлар</h3>
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                    <div id="news-container"></div>
                     <a href="news.html" class="menu-btn">
                         <i class="fas fa-newspaper text-2xl gold-text mb-3"></i>
                         <span class="block text-xs font-bold uppercase">Янгиликлар</span>
@@ -128,48 +129,78 @@
 
  
        <script>
-        function updateClock() {
-            const now = new Date();
-            const s = now.getSeconds() * 6, m = now.getMinutes() * 6, h = (now.getHours() % 12) * 30 + now.getMinutes() * 0.5;
-            
-            // Элементлар борлигини текшириб кейин ишлайди
-            const sec = document.getElementById('second');
-            const min = document.getElementById('minute');
-            const hour = document.getElementById('hour');
-            
-            if(sec) sec.style.transform = `translateX(-50%) rotate(${s}deg)`;
-            if(min) min.style.transform = `translateX(-50%) rotate(${m}deg)`;
-            if(hour) hour.style.transform = `translateX(-50%) rotate(${h}deg)`;
+    // 1. Соатни янгилаб туриш
+    function updateClock() {
+        const now = new Date();
+        const s = now.getSeconds() * 6, 
+              m = now.getMinutes() * 6, 
+              h = (now.getHours() % 12) * 30 + now.getMinutes() * 0.5;
+        
+        const sec = document.getElementById('second');
+        const min = document.getElementById('minute');
+        const hour = document.getElementById('hour');
+        
+        if(sec) sec.style.transform = `translateX(-50%) rotate(${s}deg)`;
+        if(min) min.style.transform = `translateX(-50%) rotate(${m}deg)`;
+        if(hour) hour.style.transform = `translateX(-50%) rotate(${h}deg)`;
+    }
+    setInterval(updateClock, 1000);
+
+    // 2. Логин функцияси
+    function handleLogin() {
+        const passVal = document.getElementById('passInput').value;
+        if(passVal === "1975") {
+            localStorage.setItem('admin_auth', 'true');
+            window.location.href = "admin.html";
+        } else { 
+            alert("Хато пароль!"); 
         }
-        setInterval(updateClock, 1000); 
+    }
+
+    // 3. Мақолаларни чиқариш (Хатосиз усул)
+    function loadMainPosts() {
+        const container = document.getElementById('news-container');
+        if (!container) return;
+
+        const posts = JSON.parse(localStorage.getItem('my_site_posts') || '[]');
+
+        if (posts.length === 0) {
+            container.innerHTML = "<div class='col-span-full text-center text-gray-600 italic'>Янги мақолалар мавжуд эмас.</div>";
+            return;
+        }
+
+        container.innerHTML = ""; 
+        // Энг охирги 3 та мақола
+        posts.slice(0, 3).forEach(p => {
+            container.innerHTML += `
+                <div class="glass-card p-5 border-t-2 border-yellow-500/50">
+                    <div class="flex justify-between items-start mb-2">
+                        <span class="text-[9px] bg-yellow-500 text-black px-2 py-0.5 rounded font-bold uppercase">${p.category}</span>
+                        <small class="text-[9px] text-gray-500">${p.date.split(',')[0]}</small>
+                    </div>
+                    <h3 class="text-sm font-bold gold-text mb-2 line-clamp-1">${p.title}</h3>
+                    <div class="text-[11px] text-gray-400 line-clamp-3 mb-3">${p.content.replace(/<[^>]*>/g, '')}</div>
+                    <a href="${getLink(p.category)}" class="text-[10px] uppercase font-bold text-white hover:text-yellow-500">Батафсил →</a>
+                </div>
+            `;
+        });
+    }
+
+    // Категорияга қараб линк бериш
+    function getLink(cat) {
+        if(cat === "Табобат") return "med.html";
+        if(cat === "Ҳикоялар") return "hikoyalar.html";
+        if(cat === "Балиқ ови") return "baliq-ovi.html";
+        if(cat === "Шеърият") return "poetic.html";
+        return "news.html";
+    }
+
+    // Саҳифа тайёр бўлиши билан ишга тушириш
+    document.addEventListener('DOMContentLoaded', () => {
         updateClock();
-
-        function handleLogin() {
-            const passVal = document.getElementById('passInput').value;
-            if(passVal === "1975") {
-                localStorage.setItem('admin_auth', 'true');
-                window.location.href = "admin.html";
-            } else { 
-                alert("Хато пароль!"); 
-            }
-        }
-    </script>
-
-    <script type="text/javascript">
-       (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-       m[i].l=1*new Date();
-       for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-       k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-       (window, document, "script", "https://mc.yandex.ru/metrika/tag.js?id=108507654", "ym");
-
-       ym(108507654, "init", {
-            clickmap:true,
-            trackLinks:true,
-            accurateTrackBounce:true,
-            webvisor:true,
-            ecommerce:"dataLayer"
-       });
-    </script>
+        loadMainPosts();
+    });
+</script>
     <noscript><div><img src="https://mc.yandex.ru/watch/108507654" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 </body>
 </html>
