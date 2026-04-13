@@ -2,155 +2,160 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <title>Zokirov Creative - Admin Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Админ Панел</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+
     <style>
-        :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #38bdf8; --danger: #ef4444; }
-        body { background: var(--bg); color: var(--text); font-family: sans-serif; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; }
-        .card { background: var(--card); padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        input, select { width: 100%; padding: 12px; margin: 10px 0; background: #0f172a; color: white; border: 1px solid #334155; border-radius: 8px; }
-        #editor { height: 250px; background: white; color: black; border-radius: 0 0 8px 8px; }
-        .ql-toolbar { background: #f1f5f9; border-radius: 8px 8px 0 0; }
-        .btn { width: 100%; padding: 15px; background: var(--accent); color: #0f172a; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 16px; }
-        .btn:hover { opacity: 0.9; }
-        .post-item { background: var(--card); padding: 15px; margin-top: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--accent); }
-        .del-btn { background: var(--danger); color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; }
-        .container a { color: gold; text-decoration: none; font-weight: bold; margin-left: 10px; }
+        body { background: #010409; color: #e6edf3; font-family: 'Segoe UI', sans-serif; }
+        .panel-card { 
+            background: #0d1117; 
+            border: 1px solid #30363d; 
+            border-radius: 15px; 
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        /* Муҳаррир дизайнини созлаш */
+        .ql-toolbar { background: #161b22 !important; border-color: #30363d !important; border-radius: 8px 8px 0 0; }
+        .ql-container { background: #010409 !important; border-color: #30363d !important; border-radius: 0 0 8px 8px; min-height: 150px; color: white; }
+        .ql-stroke { stroke: #8b949e !important; }
+        
+        input { 
+            background: #161b22 !important; 
+            border: 1px solid #30363d !important; 
+            color: white !important; 
+            border-radius: 8px;
+            padding: 8px;
+            font-size: 13px;
+        }
+
+        .send-btn {
+            background: #ffcc00; color: black; font-weight: bold;
+            font-size: 11px; padding: 10px; border-radius: 8px;
+            text-transform: uppercase; cursor: pointer; transition: 0.2s;
+        }
+        .send-btn:hover { background: #fff; }
+
+        /* Расм танлаш тугмаси */
+        .file-label {
+            background: #21262d; border: 1px dashed #30363d;
+            color: #8b949e; font-size: 10px; padding: 8px;
+            text-align: center; border-radius: 8px; cursor: pointer;
+        }
     </style>
 </head>
-<body>
+<body class="p-4 md:p-6">
 
-<div class="container">
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 20px;">
-        <h1>Админ Панель</h1>
-        <div>
-            <a href="news.html">Сайтга қайтиш</a>
-            <a href="index.html" onclick="localStorage.removeItem('admin_auth')">Чиқиш (Exit)</a>
+    <div class="max-w-[1600px] mx-auto">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-xl font-bold uppercase italic">Universal <span class="text-yellow-500">Studio</span> Admin</h1>
+            <div class="flex gap-4 text-[10px] font-bold">
+                <a href="index.html" class="text-gray-500 hover:text-white">САЙТГА ҚАЙТИШ</a>
+                <button onclick="logout()" class="text-red-500">ЧИҚИШ</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <div class="panel-card border-t-4 border-blue-500">
+                <span class="text-[10px] font-bold text-blue-500 uppercase"><i class="fas fa-newspaper"></i> Янгиликлар</span>
+                <input type="text" id="t-news" placeholder="Сарлавҳа...">
+                <div class="file-label" onclick="document.getElementById('f-news').click()">Расм танлаш (Ixtiyoriy)</div>
+                <input type="file" id="f-news" class="hidden" accept="image/*">
+                <div id="editor-news"></div>
+                <button onclick="publish('Янгиликлар', 't-news', quillNews, 'f-news')" class="send-btn">Чоп этиш</button>
+            </div>
+
+            <div class="panel-card border-t-4 border-green-500">
+                <span class="text-[10px] font-bold text-green-500 uppercase"><i class="fas fa-heartbeat"></i> Табобат</span>
+                <input type="text" id="t-med" placeholder="Сарлавҳа...">
+                <div class="file-label" onclick="document.getElementById('f-med').click()">Расм танлаш</div>
+                <input type="file" id="f-med" class="hidden" accept="image/*">
+                <div id="editor-med"></div>
+                <button onclick="publish('Табобат', 't-med', quillMed, 'f-med')" class="send-btn">Чоп этиш</button>
+            </div>
+
+            <div class="panel-card border-t-4 border-purple-500">
+                <span class="text-[10px] font-bold text-purple-500 uppercase"><i class="fas fa-book"></i> Ҳикоялар</span>
+                <input type="text" id="t-story" placeholder="Сарлавҳа...">
+                <div class="file-label" onclick="document.getElementById('f-story').click()">Расм танлаш</div>
+                <input type="file" id="f-story" class="hidden" accept="image/*">
+                <div id="editor-story"></div>
+                <button onclick="publish('Ҳикоялар', 't-story', quillStory, 'f-story')" class="send-btn">Чоп этиш</button>
+            </div>
+
+            <div class="panel-card border-t-4 border-yellow-500">
+                <span class="text-[10px] font-bold text-yellow-500 uppercase"><i class="fas fa-feather"></i> Шеърият</span>
+                <input type="text" id="t-poem" placeholder="Сарлавҳа...">
+                <div class="file-label" onclick="document.getElementById('f-poem').click()">Расм танлаш</div>
+                <input type="file" id="f-poem" class="hidden" accept="image/*">
+                <div id="editor-poem"></div>
+                <button onclick="publish('Шеърият', 't-poem', quillPoem, 'f-poem')" class="send-btn">Чоп этиш</button>
+            </div>
+
         </div>
     </div>
 
-    <div class="card">
-        <label>Сарлавҳа:</label>
-        <input type="text" id="title" placeholder="Мақола номини ёзинг...">
-        
-        <label>Бўлимни танланг:</label>
-        <select id="category">
-            <option value="Янгиликлар">Янгиликлар</option>
-            <option value="Табобат">Табобат</option>
-            <option value="Балиқ ови">Балиқ ови</option>
-            <option value="Ҳикоялар">Ҳикоялар</option>
-            <option value="Шеърият">Шеърият</option>
-        </select>
+    <script>
+        // Муҳаррир созламалари
+        const toolbarOptions = [
+            ['bold', 'italic', 'underline'],
+            [{ 'color': [] }, { 'size': ['small', false, 'large', 'huge'] }],
+            ['link', 'image']
+        ];
 
-        <label>Расм ёки Файл (ихтиёрий):</label>
-        <input type="file" id="mediaFile" accept="image/*, audio/mp3">
+        const quillNews = new Quill('#editor-news', { modules: { toolbar: toolbarOptions }, theme: 'snow' });
+        const quillMed = new Quill('#editor-med', { modules: { toolbar: toolbarOptions }, theme: 'snow' });
+        const quillStory = new Quill('#editor-story', { modules: { toolbar: toolbarOptions }, theme: 'snow' });
+        const quillPoem = new Quill('#editor-poem', { modules: { toolbar: toolbarOptions }, theme: 'snow' });
 
-        <label>Матн қисми:</label>
-        <div id="editor"></div>
+        async function publish(category, tId, quillObj, fId) {
+            const title = document.getElementById(tId).value;
+            const content = quillObj.root.innerHTML;
+            const fileInput = document.getElementById(fId);
+            let imageData = "";
 
-        <button class="btn" onclick="savePost()">САЙТГА ЖОЙЛАШ</button>
-    </div>
+            if (!title || quillObj.getText().trim().length === 0) {
+                alert("Маълумотларни тўлиқ киритинг!");
+                return;
+            }
 
-    <h3>Юкланган мақолалар рўйхати</h3>
-    <div id="adminList"></div>
-</div>
+            // Расмни Base64 га айлантириш
+            if (fileInput.files[0]) {
+                const reader = new FileReader();
+                imageData = await new Promise(resolve => {
+                    reader.onload = e => resolve(e.target.result);
+                    reader.readAsDataURL(fileInput.files[0]);
+                });
+            }
 
-<script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-<script>
-    // Хавфсизлик текшируви: агар логин қилмаган бўлса, орқага қайтаради
-    if (localStorage.getItem('admin_auth') !== 'true') {
-        window.location.href = 'index.html';
-    }
-
-    // Quill муҳарририни кенгайтирилган созламалар билан ишга тушириш
-var quill = new Quill('#editor', {
-    theme: 'snow',
-    placeholder: 'Мақола матнини шу ерга ёзинг...',
-    modules: {
-        toolbar: [
-            [{ 'header': [1, 2, 3, false] }], // Сарлавҳалар
-            [{ 'size': ['small', false, 'large', 'huge'] }], // Шрифт ҳажми
-            ['bold', 'italic', 'underline', 'strike'], // Матн услуби
-            [{ 'color': [] }, { 'background': [] }], // МАТН РАНГИ ВА ОРҚА ФОН РАНГИ
-            [{ 'align': [] }], // Матнни текислаш
-            ['link', 'image', 'video'], // Линк ва медиа
-            ['clean'] // Форматни тозалаш
-        ]
-    }
-});
-
-    const storageKey = 'my_site_posts';
-
-    function savePost() {
-        const title = document.getElementById('title').value;
-        const category = document.getElementById('category').value;
-        const content = quill.root.innerHTML;
-        const fileInput = document.getElementById('mediaFile');
-        const file = fileInput.files[0];
-
-        if(!title || quill.getText().trim() === "") {
-            return alert("Илтимос, ҳамма майдонларни тўлдиринг!");
-        }
-
-        if(file) {
-            const reader = new FileReader();
-            reader.onload = (e) => finishSave(title, category, content, e.target.result, file.type);
-            reader.readAsDataURL(file);
-        } else {
-            finishSave(title, category, content, null, null);
-        }
-    }
-
-    function finishSave(title, category, content, media, type) {
-        try {
-            let posts = JSON.parse(localStorage.getItem(storageKey) || '[]');
-            posts.unshift({ 
-                title, 
-                category, 
-                content, 
-                media, 
-                type, 
-                date: new Date().toLocaleString(),
-                id: Date.now() 
+            const posts = JSON.parse(localStorage.getItem('my_site_posts') || '[]');
+            posts.push({
+                id: Date.now(),
+                title: title,
+                content: content,
+                image: imageData,
+                category: category,
+                date: new Date().toLocaleString()
             });
-            localStorage.setItem(storageKey, JSON.stringify(posts));
-            alert("Муваффақиятли жойланди!");
-            location.reload();
-        } catch (e) {
-            alert("Хатолик: Хотира тўлиб қолган бўлиши мумкин (Расм ҳажми жуда катта).");
+
+            localStorage.setItem('my_site_posts', JSON.stringify(posts));
+            alert(category + " бўлимига юборилди!");
+            
+            // Тозалаш
+            document.getElementById(tId).value = "";
+            quillObj.setContents([]);
         }
-    }
 
-    function renderAdmin() {
-        let posts = JSON.parse(localStorage.getItem(storageKey) || '[]');
-        const container = document.getElementById('adminList');
-        container.innerHTML = posts.length === 0 ? "<p>Ҳозирча мақолалар йўқ.</p>" : "";
-
-        posts.forEach((p, i) => {
-            container.innerHTML += `
-                <div class="post-item">
-                    <div>
-                        <span style="color:var(--accent)">[${p.category}]</span> 
-                        <strong>${p.title}</strong><br>
-                        <small style="color:#94a3b8">${p.date}</small>
-                    </div>
-                    <button class="del-btn" onclick="deletePost(${i})">Ўчириш</button>
-                </div>`;
-        });
-    }
-
-    function deletePost(i) {
-        if(confirm("Бу мақолани ўчириб ташлаймизми?")) {
-            let posts = JSON.parse(localStorage.getItem(storageKey) || '[]');
-            posts.splice(i, 1);
-            localStorage.setItem(storageKey, JSON.stringify(posts));
-            renderAdmin();
+        function logout() {
+            localStorage.removeItem('admin_auth');
+            window.location.href = "index.html";
         }
-    }
-
-    renderAdmin();
-</script>
-
+    </script>
 </body>
 </html>

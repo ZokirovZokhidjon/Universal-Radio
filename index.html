@@ -7,16 +7,16 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background: #010409; color: #e6edf3; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background: #010409; color: #e6edf3; font-family: 'Segoe UI', system-ui, sans-serif; overflow-x: hidden; }
         .gold-text { color: #ffcc00; }
         .glass-card { 
             background: #0d1117; 
             border: 1px solid #30363d; 
-            border-radius: 24px; 
+            border-radius: 20px; 
             box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
             transition: 0.3s;
         }
-        .glass-card:hover { border-color: #ffcc00; }
+        .glass-card:hover { border-color: #ffcc00; transform: translateY(-3px); }
 
         /* Соат стили */
         .clock { width: 80px; height: 80px; border: 2px solid #30363d; border-radius: 50%; margin: 0 auto; position: relative; background: #161b22; }
@@ -26,29 +26,25 @@
         .minute { width: 2px; height: 28px; background: #8b949e; }
         .second { width: 1px; height: 32px; background: #ff4444; }
 
-        .menu-btn {
-            background: #161b22; border: 1px solid #30363d; border-radius: 15px;
-            padding: 20px; text-align: center; transition: all 0.3s;
-        }
-        .menu-btn:hover { background: #ffcc00; color: #000 !important; transform: translateY(-5px); }
-        .menu-btn:hover i { color: #000 !important; }
-
         input, textarea { background: #010409 !important; border: 1px solid #30363d !important; color: white !important; }
         input:focus, textarea:focus { border-color: #ffcc00 !important; outline: none; }
+        
+        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
     </style>
 </head>
-<body class="p-4 md:p-10">
+<body class="p-4 md:p-8">
 
     <div class="max-w-6xl mx-auto">
-        <header class="flex flex-col md:flex-row justify-between items-center mb-12 border-b border-gray-800 pb-6 gap-6">
-            <div class="flex items-center gap-6 w-full md:w-auto">
+        <header class="flex flex-col md:flex-row justify-between items-center mb-10 border-b border-gray-800 pb-6 gap-6">
+            <div class="flex items-center gap-4 w-full md:w-auto">
                 <div class="relative w-full md:w-64">
-                    <input type="text" id="mainSearch" onkeyup="searchGlobal()" placeholder="Қидириш..." 
-                           class="bg-[#161b22] border border-[#30363d] rounded-lg px-4 py-1.5 text-xs text-white w-full outline-none focus:border-yellow-500">
-                    <i class="fas fa-search absolute right-3 top-2.5 text-gray-500 text-[10px]"></i>
-                    <div id="searchDropdown" class="absolute top-10 left-0 w-full bg-[#0d1117] border border-[#30363d] rounded-lg shadow-2xl hidden z-50 max-h-60 overflow-y-auto"></div>
+                    <input type="text" id="mainSearch" onkeyup="searchGlobal()" placeholder="Сайтдан қидириш..." 
+                           class="bg-[#161b22] border border-[#30363d] rounded-lg px-4 py-2 text-xs text-white w-full outline-none focus:border-yellow-500">
+                    <i class="fas fa-search absolute right-3 top-3 text-gray-500 text-[10px]"></i>
+                    <div id="searchDropdown" class="absolute top-11 left-0 w-full bg-[#0d1117] border border-[#30363d] rounded-lg shadow-2xl hidden z-50 max-h-60 overflow-y-auto"></div>
                 </div>
-                <div id="clock-digital" class="text-yellow-500 font-mono text-lg font-bold">00:00:00</div>
+                <div id="clock-digital" class="text-yellow-500 font-mono text-lg font-bold min-w-[80px]">00:00:00</div>
             </div>
 
             <div class="text-center">
@@ -61,60 +57,76 @@
             </div>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="glass-card p-8 flex flex-col justify-center text-center">
-                <i class="fas fa-user-shield text-3xl gold-text mb-4"></i>
-                <h2 class="text-xs font-bold uppercase mb-4 tracking-widest">Админ Кабинет</h2>
-                <input type="password" id="passInput" placeholder="ПАРОЛ" class="w-full rounded-xl p-3 mb-3 text-center text-sm">
-                <button onclick="handleLogin()" class="w-full bg-white text-black hover:bg-[#ffcc00] py-3 rounded-xl font-bold transition text-xs uppercase">Кириш</button>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-12">
+            <div class="glass-card p-6 flex flex-col justify-center text-center">
+                <i class="fas fa-user-shield text-2xl gold-text mb-3"></i>
+                <h2 class="text-[10px] font-bold uppercase mb-4 tracking-widest text-gray-400">Админ Кабинет</h2>
+                <input type="password" id="passInput" placeholder="ПАРОЛ" class="w-full rounded-xl p-2.5 mb-3 text-center text-sm">
+                <button onclick="handleLogin()" class="w-full bg-white text-black hover:bg-[#ffcc00] py-2.5 rounded-xl font-bold transition text-xs uppercase">Кириш</button>
             </div>
 
-            <div class="glass-card p-8 text-center border-t-4 border-t-yellow-500">
-                <h2 class="text-xl font-black gold-text uppercase mb-4">Universal Radio</h2>
-                <div class="bg-black/50 rounded-2xl overflow-hidden mb-4">
+            <div class="glass-card p-6 text-center border-t-4 border-t-yellow-500">
+                <h2 class="text-lg font-black gold-text uppercase mb-3">Universal Radio</h2>
+                <div class="bg-black/50 rounded-xl overflow-hidden mb-3">
                     <iframe src="https://listen.zeno.fm/player/radio1" frameBorder="0" scrolling="no" height="100" width="100%"></iframe>
                 </div>
-                <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest italic">Live Broadcast System</p>
+                <p class="text-[9px] text-gray-500 font-bold uppercase tracking-widest italic">Live Broadcast</p>
             </div>
 
-            <div class="glass-card p-8">
-                <h2 class="text-xs font-bold gold-text uppercase mb-4 text-center tracking-widest">Мурожаат йўллаш</h2>
-                <form action="https://formspree.io/f/mbdzaopz" method="POST" class="space-y-3">
-                    <input type="text" name="name" placeholder="Исмингиз" class="w-full rounded-lg p-2 text-sm" required>
-                    <textarea name="message" rows="2" placeholder="Хабарингиз..." class="w-full rounded-lg p-2 text-sm" required></textarea>
-                    <button type="submit" class="w-full bg-[#161b22] border border-[#30363d] hover:border-yellow-500 py-2 rounded-lg text-[10px] font-bold uppercase transition">Юбориш</button>
+            <div class="glass-card p-6">
+                <h2 class="text-[10px] font-bold gold-text uppercase mb-3 text-center tracking-widest">Мурожаат</h2>
+                <form action="https://formspree.io/f/mbdzaopz" method="POST" class="space-y-2">
+                    <input type="text" name="name" placeholder="Исм" class="w-full rounded-lg p-2 text-xs" required>
+                    <textarea name="message" rows="2" placeholder="Хабар..." class="w-full rounded-lg p-2 text-xs" required></textarea>
+                    <button type="submit" class="w-full bg-[#161b22] border border-[#30363d] hover:border-yellow-500 py-2 rounded-lg text-[9px] font-bold uppercase transition">Юбориш</button>
                 </form>
             </div>
         </div>
 
-        <div class="mt-12">
+        <div class="mt-8">
             <h3 class="text-center text-gray-500 uppercase text-[10px] font-bold mb-8 tracking-[10px]">Бўлимлар</h3>
-            <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-                <a href="news.html" class="menu-btn">
-                    <i class="fas fa-newspaper text-2xl gold-text mb-3"></i>
-                    <span class="block text-xs font-bold uppercase">Янгиликлар</span>
-                </a>
-                <a href="hikoyalar.html" class="menu-btn">
-                    <i class="fas fa-book-open text-2xl gold-text mb-3"></i>
-                    <span class="block text-xs font-bold uppercase">Ҳикоялар</span>
-                </a>
-                <a href="poetic.html" class="menu-btn">
-                    <i class="fas fa-feather-alt text-2xl gold-text mb-3"></i>
-                    <span class="block text-xs font-bold uppercase">Шеърият</span>
-                </a>
-                <a href="baliq-ovi.html" class="menu-btn">
-                    <i class="fas fa-fish text-2xl gold-text mb-3"></i>
-                    <span class="block text-xs font-bold uppercase">Балиқ ови</span>
-                </a>
-                <a href="med.html" class="menu-btn">
-                    <i class="fas fa-heartbeat text-2xl gold-text mb-3"></i>
-                    <span class="block text-xs font-bold uppercase">Табобат</span>
-                </a>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="glass-card p-5 border-t-2 border-green-500/50 flex flex-col h-full">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fas fa-heartbeat text-green-500 text-sm"></i>
+                        <span class="text-[10px] font-bold uppercase text-gray-400">Табобат</span>
+                    </div>
+                    <div id="content-tabobat" class="flex-grow italic text-[11px] text-gray-600">Юкланмоқда...</div>
+                    <a href="med.html" class="mt-4 text-center bg-green-500/10 hover:bg-green-500 text-green-500 hover:text-black py-2 rounded-lg text-[9px] font-bold uppercase transition">Кириш</a>
+                </div>
+
+                <div class="glass-card p-5 border-t-2 border-blue-500/50 flex flex-col h-full">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fas fa-book-open text-blue-500 text-sm"></i>
+                        <span class="text-[10px] font-bold uppercase text-gray-400">Ҳикоялар</span>
+                    </div>
+                    <div id="content-hikoya" class="flex-grow italic text-[11px] text-gray-600">Юкланмоқда...</div>
+                    <a href="hikoyalar.html" class="mt-4 text-center bg-blue-500/10 hover:bg-blue-500 text-blue-500 hover:text-black py-2 rounded-lg text-[9px] font-bold uppercase transition">Кириш</a>
+                </div>
+
+                <div class="glass-card p-5 border-t-2 border-purple-500/50 flex flex-col h-full">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fas fa-feather-alt text-purple-500 text-sm"></i>
+                        <span class="text-[10px] font-bold uppercase text-gray-400">Шеърият</span>
+                    </div>
+                    <div id="content-poetic" class="flex-grow italic text-[11px] text-gray-600">Юкланмоқда...</div>
+                    <a href="poetic.html" class="mt-4 text-center bg-purple-500/10 hover:bg-purple-500 text-purple-500 hover:text-black py-2 rounded-lg text-[9px] font-bold uppercase transition">Кириш</a>
+                </div>
+
+                <div class="glass-card p-5 border-t-2 border-yellow-500/50 flex flex-col h-full">
+                    <div class="flex items-center gap-2 mb-4">
+                        <i class="fas fa-fish text-yellow-500 text-sm"></i>
+                        <span class="text-[10px] font-bold uppercase text-gray-400">Балиқ ови</span>
+                    </div>
+                    <div id="content-baliq" class="flex-grow italic text-[11px] text-gray-600">Юкланмоқда...</div>
+                    <a href="baliq-ovi.html" class="mt-4 text-center bg-yellow-500/10 hover:bg-yellow-500 text-yellow-500 hover:text-black py-2 rounded-lg text-[9px] font-bold uppercase transition">Кириш</a>
+                </div>
             </div>
         </div>
 
-        <footer class="mt-16 text-center text-[10px] text-gray-600 font-mono tracking-widest pb-10">
-            &copy; 2026 UNIVERSAL STUDIO PORTAL | DESIGNED FOR ZOKIROV
+        <footer class="mt-16 text-center text-[9px] text-gray-600 font-mono tracking-widest pb-10">
+            &copy; 2026 UNIVERSAL STUDIO PORTAL | DESIGNED BY ZOKIROV
         </footer>
     </div>
 
@@ -126,11 +138,9 @@
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
             
-            // Рақамли соат
             const digitalClock = document.getElementById('clock-digital');
             if(digitalClock) digitalClock.innerText = `${hours}:${minutes}:${seconds}`;
 
-            // Аналог соат (стрелкалар)
             const s = now.getSeconds() * 6, 
                   m = now.getMinutes() * 6, 
                   h = (now.getHours() % 12) * 30 + now.getMinutes() * 0.5;
@@ -145,7 +155,36 @@
         }
         setInterval(updateClock, 1000);
 
-        // 2. Қидирув функцияси
+        // 2. Бўлимлардаги мақолаларни янгилаш
+        function updateCategoryCards() {
+            const posts = JSON.parse(localStorage.getItem('my_site_posts') || '[]');
+            const categories = [
+                { name: 'Табобат', id: 'content-tabobat' },
+                { name: 'Ҳикоялар', id: 'content-hikoya' },
+                { name: 'Шеърият', id: 'content-poetic' },
+                { name: 'Балиқ ови', id: 'content-baliq' }
+            ];
+
+            categories.forEach(cat => {
+                const container = document.getElementById(cat.id);
+                if (!container) return;
+
+                // Охирги қўшилган мақолани топиш
+                const lastPost = [...posts].reverse().find(p => p.category === cat.name);
+                
+                if (lastPost) {
+                    container.innerHTML = `
+                        <h4 class="text-[12px] font-bold text-white mb-2 line-clamp-2">${lastPost.title}</h4>
+                        <p class="text-[10px] text-gray-500 line-clamp-3">${lastPost.content.replace(/<[^>]*>/g, '')}</p>
+                    `;
+                    container.classList.remove('italic', 'text-gray-600');
+                } else {
+                    container.innerHTML = "Янги мақола мавжуд эмас.";
+                }
+            });
+        }
+
+        // 3. Қидирув
         function searchGlobal() {
             const query = document.getElementById('mainSearch').value.toLowerCase();
             const dropdown = document.getElementById('searchDropdown');
@@ -164,34 +203,36 @@
                     <div class="p-3 border-b border-gray-800 hover:bg-yellow-500/10 cursor-pointer" 
                          onclick="localStorage.setItem('selectedPostIndex', ${posts.indexOf(p)}); location.href='news.html'">
                         <h4 class="text-[11px] font-bold text-white">${p.title}</h4>
-                        <p class="text-[9px] text-gray-500">${p.category || 'Янгилик'}</p>
+                        <p class="text-[9px] text-gray-500">${p.category}</p>
                     </div>
                 `).join('');
             } else {
-                dropdown.innerHTML = "<p class='p-3 text-[10px] text-gray-500'>Ҳеч нарса топилмади</p>";
+                dropdown.innerHTML = "<p class='p-3 text-[10px] text-gray-500'>Топилмади</p>";
                 dropdown.classList.remove('hidden');
             }
         }
 
-        // 3. Логин
+        // 4. Логин
         function handleLogin() {
             const passVal = document.getElementById('passInput').value;
             if(passVal === "1975") {
                 localStorage.setItem('admin_auth', 'true');
                 window.location.href = "admin.html";
             } else { 
-                alert("Хато пароль!"); 
+                alert("Пароль хато!"); 
             }
         }
 
-        // Саҳифа ташқарисини босганда қидирувни ёпиш
         document.addEventListener('click', (e) => {
             if (!e.target.closest('#mainSearch')) {
                 document.getElementById('searchDropdown')?.classList.add('hidden');
             }
         });
 
-        document.addEventListener('DOMContentLoaded', updateClock);
+        document.addEventListener('DOMContentLoaded', () => {
+            updateClock();
+            updateCategoryCards();
+        });
     </script>
 </body>
 </html>
