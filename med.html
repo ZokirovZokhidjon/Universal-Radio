@@ -170,33 +170,44 @@
         </div>
     </div>
 <script>
-        (function() {
-            const storageKey = 'my_site_posts';
-            const posts = JSON.parse(localStorage.getItem(storageKey) || '[]');
-            
-            // Мақолалар қўшиладиган асосий контейнерни топамиз
-            const container = document.querySelector('.lg:col-span-3');
+    (function() {
+        const storageKey = 'my_site_posts';
+        const rawData = localStorage.getItem(storageKey);
+        
+        if (!rawData) {
+            console.warn("Ҳали бирорта ҳам мақола ёзилмаган (LocalStorage бўш).");
+            return;
+        }
 
-            // Фақат "Табобат" категориясидаги мақолаларни филтрлаймиз
-            const medPosts = posts.filter(p => p.category === "Табобат");
+        const posts = JSON.parse(rawData);
+        const container = document.getElementById('posts-container'); // ID орқали топамиз
 
-            medPosts.forEach(p => {
-                const articleHtml = `
-                    <article class="bg-[#0d1117] p-6 md:p-8 rounded-2xl border border-[#30363d] hover:border-emerald-900 transition shadow-2xl mt-6">
-                        <h2 class="text-2xl font-bold text-emerald-400 leading-tight uppercase">${p.title}</h2>
-                        <p class="text-gray-500 mt-2 italic text-sm border-b border-gray-800 pb-4">
-                            ${p.date} | Муаллиф: Админ панел
-                        </p>
-                        <div class="mt-6 text-gray-300 leading-relaxed text-lg space-y-4">
-                            ${p.media ? `<img src="${p.media}" class="dr-image w-full max-h-96 object-cover rounded-2xl mb-4">` : ''}
-                            <div>${p.content}</div>
-                        </div>
-                    </article>
-                `;
-                // Янги мақолаларни эскиларидан тепароққа қўшамиз
-                container.insertAdjacentHTML('beforeend', articleHtml);
-            });
-        })();
-    </script>
+        if (!container) {
+            console.error("Мақолалар контейнери (posts-container) топилмади!");
+            return;
+        }
+
+        // ДИҚҚАТ: Категория номи Админ панелдаги билан бир хил бўлиши шарт!
+        const medPosts = posts.filter(p => p.category === "Табобат");
+
+        console.log("Табобат йўналишида топилган мақолалар сони:", medPosts.length);
+
+        medPosts.forEach(p => {
+            const articleHtml = `
+                <article class="bg-[#0d1117] p-6 md:p-8 rounded-2xl border border-[#30363d] hover:border-emerald-900 transition shadow-2xl mt-8">
+                    <h2 class="text-2xl font-bold text-emerald-400 leading-tight uppercase">${p.title}</h2>
+                    <p class="text-gray-500 mt-2 italic text-sm border-b border-gray-800 pb-4">
+                        ${p.date} | Муаллиф: Доктор маслаҳати
+                    </p>
+                    <div class="mt-6 text-gray-300 leading-relaxed text-lg space-y-4">
+                        ${p.media ? `<img src="${p.media}" class="dr-image w-full max-h-96 object-cover rounded-2xl mb-4">` : ''}
+                        <div class="article-content">${p.content}</div>
+                    </div>
+                </article>
+            `;
+            container.insertAdjacentHTML('beforeend', articleHtml);
+        });
+    })();
+</script>
 </body>
 </html>
