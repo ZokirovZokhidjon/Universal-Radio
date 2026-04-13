@@ -7,80 +7,77 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background: #010409; color: #e6edf3; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background: #010409; color: #e6edf3; font-family: 'Segoe UI', sans-serif; }
         
-        .stat-box { background: #0d1117; border: 1px solid #30363d; border-radius: 15px; padding: 15px; text-align: center; }
+        .stat-box { background: #0d1117; border: 1px solid #30363d; border-radius: 15px; padding: 12px; text-align: center; }
         
         .glass-card { 
-            background: #0d1117; 
-            border: 1px solid #30363d; 
-            border-radius: 24px; 
-            margin-bottom: 40px; 
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            background: #0d1117; border: 1px solid #30363d; border-radius: 20px; 
+            margin-bottom: 25px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .post-content { 
-            font-size: 19px; 
-            line-height: 1.8; 
-            color: #d1d5db; 
-        }
-        .post-content p { margin-bottom: 20px; }
-        .post-content b, .post-content strong { color: #ffcc00; font-weight: 700; }
+        /* Матн ўлчамларини ихчамлаштирдик */
+        .post-content { font-size: 16px; line-height: 1.6; color: #d1d5db; }
+        .post-content p { margin-bottom: 15px; }
         
-        .post-content img, .main-img { 
-            width: 100%; 
-            height: auto; 
-            border-radius: 16px; 
-            margin: 25px 0; 
-            border: 1px solid #30363d;
-        }
-
-        audio { width: 100%; filter: invert(1); height: 40px; margin: 20px 0; }
+        .main-img { width: 100%; height: auto; border-radius: 12px; margin: 15px 0; border: 1px solid #30363d; }
+        
+        audio { width: 100%; filter: invert(1); height: 35px; margin: 15px 0; }
         .gold-text { color: #ffcc00; }
-        
-        .animate-fade-in {
-            animation: fadeIn 0.5s ease-in-out;
+
+        /* Қидирув инпути учун стиль */
+        .search-input {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 10px;
+            padding: 8px 15px;
+            color: white;
+            font-size: 14px;
+            outline: none;
+            width: 100%;
+            transition: all 0.3s;
         }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .search-input:focus { border-color: #ffcc00; box-shadow: 0 0 10px rgba(255, 204, 0, 0.2); }
     </style>
 </head>
 <body class="p-4 md:p-10">
 
     <div class="max-w-7xl mx-auto">
-        <header class="flex justify-between items-center mb-10 border-b border-gray-800 pb-8">
+        <header class="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-gray-800 pb-6 gap-4">
             <div>
-                <h1 class="text-3xl font-bold uppercase tracking-tighter">Universal <span class="gold-text">Studio</span></h1>
-                <p class="text-[10px] text-gray-500 uppercase tracking-[4px]">Янгиликлар Портали</p>
+                <h1 class="text-2xl font-bold uppercase tracking-tighter">Universal <span class="gold-text">Studio</span></h1>
+                <p class="text-[9px] text-gray-500 uppercase tracking-[3px]">Янгиликлар Портали</p>
             </div>
-            <a href="index.html" class="bg-[#161b22] px-6 py-2 rounded-xl border border-[#30363d] text-sm font-bold hover:border-yellow-500 transition-all">АСОСИЙ</a>
+            
+            <div class="relative w-full md:w-80">
+                <input type="text" id="searchBar" onkeyup="searchPosts()" placeholder="Қидириш..." class="search-input">
+                <i class="fas fa-search absolute right-3 top-3 text-gray-500 text-sm"></i>
+            </div>
+
+            <a href="index.html" class="bg-[#161b22] px-5 py-2 rounded-lg border border-[#30363d] text-xs font-bold hover:border-yellow-500 transition-all">АСОСИЙ</a>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div class="stat-box">
-                <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Жами мақолалар</p>
-                <h3 id="stat-total" class="text-2xl font-black text-blue-500">0</h3>
+                <p class="text-[9px] text-gray-500 uppercase font-bold mb-1">Жами</p>
+                <h3 id="stat-total" class="text-xl font-black text-blue-500">0</h3>
             </div>
             <div class="stat-box">
-                <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Аудио хабарлар</p>
-                <h3 id="stat-audio" class="text-2xl font-black text-purple-500">0</h3>
+                <p class="text-[9px] text-gray-500 uppercase font-bold mb-1">Аудио</p>
+                <h3 id="stat-audio" class="text-xl font-black text-purple-500">0</h3>
             </div>
             <div class="stat-box">
-                <p class="text-[10px] text-gray-500 uppercase font-bold mb-1">Бугунги сана</p>
-                <h3 class="text-lg font-bold text-green-500">13.04.2026</h3>
+                <p class="text-[9px] text-gray-500 uppercase font-bold mb-1">Сана</p>
+                <h3 class="text-sm font-bold text-green-500">13.04.2026</h3>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
             <div class="lg:col-span-2" id="news-list"></div>
-
             <div class="lg:col-span-1">
-                <div class="glass-card p-6 sticky top-10">
-                    <h3 class="text-sm font-bold gold-text uppercase mb-6 border-l-4 border-yellow-500 pl-4">Сўнгги хабарлар</h3>
-                    <div id="side-list" class="space-y-6"></div>
+                <div class="glass-card p-5 sticky top-5">
+                    <h3 class="text-xs font-bold gold-text uppercase mb-4 border-l-4 border-yellow-500 pl-3">Сўнгги хабарлар</h3>
+                    <div id="side-list" class="space-y-4"></div>
                 </div>
             </div>
         </div>
@@ -89,79 +86,71 @@
     <script>
         const storageKey = 'my_site_posts'; 
         const savedPosts = JSON.parse(localStorage.getItem(storageKey) || '[]');
-
-        const newsData = savedPosts.length > 0 ? savedPosts : [
-            {
-                title: "Мақолалар топилмади",
-                date: "13.04.2026",
-                content: "Админ панел орқали мақола қўшинг.",
-                category: "Тизим",
-                media: "",
-                type: ""
-            }
-        ];
+        let newsData = savedPosts;
 
         const list = document.getElementById('news-list');
         const side = document.getElementById('side-list');
 
-        // Статистикани янгилаш
-        document.getElementById('stat-total').innerText = newsData.length;
-        document.getElementById('stat-audio').innerText = newsData.filter(p => p.media && p.type && p.type.includes('audio')).length;
+        // ҚИДИРУВ ФУНКЦИЯСИ
+        function searchPosts() {
+            const query = document.getElementById('searchBar').value.toLowerCase();
+            const filtered = newsData.filter(p => p.title.toLowerCase().includes(query));
+            displayPosts(filtered);
+        }
 
-        // БАРЧА МАҚОЛАЛАРНИ ЧИҚАРИШ
-        function displayAllPosts() {
+        function displayPosts(data) {
             list.innerHTML = "";
-            newsData.forEach((post, index) => {
+            if(data.length === 0) {
+                list.innerHTML = "<p class='text-center text-gray-500'>Маълумот топилмади...</p>";
+                return;
+            }
+            data.forEach((post, index) => {
                 list.innerHTML += `
-                    <div class="glass-card p-6 md:p-10 animate-fade-in">
-                        ${post.media && post.type && post.type.includes('image') ? `<img src="${post.media}" class="main-img">` : ''}
-                        <div class="text-blue-400 font-mono text-xs mb-4">${post.date} | ${post.category || 'Умумий'}</div>
-                        <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-8 leading-tight">${post.title}</h2>
-                        ${post.media && post.type && post.type.includes('audio') ? `<audio controls src="${post.media}"></audio>` : ''}
-                        <div class="post-content">${post.content || post.body}</div>
+                    <div class="glass-card p-6">
+                        ${post.media && post.type?.includes('image') ? `<img src="${post.media}" class="main-img">` : ''}
+                        <div class="text-blue-400 font-mono text-[10px] mb-2">${post.date} | ${post.category || 'Умумий'}</div>
+                        <h2 class="text-xl md:text-2xl font-bold text-white mb-4 leading-tight">${post.title}</h2>
+                        ${post.media && post.type?.includes('audio') ? `<audio controls src="${post.media}"></audio>` : ''}
+                        <div class="post-content line-clamp-3">${post.content || post.body}</div>
+                        <button onclick="showSinglePost(${newsData.indexOf(post)})" class="mt-4 text-yellow-500 text-xs font-bold uppercase hover:underline">Тўлиқ ўқиш →</button>
                     </div>
                 `;
             });
         }
 
-        // БИТТА МАҚОЛАНИ КЎРСАТИШ (Ён блок босилганда)
         function showSinglePost(index) {
             const post = newsData[index];
             list.innerHTML = `
-                <div class="glass-card p-6 md:p-10 animate-fade-in">
-                    <button onclick="displayAllPosts()" class="bg-gray-800 text-yellow-500 text-[10px] font-bold px-4 py-2 rounded-lg mb-6 hover:bg-yellow-500 hover:text-black transition-all uppercase">
-                        ← Барча янгиликларга қайтиш
-                    </button>
-                    ${post.media && post.type && post.type.includes('image') ? `<img src="${post.media}" class="main-img">` : ''}
-                    <div class="text-blue-400 font-mono text-xs mb-4">${post.date} | ${post.category || 'Умумий'}</div>
-                    <h2 class="text-3xl md:text-4xl font-extrabold text-white mb-8 leading-tight">${post.title}</h2>
-                    ${post.media && post.type && post.type.includes('audio') ? `<audio controls src="${post.media}"></audio>` : ''}
+                <div class="glass-card p-6">
+                    <button onclick="displayPosts(newsData)" class="text-yellow-500 text-[10px] mb-4 uppercase font-bold">← Орқага</button>
+                    ${post.media && post.type?.includes('image') ? `<img src="${post.media}" class="main-img">` : ''}
+                    <h2 class="text-2xl font-bold text-white mb-4">${post.title}</h2>
+                    ${post.media && post.type?.includes('audio') ? `<audio controls src="${post.media}"></audio>` : ''}
                     <div class="post-content">${post.content || post.body}</div>
                 </div>
             `;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo(0, 0);
         }
 
-        // ЎНГ ТОМОННИ ТЎЛДИРИШ
         function loadSideMenu() {
             side.innerHTML = "";
-            newsData.slice(0, 10).forEach((post, index) => {
+            newsData.slice(0, 8).forEach((post, index) => {
                 side.innerHTML += `
-                    <div onclick="showSinglePost(${index})" class="flex gap-4 items-center border-b border-gray-800 pb-4 last:border-0 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition-all">
-                        <div class="w-10 h-10 bg-gray-800 rounded-lg flex-shrink-0 flex items-center justify-center group-hover:bg-yellow-500 transition-colors">
-                            <i class="fas fa-bolt text-gray-600 group-hover:text-black text-[10px]"></i>
+                    <div onclick="showSinglePost(${index})" class="flex gap-3 items-center border-b border-gray-800 pb-3 cursor-pointer group hover:bg-white/5 p-1 rounded-lg">
+                        <div class="w-8 h-8 bg-gray-800 rounded flex-shrink-0 flex items-center justify-center group-hover:bg-yellow-500 transition-all">
+                            <i class="fas fa-bolt text-gray-600 group-hover:text-black text-[9px]"></i>
                         </div>
-                        <div class="overflow-hidden">
-                            <h4 class="text-[11px] font-bold text-gray-300 line-clamp-2 group-hover:text-yellow-500 transition-colors">${post.title}</h4>
-                            <span class="text-[9px] text-gray-600 uppercase font-mono">${post.date}</span>
-                        </div>
+                        <h4 class="text-[11px] font-medium text-gray-300 line-clamp-2 group-hover:text-yellow-500">${post.title}</h4>
                     </div>
                 `;
             });
         }
 
-        // Ишни бошлаш
-        displayAllPosts();
+        // Статистика
+        document.getElementById('stat-total').innerText = newsData.length;
+        document.getElementById('stat-audio').innerText = newsData.filter(p => p.media && p.type?.includes('audio')).length;
+
+        displayPosts(newsData);
         loadSideMenu();
     </script>
 </body>
