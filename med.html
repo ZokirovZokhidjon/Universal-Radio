@@ -8,84 +8,136 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body { background: #010409; color: #e6edf3; font-family: 'Segoe UI', sans-serif; }
+        
         .glass-card { 
             background: #0d1117; 
             border: 1px solid #30363d; 
             border-radius: 15px; 
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             overflow: hidden;
         }
-        .post-content img { max-width: 100%; height: auto; border-radius: 10px; margin: 15px 0; }
+
+        /* РАСМНИ ЖУДА ИХЧАМ ҚИЛИШ */
+        .post-image-box {
+            width: 100%;
+            height: 250px; /* Баландликни чегараладик */
+            overflow: hidden;
+            border-bottom: 1px solid #30363d;
+        }
+
+        .post-image-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Кадрга чиройли жойлайди */
+            object-position: center;
+        }
+/* Фақат мақола ичидаги ва асосий расмлар учун */
+.post-image-box img, .post-content img {
+    border-radius: 20px;
+    border: 3px groove gold; /* border-style ва color ни биттада ёзиш */
+    box-shadow: 3px 5px 15px rgba(255, 215, 0, 0.3); /* Сояни бироз юмшоқроқ қилдик */
+}
         .post-content { font-size: 14px; line-height: 1.6; color: #8b949e; }
-        .post-content h1, .post-content h2 { color: white; font-weight: bold; margin-top: 10px; }
+        .post-content img { max-width: 100%; border-radius: 8px; margin: 10px 0; }
+        
         .gold-text { color: #ffcc00; }
+        .like-active { color: #ff4444 !important; }
+        img{
+            border-radius: 150px;
+            border-color: gold;
+            border-style: groove;
+            box-shadow: 3px 5px 8px;
+        }
     </style>
 </head>
 <body class="p-4 md:p-8">
 
-    <div class="max-w-4xl mx-auto">
-        <header class="flex justify-between items-center mb-10 border-b border-gray-800 pb-4">
-            <a href="index.html" class="text-gray-500 hover:text-white transition">
-                <i class="fas fa-arrow-left"></i> Ортга
+    <div class="max-w-2xl mx-auto"> 
+        <header class="flex justify-between items-center mb-8 border-b border-gray-800 pb-4">
+            <a href="index.html" class="text-xs font-bold text-gray-500 hover:text-yellow-500 transition">
+                <i class="fas fa-arrow-left"></i> ОРТГА
             </a>
-            <h1 class="text-xl font-bold uppercase gold-text">Табобат Рукни</h1>
-            <div></div>
+            <h1 class="text-lg font-bold uppercase gold-text italic">Табобат</h1>
+            <img src="medlogo.jpg" alt="medlogo" width="100" height="100">
+             <div></div>
         </header>
 
         <div id="med-posts-container">
-            <p class="text-center text-gray-600 italic">Мақолалар қидирилмоқда...</p>
-        </div>
+            </div>
     </div>
 
     <script>
-        function loadMedPosts() {
+        function loadPosts() {
             const container = document.getElementById('med-posts-container');
-            // Админдан келаётган барча мақолаларни олиш
-            const posts = JSON.parse(localStorage.getItem('my_site_posts') || '[]');
-            
-            // Фақат "Табобат" категориясига тегишлиларини ажратиб олиш
-            const medPosts = posts.filter(p => p.category === 'Табобат');
+            const allPosts = JSON.parse(localStorage.getItem('my_site_posts') || '[]');
+            const medPosts = allPosts.filter(p => p.category === 'Табобат');
 
             if (medPosts.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center p-10">
-                        <i class="fas fa-folder-open text-4xl text-gray-700 mb-4"></i>
-                        <p class="text-gray-500">Ҳозирча бу бўлимда мақолалар йўқ.</p>
-                    </div>
-                `;
+                container.innerHTML = "<p class='text-center text-gray-600'>Мақолалар йўқ.</p>";
                 return;
             }
 
-            // Мақолаларни вақтига қараб тескари тартибда (янгиси тепада) чиқариш
-            container.innerHTML = medPosts.reverse().map(post => `
-                <article class="glass-card p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-[10px] font-bold text-green-500 uppercase tracking-widest">
-                            <i class="fas fa-calendar-alt"></i> ${post.date || 'Санасиз'}
-                        </span>
-                    </div>
+            container.innerHTML = medPosts.reverse().map(post => {
+                // Лайк ҳолатини текшириш
+                const isLiked = localStorage.getItem(`liked_${post.id}`) === 'true';
+                
+                return `
+                <article class="glass-card">
+                    ${post.image ? `
+                        <div class="post-image-box">
+                            <img src="${post.image}" alt="">
+                        </div>
+                    ` : ''}
                     
-                    <h2 class="text-2xl font-bold text-white mb-4">${post.title}</h2>
-                    
-                    ${post.image ? `<img src="${post.image}" class="w-full h-auto rounded-xl mb-6 border border-gray-800" alt="post image">` : ''}
-                    
-                    <div class="post-content">
-                        ${post.content}
-                    </div>
-                    
-                    <div class="mt-6 pt-4 border-t border-gray-800 flex justify-between items-center">
-                        <span class="text-[10px] text-gray-600">Рукн: Табобат</span>
-                        <div class="flex gap-4">
-                            <i class="far fa-heart text-gray-500 cursor-pointer hover:text-red-500"></i>
-                            <i class="far fa-share-square text-gray-500 cursor-pointer hover:text-blue-500"></i>
+                    <div class="p-5">
+                        <p class="text-[10px] text-gray-500 mb-2 uppercase tracking-widest font-bold">
+                            <i class="far fa-calendar-alt"></i> ${post.date}
+                        </p>
+                        <h2 class="text-xl font-bold text-white mb-4">${post.title}</h2>
+                        <div class="post-content mb-6">${post.content}</div>
+                        
+                        <div class="flex justify-between items-center pt-4 border-t border-gray-800">
+                            <button onclick="toggleLike(${post.id})" id="like-btn-${post.id}" 
+                                    class="flex items-center gap-2 text-sm transition ${isLiked ? 'like-active' : 'text-gray-500'}">
+                                <i class="${isLiked ? 'fas' : 'far'} fa-heart"></i> Лайк
+                            </button>
+                            
+                            <button onclick="sharePost('${post.title}')" class="text-gray-500 hover:text-blue-500 text-sm flex items-center gap-2">
+                                <i class="fas fa-share-nodes"></i> Улашиш
+                            </button>
                         </div>
                     </div>
                 </article>
-            `).join('');
+                `;
+            }).join('');
         }
 
-        // Саҳифа юкланганда мақолаларни чиқариш
-        window.onload = loadMedPosts;
+        // ЛАЙК ФУНКЦИЯСИ
+        function toggleLike(postId) {
+            const btn = document.getElementById(`like-btn-${postId}`);
+            const icon = btn.querySelector('i');
+            const isLiked = localStorage.getItem(`liked_${postId}`) === 'true';
+
+            if (isLiked) {
+                localStorage.removeItem(`liked_${postId}`);
+                btn.classList.remove('like-active');
+                icon.classList.replace('fas', 'far');
+            } else {
+                localStorage.setItem(`liked_${postId}`, 'true');
+                btn.classList.add('like-active');
+                icon.classList.replace('far', 'fas');
+            }
+        }
+
+        // УЛАШИШ (TELEGRAM ГА)
+       function sharePost(title) {
+    const url = window.location.href; // Сайтдаги шу мақола линки
+    const text = encodeURIComponent(title + "\n\https://t.me/DrZ_Zakirov/942 ");
+    
+    // Telegram'нинг расмий улашиш линки
+    window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
+}
+        window.onload = loadPosts;
     </script>
 </body>
 </html>
