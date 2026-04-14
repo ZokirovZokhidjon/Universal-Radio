@@ -7,9 +7,14 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         html { scroll-behavior: smooth; }
-        .sidebar-item:hover { background-color: #1e293b; transform: translateX(5px); transition: 0.3s; }
-        .carousel-item { display: none; }
+        .sidebar-item { transition: all 0.3s ease; }
+        .sidebar-item:hover { background-color: #1e293b; transform: translateX(5px); }
+        .carousel-item { display: none; transition: opacity 0.5s ease-in-out; }
         .carousel-item.active { display: block; }
+        /* Мақола матнини яшириш ва очиш учун */
+        .post-content { display: none; }
+        .post-content.open { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body class="bg-[#020617] text-slate-200 font-sans">
@@ -17,58 +22,68 @@
     <div class="max-w-6xl mx-auto mt-4 px-4">
         <div class="relative overflow-hidden rounded-3xl bg-[#0f172a] border border-blue-900 h-48 md:h-64 shadow-2xl shadow-blue-900/20">
             <div class="carousel-item active h-full relative">
-                <img src="reklama1.jpg" alt="Эълон 1" class="w-full h-full object-cover opacity-60">
+                <img src="reklama1.jpg" alt="Эълон 1" class="w-full h-full object-cover opacity-40">
                 <div class="absolute inset-0 flex flex-col justify-center items-center text-center p-6">
-                    <span class="bg-blue-600 text-xs px-3 py-1 rounded-full mb-2 uppercase tracking-widest font-bold">Янги Эълон</span>
-                    <h2 class="text-2xl md:text-3xl font-black text-white uppercase">Балиқ ови анжомлари дўкони очилди!</h2>
-                    <p class="text-blue-300 mt-2">Манзил: Наманган шаҳри, Марказий бозор</p>
+                    <span class="bg-blue-600 text-[10px] px-3 py-1 rounded-full mb-2 uppercase tracking-widest font-bold">Янги Эълон</span>
+                    <h2 class="text-xl md:text-3xl font-black text-white uppercase">Балиқ ови анжомлари дўкони очилди!</h2>
+                    <p class="text-blue-300 mt-2 text-sm">Манзил: Наманган шаҳри, Марказий бозор</p>
                 </div>
             </div>
             <div class="carousel-item h-full relative">
-                <img src="reklama2.jpg" alt="Эълон 2" class="w-full h-full object-cover opacity-60">
+                <img src="reklama2.jpg" alt="Эълон 2" class="w-full h-full object-cover opacity-40">
                 <div class="absolute inset-0 flex flex-col justify-center items-center text-center p-6">
-                    <span class="bg-emerald-600 text-xs px-3 py-1 rounded-full mb-2 uppercase tracking-widest font-bold">Акция</span>
-                    <h2 class="text-2xl md:text-3xl font-black text-white uppercase">Карп балиғи учун махсус емни синаб кўринг!</h2>
-                    <p class="text-emerald-300 mt-2">Фақат шу ҳафта 20% чегирма билан</p>
+                    <span class="bg-emerald-600 text-[10px] px-3 py-1 rounded-full mb-2 uppercase tracking-widest font-bold">Акция</span>
+                    <h2 class="text-xl md:text-3xl font-black text-white uppercase">Карп учун махсус емларни синаб кўринг!</h2>
+                    <p class="text-emerald-300 mt-2 text-sm">Фақат шу ҳафта 20% чегирма билан</p>
                 </div>
             </div>
 
-            <button onclick="changeSlide(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 p-2 rounded-full hover:bg-blue-600">❮</button>
-            <button onclick="changeSlide(1)" class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 p-2 rounded-full hover:bg-blue-600">❯</button>
+            <button onclick="changeSlide(-1)" class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 p-2 rounded-full hover:bg-blue-600 z-10">❮</button>
+            <button onclick="changeSlide(1)" class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 p-2 rounded-full hover:bg-blue-600 z-10">❯</button>
         </div>
     </div>
 
     <div class="max-w-6xl mx-auto p-6 md:p-10">
-        <div class="flex items-center justify-between border-b border-slate-800 pb-6 mb-8">
-            <h1 class="text-4xl font-extrabold text-blue-400">🎣 Балиқ ови саҳифаси</h1>
-            <a href="index.html" class="text-sm bg-slate-800 px-4 py-2 rounded-lg hover:bg-slate-700 transition">← Бош меню</a>
+        <div class="flex flex-col md:flex-row items-center justify-between border-b border-slate-800 pb-6 mb-8 gap-4">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-blue-400">🎣 Балиқ ови саҳифаси</h1>
+            <a href="index.html" class="text-xs bg-slate-800 px-6 py-2 rounded-xl hover:bg-blue-600 hover:text-white transition uppercase font-bold tracking-widest border border-slate-700">Бош менюга қайтиш</a>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
             
             <div class="lg:col-span-2 space-y-8">
                 
-                <article id="fish1" class="bg-[#0f172a] rounded-2xl border border-slate-800 overflow-hidden shadow-xl">
+                <article class="bg-[#0f172a] rounded-2xl border border-slate-800 overflow-hidden shadow-xl hover:border-blue-500/50 transition">
                     <div class="p-8">
                         <div class="flex items-center gap-3 mb-4">
-                            <span class="bg-blue-900/50 text-blue-400 text-xs font-bold px-2 py-1 rounded">МАҚОЛА</span>
-                            <span class="text-slate-500 text-sm">08.04.2026</span>
+                            <span class="bg-blue-900/50 text-blue-400 text-[10px] font-bold px-2 py-1 rounded uppercase">Мақола</span>
+                            <span class="text-slate-500 text-xs">08.04.2026</span>
                         </div>
                         <h2 class="text-2xl font-bold text-white mb-4">Карп балиғини тутишнинг 5 та сири</h2>
                         <p class="text-slate-400 leading-relaxed">
                             Карп балиғи жуда эҳтиёткор ва кучли бўлади. Уни тутиш учун нафақат яхши қармоқ, балки тўғри тайёрланган хўрак ҳам керак...
                         </p>
-                        <button class="mt-6 text-blue-400 font-semibold hover:underline">Тўлиқ ўқиш →</button>
+                        <div id="content1" class="post-content mt-4 text-slate-300 italic border-l-2 border-blue-600 pl-4 py-2">
+                            Биринчи навбатда сув ҳароратига эътибор беринг. Баҳорда карп илиқроқ ва чуқур бўлмаган жойларга чиқади. Хўрак сифатида маккажўхори ва махсус бойллардан фойдаланиш тавсия этилади.
+                        </div>
+                        <button onclick="togglePost('content1', this)" class="mt-6 text-blue-400 text-sm font-bold hover:underline">ТЎЛИҚ ЎҚИШ ↓</button>
                     </div>
                 </article>
 
-                <article id="fish2" class="bg-[#0f172a] rounded-2xl border border-slate-800 overflow-hidden">
+                <article class="bg-[#0f172a] rounded-2xl border border-slate-800 overflow-hidden shadow-xl hover:border-emerald-500/50 transition">
                     <div class="p-8">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="bg-emerald-900/50 text-emerald-400 text-[10px] font-bold px-2 py-1 rounded uppercase">Мақола</span>
+                            <span class="text-slate-500 text-xs">07.04.2026</span>
+                        </div>
                         <h2 class="text-2xl font-bold text-white mb-4">Илонбош (Snakehead) ови техникаси</h2>
                         <p class="text-slate-400 leading-relaxed">
-                            Илонбош балиғи йиртқич бўлиб, асосан қамишзорлар орасида яшайди. Унинг овида сунъий бақалардан фойдаланиш энг самарали усул ҳисобланади...
+                            Илонбош балиғи йиртқич бўлиб, асосан қамишзорлар орасида яшайди. Унинг овида сунъий бақалардан фойдаланиш энг самарали усул...
                         </p>
-                        <button class="mt-6 text-blue-400 font-semibold hover:underline">Тўлиқ ўқиш →</button>
+                        <div id="content2" class="post-content mt-4 text-slate-300 italic border-l-2 border-emerald-600 pl-4 py-2">
+                            Илонбош овида "спиннинг" қармоғидан фойдаланиш керак. Энг муҳими — бақани сув юзида худди тирикдек ҳаракатлантиришдир. Балиқ ҳужум қилганда 2-3 сония кутиб, кейин қармоқни тортиш лозим.
+                        </div>
+                        <button onclick="togglePost('content2', this)" class="mt-6 text-emerald-400 text-sm font-bold hover:underline">ТЎЛИҚ ЎҚИШ ↓</button>
                     </div>
                 </article>
 
@@ -76,32 +91,27 @@
 
             <aside class="space-y-6">
                 <div class="bg-[#0f172a] p-6 rounded-2xl border border-slate-800 sticky top-10">
-                    <h3 class="text-xl font-bold text-blue-400 mb-6 flex items-center gap-2">
+                    <h3 class="text-lg font-bold text-blue-400 mb-6 flex items-center gap-2">
                         💡 Фойдали маслаҳатлар
                     </h3>
                     
                     <div class="space-y-4">
-                        <a href="#fish1" class="sidebar-item block p-4 rounded-xl border border-slate-800 bg-slate-900/50">
-                            <h4 class="text-sm font-bold text-white uppercase">Карп ови</h4>
-                            <p class="text-xs text-slate-500 mt-1">Хўрак тайёрлаш ва жой танлаш усуллари.</p>
-                        </a>
+                        <div class="sidebar-item p-4 rounded-xl border border-slate-800 bg-slate-900/50 cursor-pointer">
+                            <h4 class="text-xs font-bold text-white uppercase">Карп ови</h4>
+                            <p class="text-[11px] text-slate-500 mt-1">Хўрак тайёрлаш ва жой танлаш усуллари.</p>
+                        </div>
 
-                        <a href="#fish2" class="sidebar-item block p-4 rounded-xl border border-slate-800 bg-slate-900/50">
-                            <h4 class="text-sm font-bold text-white uppercase">Илонбош ови</h4>
-                            <p class="text-xs text-slate-500 mt-1">Қамишзорларда ов қилишнинг нозик жиҳатлари.</p>
-                        </a>
-
-                        <a href="#" class="sidebar-item block p-4 rounded-xl border border-slate-800 bg-slate-900/50">
-                            <h4 class="text-sm font-bold text-white uppercase">Қармоқ созлаш</h4>
-                            <p class="text-xs text-slate-500 mt-1">Турли сув ҳавзалари учун қармоқ турлари.</p>
-                        </a>
+                        <div class="sidebar-item p-4 rounded-xl border border-slate-800 bg-slate-900/50 cursor-pointer">
+                            <h4 class="text-xs font-bold text-white uppercase">Илонбош ови</h4>
+                            <p class="text-[11px] text-slate-500 mt-1">Қамишзорларда ов қилишнинг нозик жиҳатлари.</p>
+                        </div>
                     </div>
 
                     <div class="mt-10 pt-6 border-t border-slate-800 text-center">
-                        <p class="text-xs text-slate-500 italic uppercase tracking-tighter">Эски мақолалар архиви</p>
+                        <p class="text-[10px] text-slate-600 italic uppercase tracking-widest">Архив</p>
                         <div class="flex flex-wrap justify-center gap-2 mt-4">
-                            <a href="#" class="text-[10px] bg-slate-800 px-3 py-1 rounded-full hover:bg-blue-600 transition">Март 2026</a>
-                            <a href="#" class="text-[10px] bg-slate-800 px-3 py-1 rounded-full hover:bg-blue-600 transition">Февраль 2026</a>
+                            <button class="text-[10px] bg-slate-800 px-3 py-1 rounded-full hover:bg-blue-600 transition">Март 2026</button>
+                            <button class="text-[10px] bg-slate-800 px-3 py-1 rounded-full hover:bg-blue-600 transition">Февраль 2026</button>
                         </div>
                     </div>
                 </div>
@@ -111,6 +121,7 @@
     </div>
 
     <script>
+        // Карусель логикаси
         let currentSlide = 0;
         const slides = document.querySelectorAll('.carousel-item');
 
@@ -126,10 +137,19 @@
             showSlide(currentSlide);
         }
 
-        // Автоматик айланиши (ҳар 5 сонияда)
-        setInterval(() => {
-            changeSlide(1);
-        }, 5000);
+        setInterval(() => changeSlide(1), 6000);
+
+        // Мақолани очиш/ёпиш
+        function togglePost(id, btn) {
+            const content = document.getElementById(id);
+            if (content.classList.contains('open')) {
+                content.classList.remove('open');
+                btn.innerText = "ТЎЛИҚ ЎҚИШ ↓";
+            } else {
+                content.classList.add('open');
+                btn.innerText = "ЁПИШ ↑";
+            }
+        }
     </script>
 
 </body>

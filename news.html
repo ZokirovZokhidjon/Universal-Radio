@@ -7,45 +7,45 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background: #010409; color: #e6edf3; font-family: 'Segoe UI', sans-serif; }
+        body { background: #010409; color: #e6edf3; font-family: 'Segoe UI', sans-serif; scroll-behavior: smooth; }
         
         .stat-box { background: #0d1117; border: 1px solid #30363d; border-radius: 15px; padding: 12px; text-align: center; }
         
         .glass-card { 
             background: #0d1117; border: 1px solid #30363d; border-radius: 20px; 
             margin-bottom: 25px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease;
         }
 
-        /* Матн ўлчамларини ихчамлаштирдик */
         .post-content { font-size: 16px; line-height: 1.6; color: #d1d5db; }
         .post-content p { margin-bottom: 15px; }
         
-        .main-img { width: 100%; height: auto; border-radius: 12px; margin: 15px 0; border: 1px solid #30363d; }
+        .main-img { width: 100%; height: auto; max-height: 450px; object-fit: cover; border-radius: 12px; margin: 15px 0; border: 1px solid #30363d; }
         
-        audio { width: 100%; filter: invert(1); height: 35px; margin: 15px 0; }
+        audio { width: 100%; filter: invert(1); height: 35px; margin: 15px 0; border-radius: 8px; }
         .gold-text { color: #ffcc00; }
 
-        /* Қидирув инпути учун стиль */
         .search-input {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 10px;
-            padding: 8px 15px;
-            color: white;
-            font-size: 14px;
-            outline: none;
-            width: 100%;
-            transition: all 0.3s;
+            background: #161b22; border: 1px solid #30363d; border-radius: 10px;
+            padding: 8px 15px; color: white; font-size: 14px; outline: none;
+            width: 100%; transition: all 0.3s;
         }
         .search-input:focus { border-color: #ffcc00; box-shadow: 0 0 10px rgba(255, 204, 0, 0.2); }
+
+        /* Мобил учун адаптация */
+        @media (max-width: 768px) {
+            .post-title { font-size: 1.25rem !important; }
+            .post-content { font-size: 15px !important; }
+            .stat-box h3 { font-size: 1rem !important; }
+        }
     </style>
 </head>
 <body class="p-4 md:p-10">
 
     <div class="max-w-7xl mx-auto">
         <header class="flex flex-col md:flex-row justify-between items-center mb-8 border-b border-gray-800 pb-6 gap-4">
-            <div>
-                <h1 class="text-2xl font-bold uppercase tracking-tighter">Universal <span class="gold-text">Studio</span></h1>
+            <div class="text-center md:text-left">
+                <h1 class="text-2xl md:text-3xl font-bold uppercase tracking-tighter">Universal <span class="gold-text">Studio</span></h1>
                 <p class="text-[9px] text-gray-500 uppercase tracking-[3px]">Янгиликлар Портали</p>
             </div>
             
@@ -54,39 +54,46 @@
                 <i class="fas fa-search absolute right-3 top-3 text-gray-500 text-sm"></i>
             </div>
 
-            <a href="index.html" class="bg-[#161b22] px-5 py-2 rounded-lg border border-[#30363d] text-xs font-bold hover:border-yellow-500 transition-all">АСОСИЙ</a>
+            <a href="index.html" class="w-full md:w-auto text-center bg-[#161b22] px-6 py-2 rounded-lg border border-[#30363d] text-xs font-bold hover:border-yellow-500 transition-all">АСОСИЙ САҲИФА</a>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div class="grid grid-cols-3 gap-3 md:gap-6 mb-8">
             <div class="stat-box">
-                <p class="text-[9px] text-gray-500 uppercase font-bold mb-1">Жами</p>
-                <h3 id="stat-total" class="text-xl font-black text-blue-500">0</h3>
+                <p class="text-[8px] md:text-[10px] text-gray-500 uppercase font-bold mb-1">Жами</p>
+                <h3 id="stat-total" class="text-lg md:text-2xl font-black text-blue-500">0</h3>
             </div>
             <div class="stat-box">
-                <p class="text-[9px] text-gray-500 uppercase font-bold mb-1">Аудио</p>
-                <h3 id="stat-audio" class="text-xl font-black text-purple-500">0</h3>
+                <p class="text-[8px] md:text-[10px] text-gray-500 uppercase font-bold mb-1">Аудио</p>
+                <h3 id="stat-audio" class="text-lg md:text-2xl font-black text-purple-500">0</h3>
             </div>
             <div class="stat-box">
-                <p class="text-[9px] text-gray-500 uppercase font-bold mb-1">Сана</p>
-                <h3 class="text-sm font-bold text-green-500">13.04.2026</h3>
+                <p class="text-[8px] md:text-[10px] text-gray-500 uppercase font-bold mb-1">Бугун</p>
+                <h3 id="current-date" class="text-[10px] md:text-sm font-bold text-green-500"></h3>
             </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
-            <div class="lg:col-span-2" id="news-list"></div>
-            <div class="lg:col-span-1">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-10">
+            <div class="lg:col-span-2 order-2 lg:order-1" id="news-list">
+                </div>
+
+            <div class="lg:col-span-1 order-1 lg:order-2">
                 <div class="glass-card p-5 sticky top-5">
                     <h3 class="text-xs font-bold gold-text uppercase mb-4 border-l-4 border-yellow-500 pl-3">Сўнгги хабарлар</h3>
-                    <div id="side-list" class="space-y-4"></div>
+                    <div id="side-list" class="space-y-4 max-h-[500px] overflow-y-auto pr-2">
+                        </div>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
+        // Санани чиқариш
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString('uz-UZ');
+
+        // Маълумотларни олиш
         const storageKey = 'my_site_posts'; 
         const savedPosts = JSON.parse(localStorage.getItem(storageKey) || '[]');
-        let newsData = savedPosts;
+        let newsData = savedPosts.reverse(); // Янгилари биринчи чиқиши учун
 
         const list = document.getElementById('news-list');
         const side = document.getElementById('side-list');
@@ -94,64 +101,99 @@
         // ҚИДИРУВ ФУНКЦИЯСИ
         function searchPosts() {
             const query = document.getElementById('searchBar').value.toLowerCase();
-            const filtered = newsData.filter(p => p.title.toLowerCase().includes(query));
+            const filtered = newsData.filter(p => p.title.toLowerCase().includes(query) || (p.content || p.body).toLowerCase().includes(query));
             displayPosts(filtered);
         }
 
+        // МАҚОЛАЛАРНИ ЧИҚАРИШ
         function displayPosts(data) {
             list.innerHTML = "";
             if(data.length === 0) {
-                list.innerHTML = "<p class='text-center text-gray-500'>Маълумот топилмади...</p>";
+                list.innerHTML = "<div class='glass-card p-10 text-center text-gray-500'>Маълумот топилмади...</div>";
                 return;
             }
-            data.forEach((post, index) => {
+            data.forEach((post) => {
+                const index = newsData.indexOf(post);
                 list.innerHTML += `
-                    <div class="glass-card p-6">
-                        ${post.media && post.type?.includes('image') ? `<img src="${post.media}" class="main-img">` : ''}
-                        <div class="text-blue-400 font-mono text-[10px] mb-2">${post.date} | ${post.category || 'Умумий'}</div>
-                        <h2 class="text-xl md:text-2xl font-bold text-white mb-4 leading-tight">${post.title}</h2>
-                        ${post.media && post.type?.includes('audio') ? `<audio controls src="${post.media}"></audio>` : ''}
-                        <div class="post-content line-clamp-3">${post.content || post.body}</div>
-                        <button onclick="showSinglePost(${newsData.indexOf(post)})" class="mt-4 text-yellow-500 text-xs font-bold uppercase hover:underline">Тўлиқ ўқиш →</button>
+                    <div class="glass-card p-5 md:p-8">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-blue-400 font-mono text-[10px] uppercase">${post.date || 'Янги'} | ${post.category || 'Умумий'}</span>
+                        </div>
+                        <h2 class="post-title text-xl md:text-3xl font-bold text-white mb-4 leading-tight">${post.title}</h2>
+                        
+                        ${post.media && (post.type?.includes('image') || post.media.match(/\.(jpg|jpeg|png|gif|webp)$/i)) ? `<img src="${post.media}" class="main-img" alt="image">` : ''}
+                        
+                        ${post.media && (post.type?.includes('audio') || post.media.match(/\.(mp3|wav|ogg)$/i)) ? `<audio controls src="${post.media}"></audio>` : ''}
+                        
+                        <div class="post-content line-clamp-3 text-gray-400">
+                            ${post.content || post.body || ''}
+                        </div>
+                        
+                        <div class="mt-6 pt-4 border-t border-gray-800 flex justify-between items-center">
+                            <button onclick="showSinglePost(${index})" class="text-yellow-500 text-xs font-bold uppercase hover:text-white transition">Тўлиқ ўқиш →</button>
+                            <button onclick="sharePost('${post.title}', ${index})" class="text-gray-500 hover:text-blue-500"><i class="fas fa-share-alt"></i></button>
+                        </div>
                     </div>
                 `;
             });
         }
 
+        // БИТТА МАҚОЛАНИ КЎРСАТИШ
         function showSinglePost(index) {
             const post = newsData[index];
             list.innerHTML = `
-                <div class="glass-card p-6">
-                    <button onclick="displayPosts(newsData)" class="text-yellow-500 text-[10px] mb-4 uppercase font-bold">← Орқага</button>
-                    ${post.media && post.type?.includes('image') ? `<img src="${post.media}" class="main-img">` : ''}
-                    <h2 class="text-2xl font-bold text-white mb-4">${post.title}</h2>
-                    ${post.media && post.type?.includes('audio') ? `<audio controls src="${post.media}"></audio>` : ''}
-                    <div class="post-content">${post.content || post.body}</div>
+                <div class="glass-card p-6 md:p-10 animate-fade-in">
+                    <button onclick="displayPosts(newsData)" class="text-yellow-500 text-xs mb-6 uppercase font-bold flex items-center gap-2">
+                        <i class="fas fa-arrow-left"></i> Орқага қайтиш
+                    </button>
+                    <div class="text-blue-400 font-mono text-xs mb-2">${post.date} | ${post.category || 'Умумий'}</div>
+                    <h2 class="text-2xl md:text-4xl font-extrabold text-white mb-6 leading-tight">${post.title}</h2>
+                    
+                    ${post.media && (post.type?.includes('image') || post.media.match(/\.(jpg|jpeg|png|gif|webp)$/i)) ? `<img src="${post.media}" class="main-img">` : ''}
+                    ${post.media && (post.type?.includes('audio') || post.media.match(/\.(mp3|wav|ogg)$/i)) ? `<audio controls src="${post.media}" class="mb-6"></audio>` : ''}
+                    
+                    <div class="post-content text-lg text-gray-300">
+                        ${post.content || post.body}
+                    </div>
                 </div>
             `;
-            window.scrollTo(0, 0);
+            window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
+        // ЁН ПАНЕЛЬ (СЎНГГИ ХАБАРЛАР)
         function loadSideMenu() {
             side.innerHTML = "";
-            newsData.slice(0, 8).forEach((post, index) => {
+            newsData.slice(0, 10).forEach((post, index) => {
                 side.innerHTML += `
-                    <div onclick="showSinglePost(${index})" class="flex gap-3 items-center border-b border-gray-800 pb-3 cursor-pointer group hover:bg-white/5 p-1 rounded-lg">
-                        <div class="w-8 h-8 bg-gray-800 rounded flex-shrink-0 flex items-center justify-center group-hover:bg-yellow-500 transition-all">
-                            <i class="fas fa-bolt text-gray-600 group-hover:text-black text-[9px]"></i>
+                    <div onclick="showSinglePost(${index})" class="flex gap-3 items-start border-b border-gray-800 pb-3 cursor-pointer group hover:bg-white/5 p-2 rounded-lg transition">
+                        <div class="w-6 h-6 bg-gray-800 rounded flex-shrink-0 flex items-center justify-center group-hover:bg-yellow-500 transition-all mt-1">
+                            <i class="fas fa-bolt text-gray-600 group-hover:text-black text-[10px]"></i>
                         </div>
-                        <h4 class="text-[11px] font-medium text-gray-300 line-clamp-2 group-hover:text-yellow-500">${post.title}</h4>
+                        <div>
+                            <h4 class="text-[12px] font-medium text-gray-300 line-clamp-2 group-hover:text-yellow-500">${post.title}</h4>
+                            <span class="text-[9px] text-gray-600">${post.date}</span>
+                        </div>
                     </div>
                 `;
             });
         }
 
-        // Статистика
-        document.getElementById('stat-total').innerText = newsData.length;
-        document.getElementById('stat-audio').innerText = newsData.filter(p => p.media && p.type?.includes('audio')).length;
+        // УЛАШИШ ФУНКЦИЯСИ
+        function sharePost(title, index) {
+            const url = window.location.href;
+            const text = encodeURIComponent(`Universal Studio: ${title}`);
+            window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
+        }
 
-        displayPosts(newsData);
-        loadSideMenu();
+        // ИШГА ТУШИРИШ
+        function init() {
+            document.getElementById('stat-total').innerText = newsData.length;
+            document.getElementById('stat-audio').innerText = newsData.filter(p => p.media && (p.type?.includes('audio') || p.media.includes('.mp3'))).length;
+            displayPosts(newsData);
+            loadSideMenu();
+        }
+
+        init();
     </script>
 </body>
 </html>

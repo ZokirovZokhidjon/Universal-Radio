@@ -5,45 +5,104 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Шеърият Гулшани - Universal Radio</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:italic,wght@700&display=swap');
-        body { background: #08050a; color: #d1d5db; font-family: 'Times New Roman', serif; }
-        .poem-box { background: #110c18; border-left: 4px solid #7c3aed; padding: 30px; border-radius: 0 20px 20px 0; }
-        .poem-title { font-family: 'Playfair Display', serif; }
+        
+        body { 
+            background: #08050a; 
+            color: #d1d5db; 
+            font-family: 'Georgia', serif; 
+            background-image: radial-gradient(circle at top right, #1a1025, #08050a);
+        }
+
+        .poem-box { 
+            background: rgba(17, 12, 24, 0.8); 
+            border-left: 4px solid #7c3aed; 
+            padding: 40px; 
+            border-radius: 0 30px 30px 0; 
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .poem-box:hover {
+            transform: translateX(10px);
+            background: rgba(25, 18, 35, 0.9);
+        }
+
+        .poem-title { 
+            font-family: 'Playfair Display', serif; 
+            letter-spacing: 1px;
+        }
+
+        .audio-btn {
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid #7c3aed;
+            color: #7c3aed;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            transition: 0.3s;
+        }
+
+        .audio-btn:hover {
+            background: #7c3aed;
+            color: white;
+        }
     </style>
 </head>
 <body class="p-5 md:p-10">
     <div class="max-w-4xl mx-auto">
-        <a href="index.html" class="text-purple-500 font-bold">← Орқага</a>
-        <h1 class="text-4xl poem-title text-center my-10 text-purple-400 italic">✨ Шеърият Гулшани</h1>
+        <div class="flex justify-between items-center">
+            <a href="index.html" class="text-purple-500 font-bold hover:text-purple-400 transition">← Асосий меню</a>
+            <i class="fas fa-feather-alt text-purple-600 text-2xl"></i>
+        </div>
 
-        <div class="space-y-12">
+        <h1 class="text-5xl poem-title text-center my-16 text-purple-400 italic drop-shadow-lg">✨ Шеърият Гулшани</h1>
+
+        <div class="space-y-16">
             <div class="poem-box shadow-2xl">
-                <h2 class="text-2xl font-bold text-white mb-6 text-center poem-title">Шеър сарлавҳаси</h2>
-                <div class="text-xl text-center italic leading-loose text-purple-200">
-                    Биринчи мисра...<br>
-                    Иккинчи мисра...<br>
-                    Учинчи мисра...<br>
-                    Тўртинчи мисра...
+                <div class="flex justify-between items-start mb-6">
+                    <h2 class="text-2xl font-bold text-white poem-title text-center flex-grow">Ғазал</h2>
+                    <button class="audio-btn"><i class="fas fa-play mr-2"></i>Тинглаш</button>
                 </div>
-                <p class="text-right mt-6 text-purple-500 font-bold">— Муаллиф номи</p>
+                <div class="text-xl text-center italic leading-loose text-purple-100">
+                    Ораз бошлаб кўнгил олдинг, бенаволик кўрсатиб,<br>
+                    Эй Навоий, боқмадинг, ҳаргиз вафолиқ кўрсатиб.<br>
+                    Кўнглум ичра дарду ғам чекмакка тоқат қолмади,<br>
+                    Сабр ила тоқат мени буткул адолиқ кўрсатиб.
+                </div>
+                <p class="text-right mt-8 text-purple-500 font-bold text-lg">— Алишер Навоий</p>
             </div>
 
             <div class="poem-box shadow-2xl bg-opacity-50">
-                <h2 class="text-2xl font-bold text-white mb-6 text-center poem-title">Навбатдаги ғазал ёки шеър</h2>
-                <div class="text-xl text-center italic leading-loose text-gray-400">
-                    </div>
+                <div class="flex justify-between items-start mb-6">
+                    <h2 class="text-2xl font-bold text-white poem-title text-center flex-grow">Инсон</h2>
+                    <button class="audio-btn"><i class="fas fa-play mr-2"></i>Тинглаш</button>
+                </div>
+                <div class="text-xl text-center italic leading-loose text-gray-300">
+                    Кўзларингга боқсалар гар, нур бўлиб тошгаймисан?<br>
+                    Дардинг айтсанг, дардмандга дардкаш бўлолгаймисан?<br>
+                    Бу жаҳон кенгдир, жаҳон ичра жаҳонсан, эй кўнгил,<br>
+                    Сен ўзингни англасанг, бўлғаймисан, бўлғаймисан?
+                </div>
+                <p class="text-right mt-8 text-purple-500 font-bold text-lg">— Эркин Воҳидов</p>
             </div>
         </div>
 
-        <div class="mt-20 p-8 border-t border-purple-900 text-center">
-            <h3 class="text-purple-400 uppercase tracking-widest text-sm mb-4">Биз севган ижодкорлар</h3>
-            <div class="flex flex-wrap justify-center gap-4 text-xs">
-                <span class="bg-purple-900/30 px-3 py-1 rounded-full">Алишер Навоий</span>
-                <span class="bg-purple-900/30 px-3 py-1 rounded-full">Заҳириддин Муҳаммад Бобур</span>
-                <span class="bg-purple-900/30 px-3 py-1 rounded-full">Абдулла Орипов</span>
-                <span class="bg-purple-900/30 px-3 py-1 rounded-full">Эркин Воҳидов</span>
+        <div class="mt-24 p-10 border-t border-purple-900/50 text-center">
+            <h3 class="text-purple-400 uppercase tracking-[0.3em] text-xs mb-8">Мангу мерос соҳиблари</h3>
+            <div class="flex flex-wrap justify-center gap-6">
+                <span class="border border-purple-900/50 text-gray-400 px-4 py-2 rounded-lg hover:border-purple-600 transition cursor-pointer">Алишер Навоий</span>
+                <span class="border border-purple-900/50 text-gray-400 px-4 py-2 rounded-lg hover:border-purple-600 transition cursor-pointer">Бобур Мирзо</span>
+                <span class="border border-purple-900/50 text-gray-400 px-4 py-2 rounded-lg hover:border-purple-600 transition cursor-pointer">Абдулла Орипов</span>
+                <span class="border border-purple-900/50 text-gray-400 px-4 py-2 rounded-lg hover:border-purple-600 transition cursor-pointer">Эркин Воҳидов</span>
+                <span class="border border-purple-900/50 text-gray-400 px-4 py-2 rounded-lg hover:border-purple-600 transition cursor-pointer">Ҳамид Олимжон</span>
             </div>
+        </div>
+
+        <div class="text-center py-10 text-gray-600 text-sm">
+            © 2026 Universal Studio - Маънавият ва Маърифат
         </div>
     </div>
 </body>
