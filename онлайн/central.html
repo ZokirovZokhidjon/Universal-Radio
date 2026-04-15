@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Studio - Мурожаат йўллаш</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { 
+            background: #010409; 
+            color: #e6edf3; 
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            position: relative;
+        }
+
+        /* ОНЛАЙН РАДИО ТУГМАСИ (ҚИЗИЛ ВА КАРНАЙЛИ) */
+        .radio-btn {
+            position: fixed;
+            top: 25px;
+            right: 25px;
+            background: linear-gradient(45deg, #f85149, #b91c1c);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 900;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(248, 81, 73, 0.4);
+            border: 2px solid rgba(255,255,255,0.1);
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 100;
+            text-decoration: none;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .radio-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 35px rgba(248, 81, 73, 0.6);
+            background: linear-gradient(45deg, #ff7b72, #f85149);
+        }
+        .radio-btn i {
+            font-size: 20px;
+            animation: speaker-bounce 1s infinite alternate;
+        }
+        @keyframes speaker-bounce {
+            from { transform: scale(1) rotate(-5deg); }
+            to { transform: scale(1.2) rotate(5deg); }
+        }
+
+        .main-card {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 40px;
+            padding: 50px 40px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 30px 100px rgba(0,0,0,0.9);
+            position: relative;
+            z-index: 10;
+        }
+        .logo-glow {
+            position: relative;
+            display: inline-block;
+        }
+        .logo-glow::after {
+            content: '';
+            position: absolute;
+            inset: -15px;
+            background: #1f6feb;
+            filter: blur(40px);
+            opacity: 0.25;
+            border-radius: 50%;
+            z-index: 0;
+        }
+        .input-style {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 14px;
+            width: 100%;
+            padding: 14px 18px;
+            color: white;
+            margin-top: 10px;
+            outline: none;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+        .input-style:focus {
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+        }
+        .send-btn {
+            background: linear-gradient(45deg, #1f6feb, #58a6ff);
+            color: white;
+            font-weight: 800;
+            padding: 16px;
+            border-radius: 14px;
+            width: 100%;
+            margin-top: 25px;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-size: 12px;
+        }
+        .send-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(31, 111, 235, 0.4);
+        }
+    </style>
+</head>
+<body>
+
+    <a href="https://t.me/+UxQ7wR-6bZZkYjIy" target="_blank" class="radio-btn">
+        <i class="fas fa-bullhorn"></i>
+        <span>Эфирни эшитиш</span>
+    </a>
+
+    <div class="main-card">
+        <div class="logo-glow mb-8">
+            <img src="logo.jpg" alt="Logo" class="w-36 h-36 rounded-full border-4 border-[#1f6feb] relative z-10 object-cover shadow-2xl">
+        </div>
+
+        <h1 class="text-3xl font-black text-white tracking-tighter uppercase mb-2">Universal Studio</h1>
+        <p class="text-blue-500 text-[10px] font-black tracking-[0.4em] mb-10 uppercase opacity-80 text-center">Мурожаат ва Таклифлар портали</p>
+
+        <div class="text-left space-y-5">
+            <div>
+                <label class="text-[10px] font-black text-gray-500 uppercase ml-2 tracking-widest">Исмингиз</label>
+                <input type="text" id="name" placeholder="Масалан: Икромжон" class="input-style">
+            </div>
+
+            <div>
+                <label class="text-[10px] font-black text-gray-500 uppercase ml-2 tracking-widest">Мурожаат тури</label>
+                <select id="type" class="input-style">
+                    <option>Таклиф киритиш</option>
+                    <option>Мулоҳаза билдириш</option>
+                    <option>Савол бериш</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="text-[10px] font-black text-gray-500 uppercase ml-2 tracking-widest">Хабарингиз</label>
+                <textarea id="msg" rows="4" placeholder="Бу ерга ёзинг..." class="input-style"></textarea>
+            </div>
+
+            <button onclick="send()" class="send-btn">Хабарни юбориш</button>
+        </div>
+
+        <div class="mt-10 pt-8 border-t border-gray-800/50">
+            <a href="studio.html" class="text-[9px] text-gray-600 hover:text-blue-400 transition-all uppercase tracking-[0.2em] font-bold">
+                <i class="fas fa-lock-open mr-2 opacity-50"></i> Студия бошқаруви
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function send() {
+            const name = document.getElementById('name').value;
+            if(!name) return alert("Илтимос, исмингизни ёзинг!");
+            alert("Раҳмат, " + name + "! Мурожаатингиз қабул қилинди.");
+        }
+    </script>
+
+</body>
+</html>

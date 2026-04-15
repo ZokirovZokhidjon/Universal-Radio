@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Шеърият гулшани - Universal Radio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+   <!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Шеърият гулшани - Universal Radio</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        html { scroll-behavior: smooth; }
+        body { background: #050505; color: #f3f4f6; font-family: 'Times New Roman', serif; }
+
+        /* 1. РАСМЛАРНИНГ ДАСТЛАБКИ ИХЧАМ ҲАЖМИ (80-100px) */
+        .prose-content img {
+            width: 90px !important; 
+            height: 90px !important;
+            object-fit: cover;
+            border-radius: 12px;
+            cursor: zoom-in;
+            border: 2px solid #3f3f46;
+            transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin: 10px;
+            display: inline-block;
+        }
+        .prose-content img:hover {
+            transform: scale(1.1);
+            border-color: #f3f4f6;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        /* 2. КАТТАЛАШГАНДАГИ ЭКРАН (LIGHTBOX) */
+        .img-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            cursor: zoom-out;
+            backdrop-filter: blur(10px);
+        }
+        .img-overlay img {
+            max-width: 90%;
+            max-height: 85%;
+            border-radius: 15px;
+            border: 2px solid #52525b;
+            animation: springIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes springIn {
+            from { opacity: 0; transform: scale(0.5); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* ДИЗАЙН ЭЛЕМЕНТЛАРИ */
+        .poem-card {
+            background: linear-gradient(to bottom, #0a0a0a, #0d0d0d);
+            border: 1px solid #18181b;
+            border-top: 2px solid #52525b;
+            border-radius: 2rem;
+            transition: 0.3s;
+        }
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid #27272a;
+            padding: 10px;
+            margin-bottom: 8px;
+            display: block;
+            color: #a1a1aa;
+            font-size: 13px;
+            border-radius: 8px;
+            transition: 0.3s;
+            text-align: center;
+            text-decoration: none;
+        }
+        .nav-btn:hover { background: #f3f4f6; color: #000; }
+    </style>
+</head>
+<body class="p-4 md:p-12">
+
+    <div id="image-viewer" class="img-overlay" onclick="closeImage()">
+        <div class="absolute top-5 right-5 text-white text-3xl font-light">&times;</div>
+        <img id="full-image" src="">
+    </div>
+
+    <div class="max-w-5xl mx-auto">
+        <header class="flex justify-between items-center mb-16 border-b border-zinc-800 pb-6">
+            <a href="index.html" class="text-zinc-400 hover:text-white transition">← Орқага қайтиш</a>
+            <h1 class="text-2xl md:text-4xl font-serif italic tracking-widest uppercase text-white">Шеърият Гулшани</h1>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-12">
+            
+            <main class="lg:col-span-3 order-2 lg:order-1" id="poem-container">
+                </main>
+
+            <aside class="lg:col-span-1 order-1 lg:order-2">
+                <div class="sticky top-10 bg-[#0d0d0d] p-6 rounded-2xl border border-zinc-800">
+                    <h3 class="text-zinc-600 text-[10px] uppercase tracking-[0.3em] mb-6 border-b border-zinc-900 pb-2">Мундарижа</h3>
+                    <nav id="poem-nav">
+                        </nav>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <script>
+        // БАЗАДАН МАЪЛУМОТЛАРНИ ОЛИШ ВА ЧИҚАРИШ
+        function loadPoems() {
+            const posts = JSON.parse(localStorage.getItem('my_site_posts') || '[]');
+            const container = document.getElementById('poem-container');
+            const nav = document.getElementById('poem-nav');
+            
+            // Фақат "Шеърият" рукнидаги мақолаларни саралаймиз
+            const poemPosts = posts.filter(p => p.category === "Шеърият");
+
+            if(poemPosts.length > 0) {
+                container.innerHTML = poemPosts.reverse().map((p, index) => {
+                    const id = `poem-${index}`;
+                    
+                    // Сайдбар учун тугма яратиш
+                    const link = document.createElement('a');
+                    link.href = `#${id}`;
+                    link.className = "nav-btn";
+                    link.innerText = p.title;
+                    nav.appendChild(link);
+
+                    return `
+                        <article id="${id}" class="poem-card p-8 md:p-12 mb-12 shadow-2xl">
+                            <h2 class="text-3xl font-serif mb-2 text-center text-white">${p.title}</h2>
+                            <div class="text-[10px] text-zinc-600 uppercase tracking-widest text-center mb-10 border-b border-zinc-900 pb-4">${p.date}</div>
+                            
+                            <div class="prose-content text-zinc-300 text-lg leading-relaxed text-center italic" onclick="checkImageClick(event)">
+                                ${p.content}
+                            </div>
+                        </article>
+                    `;
+                }).join('');
+            } else {
+                container.innerHTML = `<div class="text-center text-zinc-600 italic">Ҳозирча шеърлар мавжуд эмас.</div>`;
+            }
+        }
+
+        // РАСМНИ КАТТАЛАШТИРИШ ФУНКЦИЯСИ
+        function checkImageClick(event) {
+            if (event.target.tagName === 'IMG') {
+                const viewer = document.getElementById('image-viewer');
+                const fullImg = document.getElementById('full-image');
+                fullImg.src = event.target.src;
+                viewer.style.display = 'flex';
+                document.body.style.overflow = 'hidden'; // Орқа фонни қотириш
+            }
+        }
+
+        // КАТТА РАСМНИ ЁПИШ
+        function closeImage() {
+            document.getElementById('image-viewer').style.display = 'none';
+            document.body.style.overflow = 'auto'; // Скроллни тиклаш
+        }
+
+        window.onload = loadPoems;
+    </script>
+</body>
+</html>
+</body>
+</html>
