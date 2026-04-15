@@ -3,75 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <title>Universal News Portal</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Roboto:wght@400;700&display=swap');
-        body { background: #0a0a0a; color: #ffffff; font-family: 'Roboto', sans-serif; }
         
-        /* Сарлавҳа 20px ва қалин */
-        .post-title { font-size: 20px !important; font-family: 'Montserrat'; font-weight: 700; line-height: 1.2; cursor: pointer; transition: 0.3s; }
-        .post-title:hover { color: #ffcc00; }
+        body { background: #0a0a0a; color: #ffffff; font-family: 'Roboto', sans-serif; overflow-x: hidden; }
+        
+        /* Сарлавҳа 20px */
+        .post-title { font-size: 18px !important; font-family: 'Montserrat'; font-weight: 700; line-height: 1.2; cursor: pointer; transition: 0.3s; color: #fff; }
+        @media (min-width: 768px) { .post-title { font-size: 20px !important; } }
 
-        /* Расм 80px ва босганда катталашиш (200px) */
+        /* Расм 80px ва мобилда қулайлик */
         .news-thumb { 
             width: 80px !important; 
             height: 80px !important; 
+            min-width: 80px;
             object-fit: cover; 
             border-radius: 10px; 
             border: 2px solid #ffcc00;
-            transition: all 0.4s ease;
+            transition: all 0.3s ease;
             cursor: pointer;
         }
-        /* Расмни босиб турганда катталашиши */
-        .news-thumb:active { width: 200px !important; height: auto !important; z-index: 50; position: relative; transform: scale(1.1); }
+        /* Мобилда босганда катталашиш */
+        .news-thumb:active { transform: scale(1.5); z-index: 50; position: relative; }
 
-        .news-card { background: #141414; border-radius: 15px; border-bottom: 3px solid transparent; transition: 0.3s; margin-bottom: 10px; }
+        .news-card { background: #141414; border-radius: 12px; border-bottom: 3px solid transparent; transition: 0.3s; margin-bottom: 12px; width: 100%; }
         .news-card:hover { border-bottom-color: #ffcc00; background: #1a1a1a; }
         
-        .ticker-wrapper { background: #ffcc00; color: #000; padding: 10px 0; overflow: hidden; font-weight: bold; }
-        .ticker-text { display: inline-block; white-space: nowrap; animation: ticker 30s linear infinite; }
+        .ticker-wrapper { background: #ffcc00; color: #000; padding: 8px 0; overflow: hidden; font-weight: bold; position: sticky; top: 0; z-index: 100; }
+        .ticker-text { display: inline-block; white-space: nowrap; animation: ticker 25s linear infinite; font-size: 12px; }
         @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
         
         .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .post-content img { max-width: 100%; height: auto; border-radius: 12px; margin: 20px 0; border: 2px solid #ffcc00; }
+        
+        /* Мақола ичидаги расмлар мобилга мос бўлиши учун */
+        .post-content img { max-width: 100% !important; height: auto !important; border-radius: 8px; margin: 15px 0; border: 1px solid #ffcc00; }
+        iframe, video { width: 100% !important; aspect-ratio: 16/9; border-radius: 8px; }
     </style>
 </head>
 <body>
 
     <div class="ticker-wrapper">
-        <div class="ticker-text italic">+++ UNIVERSAL NEWS: ЭНГ СЎНГГИ ТЕЗКОР ХАБАРЛАР ПОРТАЛИ +++ ЖОНЛИ ЭФИРЛАР +++ 24/7 РАДИО +++</div>
+        <div class="ticker-text">+++ UNIVERSAL NEWS: ТЕЗКОР ХАБАРЛАР ВА ОНЛАЙН РАДИО +++ ЭНГ СЎНГГИ ЖОНЛИ ЭФИРЛАР +++ 24/7 +++</div>
     </div>
 
-    <div class="max-w-7xl mx-auto px-4 py-8">
-        <header class="flex flex-col md:flex-row justify-between items-center mb-10 border-b-4 border-yellow-500 pb-6 gap-6">
-            <h1 class="text-4xl md:text-6xl font-black italic uppercase">Universal <span class="text-yellow-500">News</span></h1>
-            <div class="flex flex-col items-end gap-3 w-full md:w-auto">
+    <div class="max-w-7xl mx-auto px-3 md:px-4 py-6">
+        <header class="flex flex-col gap-4 mb-8 border-b-2 border-yellow-500 pb-4">
+            <div class="text-center md:text-left">
+                <h1 class="text-3xl md:text-5xl font-black italic uppercase tracking-tighter">Universal <span class="text-yellow-500">News</span></h1>
+            </div>
+            
+            <div class="flex flex-col gap-3 w-full">
                 <input type="text" id="searchBar" onkeyup="searchPosts()" placeholder="Қидириш..." 
-                    class="bg-white/5 border-b-2 border-gray-700 py-2 px-4 focus:border-yellow-500 outline-none w-full md:w-80 text-white transition-all">
-                <div class="flex gap-3">
-                    <a href="index.html" class="bg-yellow-500 text-black px-6 py-2 text-xs font-black uppercase hover:bg-white transition">Асосий</a>
-                    <div class="bg-white/10 px-4 py-2 text-xs font-bold border-l-2 border-yellow-500">ЖАМИ: <span id="stat-total" class="text-yellow-500">0</span></div>
+                    class="bg-white/10 border border-gray-700 py-3 px-4 rounded-lg focus:border-yellow-500 outline-none w-full text-white text-base">
+                <div class="flex justify-between items-center">
+                    <a href="index.html" class="bg-yellow-500 text-black px-5 py-2 rounded font-bold text-xs uppercase">Асосий</a>
+                    <div class="text-xs font-bold text-gray-400">ЖАМИ: <span id="stat-total" class="text-yellow-500">0</span></div>
                 </div>
             </div>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div id="side-col" class="lg:col-span-3 order-2 lg:order-1">
-                <h3 class="text-xl font-black mb-6 border-b-2 border-yellow-500 inline-block">LIVE FEED</h3>
-                <div id="side-list" class="space-y-6"></div>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <div id="main-col" class="lg:col-span-9 order-1">
+                <div id="news-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
 
-            <div id="main-col" class="lg:col-span-9 order-1 lg:order-2">
-                <div id="news-list" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+            <div id="side-col" class="lg:col-span-3 order-2">
+                <h3 class="text-lg font-black mb-4 border-l-4 border-yellow-500 pl-2 uppercase">Лента</h3>
+                <div id="side-list" class="space-y-4"></div>
             </div>
         </div>
     </div>
 
     <script>
         const storageKey = 'my_site_posts'; 
-        const allPosts = JSON.parse(localStorage.getItem(storageKey) || '[]');
+        let allPosts = JSON.parse(localStorage.getItem(storageKey) || '[]');
         let newsData = allPosts.filter(p => p.category === "Янгиликлар").reverse(); 
 
         function displayPosts(data) {
@@ -79,32 +87,27 @@
             list.innerHTML = "";
 
             if(data.length === 0) {
-                list.innerHTML = "<div class='col-span-full py-10 text-center text-gray-500 italic'>Маълумот топилмади...</div>";
+                list.innerHTML = "<div class='py-10 text-center text-gray-500 italic w-full'>Маълумот мавжуд эмас...</div>";
                 return;
             }
 
             data.forEach((post) => {
-                // Асл индексни аниқ топиш
                 const realIndex = newsData.findIndex(p => p.title === post.title && p.date === post.date);
                 
-                // Расмни аниқлаш
                 let tempDiv = document.createElement('div');
                 tempDiv.innerHTML = post.content;
                 let firstImg = tempDiv.querySelector('img');
                 let imgSrc = firstImg ? firstImg.src : 'logo2.jpg';
 
                 list.innerHTML += `
-                    <div class="news-card p-4 flex gap-4 items-start">
-                        <img src="${imgSrc}" class="news-thumb" tabindex="0">
-                        <div class="flex-1">
-                            <span class="text-[10px] text-yellow-500 font-bold uppercase tracking-widest">${post.date}</span>
-                            <h2 class="post-title text-white mt-1" onclick="showSinglePost(${realIndex})">${post.title}</h2>
-                            <div class="text-gray-400 text-xs line-clamp-2 mt-2">
-                                ${post.content.replace(/<[^>]*>?/gm, '').substring(0, 100)}...
-                            </div>
-                            <div class="mt-3 flex justify-between items-center">
-                                <button onclick="showSinglePost(${realIndex})" class="text-yellow-500 text-[10px] font-black uppercase tracking-widest hover:text-white">Ўқиш →</button>
-                                <i class="fas fa-paper-plane text-gray-700 text-xs"></i>
+                    <div class="news-card p-3 flex gap-3 items-start">
+                        <img src="${imgSrc}" class="news-thumb" onclick="event.stopPropagation();">
+                        <div class="flex-1 min-w-0">
+                            <span class="text-[9px] text-yellow-500 font-bold uppercase">${post.date}</span>
+                            <h2 class="post-title line-clamp-2 mt-1" onclick="showSinglePost(${realIndex})">${post.title}</h2>
+                            <div class="mt-2 flex justify-between items-center">
+                                <button onclick="showSinglePost(${realIndex})" class="text-yellow-500 text-[10px] font-bold uppercase">Ўқиш →</button>
+                                <i class="fas fa-paper-plane text-gray-700 text-[10px]"></i>
                             </div>
                         </div>
                     </div>
@@ -116,34 +119,30 @@
             const post = newsData[index];
             if(!post) return;
 
-            const sideCol = document.getElementById('side-col');
+            document.getElementById('side-col').classList.add('hidden');
             const mainCol = document.getElementById('main-col');
-            const list = document.getElementById('news-list');
+            mainCol.className = 'lg:col-span-12 w-full';
 
-            if(sideCol) sideCol.classList.add('hidden');
-            if(mainCol) mainCol.className = 'lg:col-span-12 order-1';
-
-            list.innerHTML = `
-                <div class="max-w-4xl mx-auto">
-                    <button onclick="window.location.reload()" class="bg-white/10 px-4 py-2 text-[10px] font-bold uppercase mb-8 hover:bg-yellow-500 hover:text-black transition">
-                        <i class="fas fa-chevron-left mr-2"></i> Рўйхатга қайтиш
+            document.getElementById('news-list').innerHTML = `
+                <div class="max-w-3xl mx-auto">
+                    <button onclick="window.location.reload()" class="bg-white/10 px-4 py-2 text-[10px] font-bold uppercase mb-6 rounded text-yellow-500">
+                        <i class="fas fa-arrow-left mr-1"></i> Орқага
                     </button>
                     
-                    <div class="mb-10">
-                        <span class="text-yellow-500 font-black uppercase tracking-[3px] text-xs">REPORTAGE</span>
-                        <h1 class="text-3xl md:text-5xl font-black mt-4 leading-tight">${post.title}</h1>
-                        <div class="text-gray-500 mt-4 font-bold text-sm border-l-4 border-yellow-500 pl-4">${post.date} | UNIVERSAL NEWS</div>
+                    <div class="mb-6">
+                        <h1 class="text-2xl md:text-5xl font-black mb-3 leading-tight text-white">${post.title}</h1>
+                        <div class="text-gray-500 text-xs font-bold border-l-2 border-yellow-500 pl-2">${post.date}</div>
                     </div>
 
-                    <div class="post-content text-xl leading-relaxed text-gray-300 space-y-6">
+                    <div class="post-content text-lg leading-relaxed text-gray-300 space-y-4 overflow-hidden">
                         ${post.content}
                     </div>
 
-                    ${post.video ? `<div class="mt-10 rounded-xl overflow-hidden shadow-2xl">${post.video}</div>` : ''}
+                    ${post.video ? `<div class="mt-6 shadow-2xl">${post.video}</div>` : ''}
 
-                    <div class="mt-20 p-10 bg-white/5 border-t-4 border-yellow-500 text-center rounded-xl">
-                        <h4 class="font-bold mb-4 uppercase text-sm">Дўстларингизга юборинг</h4>
-                        <button onclick="sharePost('${post.title.replace(/'/g, "\\'")}')" class="bg-yellow-500 text-black px-10 py-3 font-black uppercase rounded-full hover:scale-105 transition">Telegram юбориш</button>
+                    <div class="mt-12 p-6 bg-white/5 border-t-2 border-yellow-500 text-center rounded-xl">
+                        <p class="text-xs font-bold mb-4">ДЎСТЛАРГА УЛАШИНГ</p>
+                        <button onclick="sharePost('${post.title.replace(/'/g, "\\'")}')" class="bg-yellow-500 text-black px-8 py-3 font-black uppercase rounded-full text-xs">Telegram</button>
                     </div>
                 </div>
             `;
@@ -152,19 +151,16 @@
 
         function loadSideMenu() {
             const side = document.getElementById('side-list');
-            side.innerHTML = newsData.slice(0, 8).map((post) => {
-                const realIdx = newsData.findIndex(p => p.title === post.title);
-                return `
-                <div onclick="showSinglePost(${realIdx})" class="group cursor-pointer border-b border-white/5 pb-4 transition hover:pl-2">
-                    <p class="text-[9px] font-black text-yellow-500 mb-1 uppercase">${post.date}</p>
-                    <h4 class="text-sm font-bold leading-snug group-hover:text-yellow-500 transition">${post.title}</h4>
-                </div>`;
-            }).join('');
+            side.innerHTML = newsData.slice(0, 10).map((post, idx) => `
+                <div onclick="showSinglePost(${idx})" class="cursor-pointer border-b border-white/5 pb-2">
+                    <p class="text-[8px] text-yellow-500 uppercase">${post.date}</p>
+                    <h4 class="text-sm font-medium line-clamp-1 hover:text-yellow-500">${post.title}</h4>
+                </div>`).join('');
         }
 
         function searchPosts() {
-            const query = document.getElementById('searchBar').value.toLowerCase();
-            const filtered = newsData.filter(p => p.title.toLowerCase().includes(query));
+            const q = document.getElementById('searchBar').value.toLowerCase();
+            const filtered = newsData.filter(p => p.title.toLowerCase().includes(q));
             displayPosts(filtered);
         }
 
