@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Universal Admin Pro - Full Control</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+    <style>
+        body { background: #010409; font-family: 'Inter', sans-serif; color: white; }
+        .ql-container { height: 350px; background: white; color: black; border-radius: 0 0 12px 12px; }
+        .ql-toolbar { background: #f0f0f0; border-radius: 12px 12px 0 0; border: none !important; }
+        .admin-card { background: #0d1117; border: 1px solid #30363d; border-radius: 20px; padding: 24px; }
+        input, select, textarea { background: #000 !important; color: white !important; border: 1px solid #30363d !important; }
+        .ql-editor { font-size: 18px; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-7xl mx-auto">
+        <header class="flex justify-between items-center mb-8 border-b border-gray-800 pb-4">
+            <h1 class="text-2xl font-black text-yellow-500 italic">UNIVERSAL ADMIN <span class="text-white text-[10px] block not-italic font-normal">IFRAME & SOURCE SUPPORT</span></h1>
+            <button onclick="logout()" class="text-xs bg-red-600 px-4 py-2 rounded-full font-bold">ЧИҚИШ</button>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="admin-card space-y-4">
+                <h2 id="formTitle" class="text-yellow-500 font-bold uppercase text-xs mb-2 border-l-4 border-yellow-500 pl-2">Янги мақола</h2>
+                
+                <input type="text" id="postTitle" placeholder="Мақола сарлавҳаси..." class="w-full p-3 rounded-xl outline-none focus:border-yellow-600 font-bold text-lg">
+                
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                        <label class="text-[10px] text-gray-500 uppercase font-bold">Асосий расм</label>
+                        <input type="file" id="postFile" accept="image/*" onchange="encodeFile()" class="text-xs w-full">
+                    </div>
+                    <div class="space-y-1">
+                        <label class="text-[10px] text-gray-500 uppercase font-bold">Рукн</label>
+                        <select id="postCategory" class="w-full p-2 rounded-lg outline-none text-sm">
+                            <option>Янгиликлар</option>
+                            <option>Табобат</option>
+                            <option>Шеърият</option>
+                            <option>Кулинария</option>
+                            <option>Балиқ ови</option>
+                            <option>Ҳикоялар</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-[10px] text-gray-500 uppercase font-bold text-blue-400">Манба (Ссылка)</label>
+                    <input type="text" id="postSource" placeholder="Масалан: https://kun.uz ёки Манба номи" class="w-full p-3 rounded-xl outline-none text-xs">
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-[10px] text-gray-500 uppercase font-bold text-red-500">Iframe (YouTube видео коди)</label>
+                    <textarea id="postIframe" placeholder='<iframe src="..."></iframe> кўринишида киритинг' class="w-full p-3 rounded-xl outline-none text-[10px] h-16"></textarea>
+                </div>
+
+                <div class="space-y-1">
+                    <label class="text-[10px] text-gray-500 uppercase font-bold">Мақола матни (Ранг ва катталик шу ерда)</label>
+                    <div id="editor"></div>
+                </div>
+                
+                <div class="flex gap-2 pt-4">
+                    <button id="mainBtn" onclick="savePost()" class="flex-1 bg-yellow-600 hover:bg-yellow-500 text-black font-black py-4 rounded-xl transition-all uppercase tracking-widest">Сайтга жойлаш</button>
+                    <button id="cancelBtn" onclick="resetForm()" class="hidden bg-gray-800 text-white px-6 py-4 rounded-xl text-xs font-bold uppercase">Бекор қилиш</button>
+                </div>
+            </div>
+
+            <div class="admin-card">
+                <h2 class="text-white font-bold uppercase text-xs mb-6 border-l-4 border-yellow-500 pl-3">Мақолалар архиви</h2>
+                <div id="archiveList" class="space-y-3 max-h-[900px] overflow-y-auto pr-2"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quill Муҳаррири созламалари
+        var quill = new Quill('#editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, false] }], // МАТН ҲАЖМИ
+                    ['bold', 'italic', 'underline'], 
+                    [{ 'color': [] }, { 'background': [] }], // МАТН РАНГИ
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }], 
+                    ['link', 'image', 'video'], 
+                    ['clean']
+                ]
+            }
+        });
+
+        let mediaData = { image: "" };
+        let editIndex = null;
+
+        function encodeFile() {
+            const file = document.getElementById('postFile').files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onloadend = () => { mediaData.image = reader.result; };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function savePost() {
+            const title = document.getElementById('postTitle').value;
+            const category = document.getElementById('postCategory').value;
+            const source = document.getElementById('postSource').value;
+            const iframe = document.getElementById('postIframe').value; // IFRAME КИЙМАТИ
+            const content = quill.root.innerHTML;
+            
+            if(!title || content === "<p><br></p>") {
+                alert("Сарлавҳа ва матнни тўлдиринг!");
+                return;
+            }
+
+            let posts = JSON.parse(localStorage.getItem('my_site_posts') || '[]');
+
+            const postObj = { 
+                title, category, source, iframe, content, 
+                image: mediaData.image, 
+                date: editIndex !== null ? posts[editIndex].date : new Date().toLocaleDateString() 
+            };
+
+            if (editIndex !== null) {
+                posts[editIndex] = postObj;
+                editIndex = null;
+            } else {
+                posts.push(postObj);
+            }
+
+            localStorage.setItem('my_site_posts', JSON.stringify(posts));
+            resetForm();
+            displayArchive();
+            alert("Мақола сақланди!");
+        }
+
+        function displayArchive() {
+            const posts = JSON.parse(localStorage.getItem('my_site_posts') || '[]');
+            const list = document.getElementById('archiveList');
+            list.innerHTML = posts.map((p, i) => ({...p, originalIndex: i}))
+                .reverse()
+                .map(p => `
+                    <div class="bg-black/50 border border-gray-800 p-4 rounded-xl flex justify-between items-center group">
+                        <div class="truncate mr-4">
+                            <p class="text-[9px] text-yellow-600 font-bold uppercase">${p.category}</p>
+                            <h3 class="text-sm font-bold truncate text-gray-200">${p.title}</h3>
+                        </div>
+                        <div class="flex gap-3">
+                            <button onclick="editPost(${p.originalIndex})" class="text-blue-400 text-[10px] font-bold">ТАҲРИР</button>
+                            <button onclick="deletePost(${p.originalIndex})" class="text-red-500 text-[10px] font-bold">ЎЧИРИШ</button>
+                        </div>
+                    </div>
+                `).join('');
+        }
+
+        function editPost(i) {
+            const posts = JSON.parse(localStorage.getItem('my_site_posts') || '[]');
+            const p = posts[i];
+            
+            document.getElementById('postTitle').value = p.title;
+            document.getElementById('postCategory').value = p.category;
+            document.getElementById('postSource').value = p.source;
+            document.getElementById('postIframe').value = p.iframe || ""; // IFRAME ТАҲРИРЛАШ
+            quill.root.innerHTML = p.content;
+            mediaData.image = p.image;
+            
+            editIndex = i;
+            document.getElementById('formTitle').innerText = "Таҳрирлаш режими";
+            document.getElementById('mainBtn').innerText = "Ўзгартиришни сақлаш";
+            document.getElementById('cancelBtn').classList.remove('hidden');
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        function resetForm() {
+            document.getElementById('postTitle').value = "";
+            document.getElementById('postSource').value = "";
+            document.getElementById('postIframe').value = "";
+            document.getElementById('postFile').value = "";
+            quill.root.innerHTML = "";
+            mediaData = { image: "" };
+            editIndex = null;
+            document.getElementById('formTitle').innerText = "Янги мақола";
+            document.getElementById('mainBtn').innerText = "Сайтга жойлаш";
+            document.getElementById('cancelBtn').classList.add('hidden');
+        }
+
+        function deletePost(i) {
+            if(confirm("Ўчирилсинми?")) {
+                let posts = JSON.parse(localStorage.getItem('my_site_posts') || '[]');
+                posts.splice(i, 1);
+                localStorage.setItem('my_site_posts', JSON.stringify(posts));
+                displayArchive();
+            }
+        }
+
+        function logout() { window.location.href = "index.html"; }
+        window.onload = displayArchive;
+    </script>
+</body>
+</html>
