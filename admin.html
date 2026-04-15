@@ -22,7 +22,7 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <div class="admin-card space-y-4">
-                <h2 class="text-yellow-500 font-bold uppercase text-xs mb-4">Янги мақола яратиш</h2>
+                <h2 id="formTitle" class="text-yellow-500 font-bold uppercase text-xs mb-4">Янги мақола яратиш</h2>
                 
                 <input type="text" id="postTitle" placeholder="Сарлавҳа..." class="w-full bg-black border border-gray-700 p-3 rounded-xl outline-none focus:border-yellow-600">
                 
@@ -39,18 +39,19 @@
 
                 <input type="text" id="postSource" placeholder="Манба (Ссылка)..." class="w-full bg-black border border-gray-700 p-3 rounded-xl outline-none text-xs">
                 
-                <select id="postCategory" class="w-full bg-black border border-gray-700 p-3 rounded-xl outline-none">
+                <select id="postCategory" class="w-full bg-black border border-gray-700 p-3 rounded-xl outline-none text-white">
                     <option>Янгиликлар</option>
                     <option>Табобат</option>
                     <option>Шеърият</option>
                     <option>Кулинария</option>
                     <option>Балиқ ови</option>
-                    <option>Хикоялар]</option>
+                    <option>Ҳикоялар</option>
                 </select>
 
                 <div id="editor"></div>
                 
-                <button onclick="savePost()" class="w-full bg-yellow-600 hover:bg-yellow-500 text-black font-black py-4 rounded-xl transition-all">САЙТГА ЖОЙЛАШ</button>
+                <button id="mainBtn" onclick="savePost()" class="w-full bg-yellow-600 hover:bg-yellow-500 text-black font-black py-4 rounded-xl transition-all">САЙТГА ЖОЙЛАШ</button>
+                <button id="cancelBtn" onclick="resetForm()" class="w-full bg-gray-700 text-white py-2 rounded-xl hidden">БЕКОР ҚИЛИШ</button>
             </div>
 
             <div class="admin-card">
@@ -61,6 +62,7 @@
     </div>
 
     <script>
+        // Quill муҳарририни созлаш
         var quill = new Quill('#editor', {
             theme: 'snow',
             modules: { toolbar: [ [{ 'header': [1, 2, false] }], ['bold', 'italic', 'underline'], [{ 'color': [] }, { 'background': [] }], [{ 'list': 'ordered'}, { 'list': 'bullet' }], ['clean'] ] }
@@ -69,21 +71,40 @@
         let mediaData = { image: "", video: "" };
         let editIndex = null;
 
+        // Файлларни (расм/видео) кодга айлантириш
         function encodeFile(type) {
-            const file = document.getElementById(type === 'image' ? 'postFile' : 'postVideo').files[0];
-            const reader = new FileReader();
-            reader.onloadend = () => { mediaData[type] = reader.result; };
-            if (file) reader.readAsDataURL(file);
+            const input = document.getElementById(type === 'image' ? 'postFile' : 'postVideo');
+            const file = input.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onloadend = () => { mediaData[type] = reader.result; };
+                reader.readAsDataURL(file);
+            }
         }
 
+        // Сақлаш функцияси
         function savePost() {
             const title = document.getElementById('postTitle').value;
             const category = document.getElementById('postCategory').value;
             const source = document.getElementById('postSource').value;
             const content = quill.root.innerHTML;
-            const posts = JSON.parse(localStorage.getItem('my_site_posts') || '[]');
+            
+            if(!title || content === "<p><br></p>") {
+                alert("Илтимос, сарлавҳа ва матнни киритинг!");
+                return;
+            }
 
-            const postObj = { title, category, source, content, image: mediaData.image, video: mediaData.video, date: new Date().toLocaleDateString() };
+            let posts = JSON.parse(localStorage.getItem('my_site_posts') || '[]');
+
+            const postObj = { 
+                title, 
+                category, 
+                source, 
+                content, 
+                image: mediaData.image, 
+                video: mediaData.video, 
+                date: editIndex !== null ? posts[editIndex].date : new Date().toLocaleDateString() 
+            };
 
             if (editIndex !== null) {
                 posts[editIndex] = postObj;
@@ -93,42 +114,72 @@
             }
 
             localStorage.setItem('my_site_posts', JSON.stringify(posts));
-            alert("Сақланди!");
-            location.reload();
+            resetForm();
+            displayArchive();
+            alert("Мақола муваффақиятли сақланди!");
         }
 
+        // Рўйхатни кўрсатиш (Хато тўғирланган жойи шу ерда)
         function displayArchive() {
             const posts = JSON.parse(localStorage.getItem('my_site_posts') || '[]');
             const list = document.getElementById('archiveList');
-            list.innerHTML = posts.map((p, i) => `
-                <div class="bg-black/40 border border-gray-800 p-4 rounded-xl flex justify-between items-center">
-                    <div class="truncate mr-4">
-                        <p class="text-[10px] text-yellow-600 font-bold">${p.category}</p>
-                        <h3 class="text-sm font-bold truncate">${p.title}</h3>
+            
+            // Биз рўйхатни тескари кўрсатамиз, лекин асл индексини сақлаб қоламиз
+            list.innerHTML = posts.map((p, i) => ({...p, originalIndex: i}))
+                .reverse()
+                .map(p => `
+                    <div class="bg-black/40 border border-gray-800 p-4 rounded-xl flex justify-between items-center">
+                        <div class="truncate mr-4">
+                            <p class="text-[10px] text-yellow-600 font-bold">${p.category}</p>
+                            <h3 class="text-sm font-bold truncate">${p.title}</h3>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="editPost(${p.originalIndex})" class="text-blue-500 text-[10px] font-bold uppercase hover:underline">Таҳрир</button>
+                            <button onclick="deletePost(${p.originalIndex})" class="text-red-500 text-[10px] font-bold uppercase hover:underline">Ўчириш</button>
+                        </div>
                     </div>
-                    <div class="flex gap-2">
-                        <button onclick="editPost(${i})" class="text-blue-500 text-[10px] font-bold uppercase">Таҳрир</button>
-                        <button onclick="deletePost(${i})" class="text-red-500 text-[10px] font-bold uppercase">Ўчириш</button>
-                    </div>
-                </div>
-            `).reverse().join('');
+                `).join('');
         }
 
+        // Таҳрирлаш режимига ўтиш
         function editPost(i) {
             const posts = JSON.parse(localStorage.getItem('my_site_posts') || '[]');
             const p = posts[i];
+            
             document.getElementById('postTitle').value = p.title;
             document.getElementById('postCategory').value = p.category;
             document.getElementById('postSource').value = p.source;
             quill.root.innerHTML = p.content;
             mediaData.image = p.image;
             mediaData.video = p.video;
+            
             editIndex = i;
+            
+            document.getElementById('formTitle').innerText = "Мақолани таҳрирлаш";
+            document.getElementById('mainBtn').innerText = "ЎЗГАРТИРИШНИ САҚЛАШ";
+            document.getElementById('cancelBtn').classList.remove('hidden');
+            
             window.scrollTo({top: 0, behavior: 'smooth'});
         }
 
+        // Формани тозалаш
+        function resetForm() {
+            document.getElementById('postTitle').value = "";
+            document.getElementById('postSource').value = "";
+            document.getElementById('postFile').value = "";
+            document.getElementById('postVideo').value = "";
+            quill.root.innerHTML = "";
+            mediaData = { image: "", video: "" };
+            editIndex = null;
+            
+            document.getElementById('formTitle').innerText = "Янги мақола яратиш";
+            document.getElementById('mainBtn').innerText = "САЙТГА ЖОЙЛАШ";
+            document.getElementById('cancelBtn').classList.add('hidden');
+        }
+
+        // Ўчириш
         function deletePost(i) {
-            if(confirm("Ўчирилсинми?")) {
+            if(confirm("Ростан ҳам ушбу мақолани ўчирмоқчимисиз?")) {
                 let posts = JSON.parse(localStorage.getItem('my_site_posts') || '[]');
                 posts.splice(i, 1);
                 localStorage.setItem('my_site_posts', JSON.stringify(posts));
