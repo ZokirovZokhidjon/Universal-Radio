@@ -13,20 +13,21 @@
             font-family: Tahoma, Geneva, sans-serif; 
             margin: 0; padding: 0; 
         }
-        #container { width: 100%; max-width: 800px; margin: 0 auto; position: relative; }
+        #container { width: 100%; max-width: 900px; margin: 0 auto; position: relative; }
 
         /* HEADER */
         #header { 
-            width: 100%; min-height: 180px; 
+            width: 100%; 
             background: #0d1a1d; 
             position: relative; 
             border-bottom: 2px solid #15d2ef;
-            padding: 20px;
+            padding: 15px 20px;
             display: flex;
-            flex-direction: column;
+            flex-direction: column-reverse; /* Мобилда лого тепада, меню пастда */
             align-items: center;
+            gap: 15px;
         }
-        #logo { width: 100px; height: auto; margin-top: 10px; border-radius: 10px; }
+        #logo { width: 80px; height: 80px; object-fit: cover; border-radius: 15px; border: 2px solid #15d2ef; }
 
         /* МЕНЮ */
         .menu { 
@@ -34,28 +35,28 @@
             flex-wrap: wrap; 
             justify-content: center; 
             list-style: none; 
-            gap: 10px;
+            gap: 5px;
             z-index: 100;
         }
-        .menu li a { color: #15d2ef; font-size: 11px; font-weight: bold; text-decoration: none; padding: 5px 10px; display: block; transition: 0.3s; }
+        .menu li a { color: #15d2ef; font-size: 11px; font-weight: bold; text-decoration: none; padding: 8px 12px; display: block; transition: 0.3s; text-transform: uppercase; }
         .menu li a:hover { color: #fff; background: rgba(21, 210, 239, 0.1); border-radius: 4px; }
-        .menu li.line { width: 1px; height: 20px; background: rgba(21, 210, 239, 0.3); }
+        .menu li.line { width: 1px; height: 15px; background: rgba(21, 210, 239, 0.3); align-self: center; }
 
         /* Dropdown */
         .dropdown { position: relative; }
         .dropdown-content {
             display: none;
             position: absolute;
-            top: 100%; left: 0;
+            top: 100%; right: 0; /* Мобилда экрандан чиқиб кетмаслиги учун */
             background-color: #0d1a1d;
-            min-width: 180px;
+            min-width: 160px;
             box-shadow: 0px 8px 16px rgba(0,0,0,0.8);
             border: 1px solid #15d2ef;
             z-index: 1000;
             border-radius: 8px;
             overflow: hidden;
         }
-        .dropdown-content a { color: #fff !important; padding: 12px !important; border-bottom: 1px solid #15d2ef22; font-size: 10px; }
+        .dropdown-content a { color: #fff !important; padding: 12px !important; border-bottom: 1px solid #15d2ef22; font-size: 11px !important; }
         .dropdown-content a:hover { background: #15d2ef22; }
         .dropdown:hover .dropdown-content { display: block; }
 
@@ -66,20 +67,25 @@
             gap: 20px; 
             padding: 20px; 
         }
+        
+        /* КОМПЬЮТЕР УЧУН МОСЛАШ (Desktop) */
         @media (min-width: 768px) {
-            .main-content { flex-direction: row; }
+            #header { flex-direction: row; justify-content: space-between; height: 120px; }
+            .main-content { flex-direction: row; align-items: flex-start; }
             .left-pan { width: 60%; }
             .right-pan { width: 40%; }
-            #header { flex-direction: row; justify-content: space-between; align-items: flex-start; }
-            #logo { margin-top: 0; }
+            #logo { width: 100px; height: 100px; }
+            .dropdown-content { left: 0; right: auto; }
         }
 
-        .card { background: #0d1a1d; border: 1px solid #15d2ef22; padding: 15px; border-radius: 8px; }
+        .card { background: #0d1a1d; border: 1px solid #15d2ef22; padding: 15px; border-radius: 12px; }
+        
         #footer { 
-            width: 100%; height: 60px; 
+            width: 100%; 
             background: #0d1a1d;
             border-top: 1px solid #15d2ef22;
-            text-align: center; color: #555; font-size: 10px; padding-top: 20px;
+            text-align: center; color: #555; font-size: 10px; padding: 20px 0;
+            margin-top: 20px;
         }
     </style>
 </head>
@@ -97,7 +103,7 @@
             <li class="dropdown">
                 <a href="#" style="color: #fff; background: rgba(21, 210, 239, 0.2); border-radius: 4px;">РУКНЛАР ▼</a>
                 <div class="dropdown-content">
-                    <a href="news.html uppercase">ЯНГИЛИКЛАР</a>
+                    <a href="news.html">ЯНГИЛИКЛАР</a>
                     <a href="hikoyalar.html">ҲИКОЯЛАР</a>
                     <a href="med.html">ТАБОБАТ</a>
                     <a href="poetic.html">ШЕЪРИЯТ</a>
@@ -114,7 +120,7 @@
             <h1 class="text-cyan-500 font-black italic text-xl mb-4 uppercase tracking-tighter">Welcome Studio</h1>
             <div class="card border-l-4 border-cyan-500 shadow-lg shadow-cyan-500/5">
                 <div class="flex flex-col sm:flex-row gap-4 items-center">
-                    <img src="logo.jpg" class="w-20 h-20 rounded-full border-2 border-cyan-500 shadow-cyan-500/20 shadow-lg">
+                    <img src="logo.jpg" class="w-20 h-20 rounded-full border-2 border-cyan-500 shadow-cyan-500/20 shadow-lg object-cover">
                     <div class="text-center sm:text-left">
                         <h2 class="text-cyan-400 font-bold text-lg mb-1">Universal Studio</h2>
                         <p class="text-[11px] text-gray-400 leading-relaxed">
@@ -197,5 +203,6 @@
         }
     });
 </script>
+
 </body>
 </html>
