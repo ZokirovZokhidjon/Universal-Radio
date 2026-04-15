@@ -1,161 +1,163 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Табобат - Universal Studio</title>
+    <title>Табобат олами - Universal Radio</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background: #010409; color: #e6edf3; font-family: 'Segoe UI', sans-serif; scroll-behavior: smooth; }
-        .glass-card { background: #0d1117; border: 1px solid #30363d; border-radius: 12px; }
-        .stat-card { background: #0d1117; border: 1px solid #30363d; border-radius: 12px; text-align: center; }
+        html { scroll-behavior: smooth; }
+        body { background: #010409; color: #e6edf3; font-family: 'Inter', sans-serif; }
         
-        .post-image { 
-            width: 100%; 
-            height: auto; 
-            max-height: 500px; 
-            object-fit: cover; 
-            border-radius: 15px; 
-            border: 3px groove gold; 
-            box-shadow: 0 10px 20px rgba(255, 215, 0, 0.15); 
-            margin-bottom: 20px; 
+        /* 1. МАҚОЛА ИЧИДАГИ РАСМЛАР (ДАСТЛАБКИ КИЧИК ҲАЖМ) */
+        .prose-content img {
+            width: 120px !important; /* Жуда ихчам */
+            height: 120px !important;
+            object-fit: cover;
+            border-radius: 15px;
+            cursor: zoom-in; /* Босса бўладиган белги */
+            border: 2px solid #10b981;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin: 10px;
+        }
+        .prose-content img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
         }
 
-        .sidebar-item { border-bottom: 1px solid #30363d; padding: 12px 0; transition: 0.3s; cursor: pointer; display: block; text-decoration: none; }
-        .sidebar-item:hover { background: rgba(255,255,255,0.05); padding-left: 8px; }
-        
-        .gold-text { color: #ffcc00; }
-        article:target { border-color: #ffcc00; }
-
-        /* Мобил созламалар */
-        @media (max-width: 768px) {
-            .post-content { font-size: 16px !important; line-height: 1.6; }
-            .post-title { font-size: 22px !important; }
-            .header-title { font-size: 1.5rem !important; }
+        /* 2. РАСМ КАТТАЛАШГАНДАГИ ЭФФЕКТ (FULL SCREEN) */
+        .img-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none; /* Одатда яширин */
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            cursor: zoom-out;
+            backdrop-filter: blur(10px);
         }
+        .img-overlay img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 20px;
+            border: 3px solid #10b981;
+            box-shadow: 0 0 50px rgba(16, 185, 129, 0.5);
+            animation: zoomIn 0.3s ease-out;
+        }
+        @keyframes zoomIn {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* БОШҚА ДИЗАЙН ЭЛЕМЕНТЛАРИ */
+        .card-vivid {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-left: 5px solid #10b981;
+            border-radius: 1.5rem;
+            transition: 0.3s;
+        }
+        .vivid-btn {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 3px solid #10b981;
+            padding: 12px;
+            margin-bottom: 8px;
+            display: block;
+            color: #34d399;
+            font-weight: 600;
+            border-radius: 0 10px 10px 0;
+            transition: 0.3s;
+            text-decoration: none;
+        }
+        .vivid-btn:hover { background: #10b981; color: white; padding-left: 20px; }
     </style>
 </head>
-<body class="p-3 md:p-8">
+<body class="p-4 md:p-10">
 
-    <div class="max-w-7xl mx-auto">
-        <header class="flex flex-col md:flex-row justify-between items-center gap-4 mb-8">
-            <div class="text-center md:text-left">
-                <h1 class="header-title text-xl md:text-3xl font-black tracking-tighter uppercase">UNIVERSAL <span class="gold-text">STUDIO</span></h1>
-                <p class="text-[9px] md:text-xs text-gray-500 uppercase tracking-[3px]">Табобат бўлими</p>
-            </div>
-            <a href="index.html" class="w-full md:w-auto text-center bg-[#161b22] px-6 py-2 md:py-3 rounded-xl text-xs font-bold border border-[#30363d] hover:bg-white hover:text-black transition uppercase">Асосий саҳифа</a>
+    <div id="image-viewer" class="img-overlay" onclick="closeImage()">
+        <img id="full-image" src="">
+    </div>
+
+    <div class="max-w-6xl mx-auto">
+        <header class="flex justify-between items-center mb-10">
+            <a href="index.html" class="text-emerald-500 font-bold flex items-center gap-2 hover:opacity-80">
+                <span>←</span> Орқага
+            </a>
+            <div class="text-[10px] text-emerald-800 font-black tracking-[0.4em]">UNIVERSAL STUDIO</div>
         </header>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-6 mb-8">
-            <div class="stat-card p-4 md:p-6 border-b-2 border-blue-500">
-                <p class="text-[10px] md:text-xs text-gray-500 uppercase font-bold mb-1">Мақолалар</p>
-                <h2 id="total-count" class="text-xl md:text-3xl font-black text-blue-500">0</h2>
-            </div>
-            <div class="stat-card p-4 md:p-6 border-b-2 border-purple-500">
-                <p class="text-[10px] md:text-xs text-gray-500 uppercase font-bold mb-1">Рукн</p>
-                <h2 class="text-xl md:text-3xl font-black text-purple-500">Табобат</h2>
-            </div>
-            <div class="stat-card p-4 md:p-6 border-b-2 border-green-500">
-                <p class="text-[10px] md:text-xs text-gray-500 uppercase font-bold mb-1">Сана</p>
-                <h2 class="text-lg md:text-2xl font-black text-green-500" id="current-date"></h2>
-            </div>
-        </div>
+        <h1 class="text-5xl md:text-7xl font-black mb-14 text-white italic tracking-tighter">
+            🌿 Табобат <span class="text-emerald-500">Олами</span>
+        </h1>
 
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-10">
-            <div class="lg:col-span-2 order-2 lg:order-1" id="med-posts-container"></div>
+        <div class="flex flex-col lg:flex-row gap-10">
+            <main class="w-full lg:w-3/4 order-2 lg:order-1" id="medical-articles">
+                </main>
 
-            <div class="lg:col-span-1 order-1 lg:order-2">
-                <div class="glass-card p-5 md:p-6 sticky top-6">
-                    <h3 class="text-sm md:text-lg font-bold uppercase gold-text mb-4 flex items-center gap-2">
-                        <i class="fas fa-bolt text-xs"></i> Сўнгги хабарлар
-                    </h3>
-                    <div id="sidebar-posts" class="max-h-[400px] overflow-y-auto pr-2">
-                        </div>
+            <aside class="w-full lg:w-1/4 order-1 lg:order-2">
+                <div class="bg-[#0d1117] p-6 rounded-3xl border border-gray-800 sticky top-5 shadow-2xl">
+                    <h3 class="text-emerald-500 text-[11px] font-black uppercase tracking-widest mb-6 border-b border-emerald-900/30 pb-2">Мундарижа</h3>
+                    <nav id="sidebar-nav"></nav>
                 </div>
-            </div>
+            </aside>
         </div>
     </div>
 
     <script>
-        // Бу ерга мақолаларингизни қўшинг. Энди бу ҳаммада бир хил кўринади.
-        const postsData = [
-            {
-                id: 1,
-                title: "Мануал терапиянинг фойдалари",
-                category: "Табобат",
-                date: "14.04.2026",
-                image: "https://via.placeholder.com/800x500", // Расм линки
-                content: "Мануал терапия умуртқа поғонаси ва бўғимлардаги оғриқларни қолдиришда энг самарали усуллардан биридир..."
-            },
-            {
-                id: 2,
-                title: "Саломатлик сирлари",
-                category: "Табобат",
-                date: "13.04.2026",
-                image: "", // Расм бўлмаса бўш қолдиринг
-                content: "Тўғри овқатланиш ва вақтида дам олиш табобатнинг асосий қоидаларидандир."
+        // МАҚОЛАЛАРНИ ЮКЛАШ
+        function loadMedicalPosts() {
+            const posts = JSON.parse(localStorage.getItem('my_site_posts') || '[]');
+            const container = document.getElementById('medical-articles');
+            const nav = document.getElementById('sidebar-nav');
+            const medPosts = posts.filter(p => p.category === "Табобат");
+
+            if(medPosts.length > 0) {
+                container.innerHTML = medPosts.reverse().map((p, index) => {
+                    const id = `post-${index}`;
+                    
+                    const link = document.createElement('a');
+                    link.href = `#${id}`;
+                    link.className = "vivid-btn";
+                    link.innerHTML = `🍀 ${p.title}`;
+                    nav.prepend(link);
+
+                    return `
+                        <article id="${id}" class="card-vivid p-6 md:p-10 mb-10">
+                            <div class="flex items-center gap-4 mb-8">
+                                <div class="w-12 h-12 bg-emerald-500/20 rounded-full flex items-center justify-center text-emerald-500 font-bold">U</div>
+                                <div>
+                                    <h2 class="text-2xl md:text-3xl font-black text-white">${p.title}</h2>
+                                    <span class="text-[10px] text-emerald-600 font-bold uppercase tracking-widest">${p.date}</span>
+                                </div>
+                            </div>
+                            <div class="prose-content text-gray-300 text-lg leading-relaxed" onclick="checkImageClick(event)">
+                                ${p.content}
+                            </div>
+                        </article>
+                    `;
+                }).join('');
             }
-        ];
-
-        document.getElementById('current-date').innerText = new Date().toLocaleDateString('uz-UZ');
-
-        function loadMedPage() {
-            const container = document.getElementById('med-posts-container');
-            const sidebar = document.getElementById('sidebar-posts');
-            const totalLabel = document.getElementById('total-count');
-
-            // Фақат "Табобат" категориясини олиш
-            const medPosts = postsData.filter(p => p.category === 'Табобат').reverse();
-            totalLabel.innerText = medPosts.length;
-
-            if (medPosts.length === 0) {
-                container.innerHTML = "<p class='text-gray-600 text-center py-10 italic'>Ҳозирча мақолалар йўқ.</p>";
-                return;
-            }
-
-            // Мақолаларни чиқариш
-            container.innerHTML = medPosts.map(post => `
-                <article id="post-${post.id}" class="glass-card p-5 md:p-8 mb-6 md:mb-10 transition-all border-l-4 border-transparent hover:border-blue-500">
-                    <p class="text-[10px] md:text-xs text-gray-500 mb-3 font-mono uppercase tracking-widest italic">
-                        <i class="far fa-calendar-alt"></i> ${post.date}
-                    </p>
-                    <h2 class="post-title text-xl md:text-4xl font-extrabold mb-5 text-white leading-tight">${post.title}</h2>
-                    
-                    ${post.image ? `<img src="${post.image}" class="post-image" alt="image">` : ''}
-                    
-                    <div class="post-content text-[17px] md:text-xl text-gray-300 leading-relaxed mb-8">
-                        ${post.content}
-                    </div>
-                    
-                    <div class="flex justify-between items-center border-t border-gray-800 pt-5">
-                        <button class="flex items-center gap-2 text-gray-500 hover:text-red-500 transition text-sm">
-                            <i class="far fa-heart"></i> <span class="hidden md:inline">Лайк</span>
-                        </button>
-                        <button onclick="sharePost('${post.title}', ${post.id})" class="flex items-center gap-2 text-gray-500 hover:text-blue-500 transition text-sm">
-                            <i class="fas fa-share-alt"></i> <span class="hidden md:inline">Улашиш</span>
-                        </button>
-                    </div>
-                </article>
-            `).join('');
-
-            // Ён панелни тўлдириш
-            sidebar.innerHTML = medPosts.slice(0, 10).map(post => `
-                <a href="#post-${post.id}" class="sidebar-item group">
-                    <p class="text-[9px] text-gray-600 mb-1">${post.date}</p>
-                    <h4 class="text-[13px] md:text-[15px] font-semibold text-gray-400 group-hover:text-yellow-500 transition leading-snug">
-                        ${post.title}
-                    </h4>
-                </a>
-            `).join('');
         }
 
-        function sharePost(title, id) {
-            const url = window.location.href.split('#')[0] + '#post-' + id;
-            window.open(`https://t.me/share/url?url=${url}&text=${encodeURIComponent(title)}`, '_blank');
+        // РАСМНИ БОСИЛГАНИНИ ТЕКШИРИШ
+        function checkImageClick(event) {
+            if (event.target.tagName === 'IMG') {
+                const fullImg = document.getElementById('full-image');
+                const viewer = document.getElementById('image-viewer');
+                fullImg.src = event.target.src;
+                viewer.style.display = 'flex';
+                document.body.style.overflow = 'hidden'; // Орқа фонд қимирламайди
+            }
         }
 
-        window.onload = loadMedPage;
+        // КАТТА РАСМНИ ЁПИШ
+        function closeImage() {
+            document.getElementById('image-viewer').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        window.onload = loadMedicalPosts;
     </script>
 </body>
 </html>

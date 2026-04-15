@@ -2,142 +2,198 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <title>Universal Studio - Янгиликлар</title>
+    <title>Universal News Portal - Modern Radio Style</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background: #010409; color: #e6edf3; font-family: 'Segoe UI', sans-serif; scroll-behavior: smooth; }
-        
-        .stat-box { background: #0d1117; border: 1px solid #30363d; border-radius: 12px; padding: 10px; text-align: center; }
-        
-        .glass-card { 
-            background: #0d1117; border: 1px solid #30363d; border-radius: 15px; 
-            margin-bottom: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            transition: transform 0.2s ease;
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Roboto:wght@300;400;700&display=swap');
+
+        body { 
+            background: #0a0a0a; 
+            color: #ffffff; 
+            font-family: 'Roboto', sans-serif; 
+            scroll-behavior: smooth; 
         }
 
-        .post-content { font-size: 15px; line-height: 1.6; color: #d1d5db; }
-        .post-content p { margin-bottom: 12px; }
+        h1, h2, h3, .font-heading { font-family: 'Montserrat', sans-serif; }
 
-        /* Расмларни жиловлаш */
-        .main-img { 
-            width: 100%; 
-            height: auto; 
-            max-height: 350px; /* Компьютерда ҳаддан ташқари катта бўлиб кетмаслиги учун */
-            object-fit: cover; 
-            border-radius: 10px; 
-            margin: 12px 0; 
-            border: 1px solid #30363d; 
+        /* Тезкор хабарлар сатри */
+        .ticker-wrapper {
+            background: #ffcc00;
+            color: #000;
+            padding: 8px 0;
+            overflow: hidden;
+            font-weight: bold;
+            font-size: 13px;
+            text-transform: uppercase;
         }
 
-        audio { width: 100%; filter: invert(1); height: 32px; margin: 12px 0; border-radius: 8px; }
-        .gold-text { color: #ffcc00; }
-
-        .search-input {
-            background: #161b22; border: 1px solid #30363d; border-radius: 10px;
-            padding: 8px 15px; color: white; font-size: 14px; outline: none;
-            width: 100%; transition: all 0.3s;
+        .ticker-text {
+            display: inline-block;
+            white-space: nowrap;
+            animation: ticker 30s linear infinite;
         }
-        .search-input:focus { border-color: #ffcc00; box-shadow: 0 0 10px rgba(255, 204, 0, 0.2); }
 
-        /* Мобил созламалар */
-        @media (max-width: 768px) {
-            .post-title { font-size: 1.2rem !important; line-height: 1.3 !important; }
-            .post-content { font-size: 14px !important; }
-            .main-img { max-height: 250px; } /* Мобилда расм баландлигини янада қисқартириш */
-            .stat-box h3 { font-size: 1.1rem !important; }
-            header h1 { font-size: 1.5rem !important; }
+        @keyframes ticker {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* Замонавий Карталар */
+        .news-card {
+            background: #141414;
+            border-bottom: 4px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .news-card:hover {
+            border-bottom-color: #ffcc00;
+            transform: translateY(-5px);
+            background: #1c1c1c;
+        }
+
+        .main-img {
+            width: 100%;
+            aspect-ratio: 16/9;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .gold-gradient {
+            background: linear-gradient(90deg, #ffcc00, #ff9900);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Овоз бериш тўлқини (Плейер учун декорация) */
+        .audio-wave {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            height: 20px;
+        }
+
+        .wave-bar {
+            width: 3px;
+            background: #ffcc00;
+            animation: wave 1s infinite alternate;
+        }
+
+        @keyframes wave {
+            from { height: 4px; }
+            to { height: 15px; }
+        }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
     </style>
 </head>
-<body class="p-3 md:p-8">
-    <div class="max-w-6xl mx-auto">
-        <header class="flex flex-col md:flex-row justify-between items-center mb-6 border-b border-gray-800 pb-5 gap-4">
-            <div class="text-center md:text-left">
-                <h1 class="text-2xl md:text-3xl font-bold uppercase tracking-tighter">Universal <span class="gold-text">Studio</span></h1>
-                <p class="text-[8px] text-gray-500 uppercase tracking-[3px]">Янгиликлар Портали</p>
+<body>
+
+    <div class="ticker-wrapper">
+        <div class="ticker-text" id="ticker-content">
+            +++ UNIVERSAL STUDIO: ЭНГ СЎНГГИ ЖОНЛИ ЭФИРЛАР ВА ТЕЗКОР ХАБАРЛАР ПОРТАЛИ +++ МУҲИМ ЯНГИЛИКЛАРНИ ЎТКАЗИБ ЮБОРМАНГ +++ 24/7 ОНЛАЙН РАДИО +++
+        </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 py-6">
+        
+        <header class="flex flex-col lg:flex-row justify-between items-end mb-10 border-b-4 border-yellow-500 pb-6 gap-6">
+            <div>
+                <h1 class="text-4xl md:text-6xl font-black uppercase tracking-tighter italic">
+                    Universal <span class="text-yellow-500">News</span>
+                </h1>
+                <p class="text-sm text-gray-400 font-bold tracking-[5px] mt-2 uppercase">Global Media Studio</p>
             </div>
             
-            <div class="relative w-full md:w-72">
-                <input type="text" id="searchBar" onkeyup="searchPosts()" placeholder="Қидириш..." class="search-input">
-                <i class="fas fa-search absolute right-3 top-2.5 text-gray-500 text-sm"></i>
+            <div class="flex flex-col items-end gap-4 w-full lg:w-auto">
+                <div class="relative w-full md:w-80">
+                    <input type="text" id="searchBar" onkeyup="searchPosts()" placeholder="Мақола қидириш..." 
+                        class="w-full bg-white/5 border-b-2 border-gray-700 py-2 px-4 focus:border-yellow-500 outline-none transition-all">
+                    <i class="fas fa-search absolute right-3 top-3 text-gray-500"></i>
+                </div>
+                <div class="flex gap-3">
+                    <a href="index.html" class="bg-yellow-500 text-black px-6 py-2 text-xs font-black uppercase hover:bg-white transition">Бош саҳифа</a>
+                    <div id="stat-total-box" class="bg-white/10 px-4 py-2 text-xs font-bold border-l-2 border-yellow-500">
+                        POSTS: <span id="stat-total" class="text-yellow-500">0</span>
+                    </div>
+                </div>
             </div>
-
-            <a href="index.html" class="w-full md:w-auto text-center bg-[#161b22] px-5 py-2 rounded-lg border border-[#30363d] text-[10px] font-bold hover:border-yellow-500 transition-all uppercase">Асосий Саҳифа</a>
         </header>
 
-        <div class="grid grid-cols-3 gap-3 md:gap-4 mb-6">
-            <div class="stat-box">
-                <p class="text-[8px] text-gray-500 uppercase font-bold mb-1">Жами</p>
-                <h3 id="stat-total" class="text-lg md:text-2xl font-black text-blue-500">0</h3>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <div class="lg:col-span-3 order-2 lg:order-1">
+                <h3 class="text-xl font-black mb-6 border-b-2 border-yellow-500 inline-block">LIVE FEED</h3>
+                <div id="side-list" class="space-y-6">
+                    </div>
             </div>
-            <div class="stat-box">
-                <p class="text-[8px] text-gray-500 uppercase font-bold mb-1">Аудио</p>
-                <h3 id="stat-audio" class="text-lg md:text-2xl font-black text-purple-500">0</h3>
-            </div>
-            <div class="stat-box">
-                <p class="text-[8px] text-gray-500 uppercase font-bold mb-1">Бугун</p>
-                <h3 id="current-date" class="text-[10px] md:text-sm font-bold text-green-500"></h3>
-            </div>
-        </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            <div class="lg:col-span-3 order-2 lg:order-1" id="news-list">
-                </div>
-
-            <div class="lg:col-span-1 order-1 lg:order-2">
-                <div class="glass-card p-4 sticky top-5">
-                    <h3 class="text-[10px] font-bold gold-text uppercase mb-3 border-l-4 border-yellow-500 pl-2">Сўнгги хабарлар</h3>
-                    <div id="side-list" class="space-y-3 max-h-[400px] overflow-y-auto pr-1">
-                        </div>
-                </div>
+            <div class="lg:col-span-9 order-1 lg:order-2">
+                <div id="news-list" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    </div>
             </div>
+
         </div>
     </div>
 
     <script>
-        document.getElementById('current-date').innerText = new Date().toLocaleDateString('uz-UZ');
-
         const storageKey = 'my_site_posts'; 
         const savedPosts = JSON.parse(localStorage.getItem(storageKey) || '[]');
         let newsData = [...savedPosts].reverse(); 
 
-        const list = document.getElementById('news-list');
-        const side = document.getElementById('side-list');
-
-        function searchPosts() {
-            const query = document.getElementById('searchBar').value.toLowerCase();
-            const filtered = newsData.filter(p => p.title.toLowerCase().includes(query) || (p.content || p.body).toLowerCase().includes(query));
-            displayPosts(filtered);
-        }
-
         function displayPosts(data) {
+            const list = document.getElementById('news-list');
             list.innerHTML = "";
+
             if(data.length === 0) {
-                list.innerHTML = "<div class='glass-card p-10 text-center text-gray-500 text-sm'>Маълумот топилмади...</div>";
+                list.innerHTML = "<div class='col-span-full py-20 text-center text-gray-500'>Ҳеч қандай мақола топилмади...</div>";
                 return;
             }
-            data.forEach((post) => {
-                const index = newsData.indexOf(post);
+
+            data.forEach((post, index) => {
+                const isAudio = post.media && (post.type?.includes('audio') || (typeof post.media === 'string' && post.media.includes('.mp3')));
+                const isFirst = index === 0 && document.getElementById('searchBar').value === "";
+
                 list.innerHTML += `
-                    <div class="glass-card p-4 md:p-6">
-                        <div class="mb-2">
-                            <span class="text-blue-400 font-mono text-[9px] uppercase">${post.date || 'Янги'} | ${post.category || 'Умумий'}</span>
-                        </div>
-                        <h2 class="post-title text-lg md:text-2xl font-bold text-white mb-3 leading-tight">${post.title}</h2>
-                        
-                        ${post.media && (post.type?.includes('image') || post.media.match(/\.(jpg|jpeg|png|gif|webp)$/i)) ? `<img src="${post.media}" class="main-img" alt="image">` : ''}
-                        
-                        ${post.media && (post.type?.includes('audio') || post.media.match(/\.(mp3|wav|ogg)$/i)) ? `<audio controls src="${post.media}"></audio>` : ''}
-                        
-                        <div class="post-content line-clamp-3 text-gray-400 italic">
-                            ${post.content || post.body || ''}
+                    <div class="news-card group relative ${isFirst ? 'md:col-span-2' : ''} p-4">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="bg-yellow-500 text-black px-2 py-0.5 text-[10px] font-black uppercase">${post.category || 'NEWS'}</span>
+                            <span class="text-[10px] text-gray-500 font-bold">${post.date}</span>
                         </div>
                         
-                        <div class="mt-4 pt-3 border-t border-gray-800 flex justify-between items-center">
-                            <button onclick="showSinglePost(${index})" class="text-yellow-500 text-[10px] font-bold uppercase hover:text-white transition">Ўқиш <i class="fas fa-chevron-right ml-1"></i></button>
-                            <button onclick="sharePost('${post.title}', ${index})" class="text-gray-600 hover:text-blue-500"><i class="fas fa-share-alt text-sm"></i></button>
+                        <div class="overflow-hidden mb-4">
+                            ${post.media && !isAudio ? `<img src="${post.media}" class="main-img group-hover:scale-105 transition duration-500" alt="img">` : 
+                            `<div class="main-img bg-gradient-to-br from-gray-800 to-black flex items-center justify-center">
+                                <i class="fas fa-broadcast-tower text-4xl text-gray-700"></i>
+                            </div>`}
+                        </div>
+
+                        <h2 class="${isFirst ? 'text-2xl md:text-4xl' : 'text-xl'} font-bold mb-3 leading-tight group-hover:text-yellow-500 transition cursor-pointer" onclick="showSinglePost(${index})">
+                            ${post.title}
+                        </h2>
+
+                        ${isAudio ? `
+                            <div class="bg-yellow-500/10 p-3 rounded flex items-center gap-4 mb-4">
+                                <div class="audio-wave">
+                                    <div class="wave-bar"></div><div class="wave-bar" style="animation-delay: 0.2s"></div><div class="wave-bar" style="animation-delay: 0.4s"></div>
+                                </div>
+                                <audio src="${post.media}" controls class="h-8 flex-1"></audio>
+                            </div>
+                        ` : ''}
+
+                        <p class="text-gray-400 text-sm mb-4 line-clamp-2">${post.content || post.body || ''}</p>
+                        
+                        <div class="flex justify-between items-center">
+                            <button onclick="showSinglePost(${index})" class="font-black text-[11px] uppercase tracking-widest text-yellow-500 hover:text-white transition">
+                                Батафсил <i class="fas fa-arrow-right ml-1"></i>
+                            </button>
+                            <button onclick="sharePost('${post.title}')" class="text-gray-600 hover:text-yellow-500 transition"><i class="fas fa-paper-plane"></i></button>
                         </div>
                     </div>
                 `;
@@ -146,19 +202,31 @@
 
         function showSinglePost(index) {
             const post = newsData[index];
+            const list = document.getElementById('news-list');
+            document.querySelector('.lg:col-span-3').style.display = 'none';
+            document.querySelector('.lg:col-span-9').className = 'lg:col-span-12';
+
             list.innerHTML = `
-                <div class="glass-card p-5 md:p-8 animate-fade-in">
-                    <button onclick="displayPosts(newsData)" class="text-yellow-500 text-[10px] mb-5 uppercase font-bold flex items-center gap-2">
-                        <i class="fas fa-arrow-left"></i> Рўйхатга қайтиш
+                <div class="max-w-4xl mx-auto animate-fade-in">
+                    <button onclick="location.reload()" class="bg-white/10 px-4 py-2 text-[10px] font-bold uppercase mb-8 hover:bg-yellow-500 hover:text-black transition">
+                        <i class="fas fa-chevron-left mr-2"></i> Орқага қайтиш
                     </button>
-                    <div class="text-blue-400 font-mono text-[10px] mb-2">${post.date} | ${post.category || 'Умумий'}</div>
-                    <h2 class="text-xl md:text-3xl font-extrabold text-white mb-5 leading-tight">${post.title}</h2>
                     
-                    ${post.media && (post.type?.includes('image') || post.media.match(/\.(jpg|jpeg|png|gif|webp)$/i)) ? `<img src="${post.media}" class="main-img" style="max-height: none;">` : ''}
-                    ${post.media && (post.type?.includes('audio') || post.media.match(/\.(mp3|wav|ogg)$/i)) ? `<audio controls src="${post.media}" class="mb-5"></audio>` : ''}
+                    <div class="mb-10">
+                        <span class="text-yellow-500 font-black uppercase tracking-[3px] text-xs">${post.category || 'REPORTAGE'}</span>
+                        <h1 class="text-3xl md:text-6xl font-black mt-4 leading-none">${post.title}</h1>
+                        <div class="text-gray-500 mt-4 font-bold text-sm border-l-4 border-yellow-500 pl-4">${post.date} | UNIVERSAL STUDIO SERVICE</div>
+                    </div>
+
+                    ${post.media && !(post.media.includes('.mp3')) ? `<img src="${post.media}" class="w-full rounded mb-10 shadow-2xl">` : ''}
                     
-                    <div class="post-content text-base md:text-lg text-gray-300">
+                    <div class="post-content text-xl leading-relaxed text-gray-300 space-y-6">
                         ${post.content || post.body}
+                    </div>
+
+                    <div class="mt-20 p-10 bg-white/5 border-t-4 border-yellow-500 text-center">
+                        <h4 class="font-bold mb-4 uppercase">Бу мақолани улашинг</h4>
+                        <button onclick="sharePost('${post.title}')" class="bg-yellow-500 text-black px-10 py-3 font-black uppercase rounded-full hover:scale-110 transition">Telegram орқали юбориш</button>
                     </div>
                 </div>
             `;
@@ -166,35 +234,33 @@
         }
 
         function loadSideMenu() {
+            const side = document.getElementById('side-list');
             side.innerHTML = "";
-            newsData.slice(0, 8).forEach((post, index) => {
+            newsData.slice(0, 10).forEach((post, index) => {
                 side.innerHTML += `
-                    <div onclick="showSinglePost(${index})" class="flex gap-2 items-start border-b border-gray-800 pb-2 cursor-pointer group hover:bg-white/5 p-1 rounded transition">
-                        <div class="w-5 h-5 bg-gray-800 rounded flex-shrink-0 flex items-center justify-center group-hover:bg-yellow-500 mt-1">
-                            <i class="fas fa-bolt text-gray-600 group-hover:text-black text-[8px]"></i>
-                        </div>
-                        <div>
-                            <h4 class="text-[11px] font-medium text-gray-400 line-clamp-2 group-hover:text-yellow-500 leading-snug">${post.title}</h4>
-                        </div>
+                    <div onclick="showSinglePost(${index})" class="group cursor-pointer border-b border-white/5 pb-4">
+                        <p class="text-[9px] font-black text-yellow-500 mb-1 uppercase">${post.date}</p>
+                        <h4 class="text-sm font-bold leading-snug group-hover:text-yellow-500 transition">${post.title}</h4>
                     </div>
                 `;
             });
         }
 
-        function sharePost(title, index) {
+        function searchPosts() {
+            const query = document.getElementById('searchBar').value.toLowerCase();
+            const filtered = newsData.filter(p => p.title.toLowerCase().includes(query));
+            displayPosts(filtered);
+        }
+
+        function sharePost(title) {
             const url = window.location.href;
-            const text = encodeURIComponent(`Universal Studio Хабари: ${title}`);
-            window.open(`https://t.me/share/url?url=${url}&text=${text}`, '_blank');
+            window.open(`https://t.me/share/url?url=${url}&text=${encodeURIComponent(title)}`, '_blank');
         }
 
-        function init() {
-            document.getElementById('stat-total').innerText = newsData.length;
-            document.getElementById('stat-audio').innerText = newsData.filter(p => p.media && (p.type?.includes('audio') || (typeof p.media === 'string' && p.media.includes('.mp3')))).length;
-            displayPosts(newsData);
-            loadSideMenu();
-        }
-
-        init();
+        // Инициализация
+        document.getElementById('stat-total').innerText = newsData.length;
+        displayPosts(newsData);
+        loadSideMenu();
     </script>
 </body>
 </html>

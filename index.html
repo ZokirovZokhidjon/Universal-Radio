@@ -3,236 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Universal Studio - Асосий</title>
+    <title>Universal Online Radio</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background: #010409; color: #e6edf3; font-family: 'Segoe UI', sans-serif; scroll-behavior: smooth; }
-        .glass-card { background: #0d1117; border: 1px solid #30363d; border-radius: 16px; transition: 0.3s; height: 100%; }
-        .glass-card:hover { border-color: #58a6ff; }
-        .gold-text { color: #ffcc00; }
-        .post-img-preview { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; border: 1px solid #30363d; }
-        .radio-pulse { animation: pulse 2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); opacity: 0.9; } 100% { transform: scale(1); } }
-        .cat-card { cursor: pointer; transition: 0.3s; }
-        .cat-card:hover { transform: translateY(-5px); }
-        #login-modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(8px); }
+        body { 
+            background: #071e24; 
+            color: #fff; 
+            font-family: Tahoma, Geneva, sans-serif; 
+            margin: 0; padding: 0; 
+        }
+        #container { width: 100%; max-width: 800px; margin: 0 auto; position: relative; }
+
+        /* HEADER */
+        #header { 
+            width: 100%; min-height: 180px; 
+            background: #0d1a1d; 
+            position: relative; 
+            border-bottom: 2px solid #15d2ef;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #logo { width: 100px; height: auto; margin-top: 10px; border-radius: 10px; }
+
+        /* МЕНЮ */
+        .menu { 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            list-style: none; 
+            gap: 10px;
+            z-index: 100;
+        }
+        .menu li a { color: #15d2ef; font-size: 11px; font-weight: bold; text-decoration: none; padding: 5px 10px; display: block; transition: 0.3s; }
+        .menu li a:hover { color: #fff; background: rgba(21, 210, 239, 0.1); border-radius: 4px; }
+        .menu li.line { width: 1px; height: 20px; background: rgba(21, 210, 239, 0.3); }
+
+        /* Dropdown */
+        .dropdown { position: relative; }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%; left: 0;
+            background-color: #0d1a1d;
+            min-width: 180px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.8);
+            border: 1px solid #15d2ef;
+            z-index: 1000;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .dropdown-content a { color: #fff !important; padding: 12px !important; border-bottom: 1px solid #15d2ef22; font-size: 10px; }
+        .dropdown-content a:hover { background: #15d2ef22; }
+        .dropdown:hover .dropdown-content { display: block; }
+
+        /* АСОСИЙ ҚИСМ */
+        .main-content { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 20px; 
+            padding: 20px; 
+        }
+        @media (min-width: 768px) {
+            .main-content { flex-direction: row; }
+            .left-pan { width: 60%; }
+            .right-pan { width: 40%; }
+            #header { flex-direction: row; justify-content: space-between; align-items: flex-start; }
+            #logo { margin-top: 0; }
+        }
+
+        .card { background: #0d1a1d; border: 1px solid #15d2ef22; padding: 15px; border-radius: 8px; }
+        #footer { 
+            width: 100%; height: 60px; 
+            background: #0d1a1d;
+            border-top: 1px solid #15d2ef22;
+            text-align: center; color: #555; font-size: 10px; padding-top: 20px;
+        }
     </style>
 </head>
-<body class="p-3 md:p-6 lg:p-8">
+<body>
 
-    <div id="login-modal">
-        <div class="glass-card p-8 w-full max-w-sm border-t-4 border-blue-600 shadow-2xl relative">
-            <button onclick="closeLogin()" class="absolute right-4 top-4 text-gray-500 hover:text-white"><i class="fas fa-times"></i></button>
-            <div class="text-center mb-6">
-                <i class="fas fa-user-shield text-4xl text-blue-500 mb-3"></i>
-                <h2 class="text-xl font-bold uppercase">Админ Кириш</h2>
+<div id="container">
+    <div id="header">
+        <ul class="menu">
+            <li><a href="index.html">АСОСИЙ</a></li>
+            <li class="line"></li>
+            <li><a href="#">БИЗ ХАҚИМИЗДА</a></li>
+            <li class="line"></li>
+            <li><a href="javascript:void(0)" onclick="enterAdmin()" class="bg-cyan-900/30 rounded">КАБИНЕТ</a></li>
+            <li class="line"></li>
+            <li class="dropdown">
+                <a href="#" style="color: #fff; background: rgba(21, 210, 239, 0.2); border-radius: 4px;">РУКНЛАР ▼</a>
+                <div class="dropdown-content">
+                    <a href="news.html uppercase">ЯНГИЛИКЛАР</a>
+                    <a href="hikoyalar.html">ҲИКОЯЛАР</a>
+                    <a href="med.html">ТАБОБАТ</a>
+                    <a href="poetic.html">ШЕЪРИЯТ</a>
+                    <a href="kulinariya.html">КУЛИНАРИЯ</a>
+                    <a href="fishing.html">БАЛИҚ ОВИ</a>
+                </div>
+            </li>
+        </ul>
+        <img src="logo.jpg" alt="Logo" id="logo">
+    </div>
+
+    <div class="main-content">
+        <div class="left-pan">
+            <h1 class="text-cyan-500 font-black italic text-xl mb-4 uppercase tracking-tighter">Welcome Studio</h1>
+            <div class="card border-l-4 border-cyan-500 shadow-lg shadow-cyan-500/5">
+                <div class="flex flex-col sm:flex-row gap-4 items-center">
+                    <img src="logo.jpg" class="w-20 h-20 rounded-full border-2 border-cyan-500 shadow-cyan-500/20 shadow-lg">
+                    <div class="text-center sm:text-left">
+                        <h2 class="text-cyan-400 font-bold text-lg mb-1">Universal Studio</h2>
+                        <p class="text-[11px] text-gray-400 leading-relaxed">
+                            Бизнинг студиямизга хуш келибсиз! Энг сара мақолалар, эксклюзив ҳикоялар ва жонли радио эфир макони. 
+                        </p>
+                    </div>
+                </div>
             </div>
+        </div>
+
+        <div class="right-pan">
+            <div class="card p-0 overflow-hidden border-2 border-cyan-700 shadow-xl shadow-cyan-900/20">
+                <div class="bg-cyan-950 p-2 flex items-center justify-center gap-2">
+                    <div class="w-2 h-2 bg-red-600 rounded-full animate-ping"></div>
+                    <span class="text-[10px] font-black text-white uppercase tracking-widest">Live Stream</span>
+                </div>
+                <div class="p-1 bg-black">
+                    <iframe src="https://listen.zeno.fm/player/radio1" frameBorder="0" scrolling="no" width="100%" height="180"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer">
+        Universal Online Radio &copy; 2026. <br>
+        <span class="text-[9px] uppercase tracking-widest">Quality Broadcasting Service</span>
+    </div>
+</div>
+
+<div id="adminModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center z-[1000] p-4">
+    <div class="bg-[#0d1a1d] border border-cyan-500/30 w-full max-w-[400px] rounded-2xl shadow-2xl overflow-hidden relative">
+        <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white transition">
+            <i class="fas fa-times text-xl"></i>
+        </button>
+
+        <div class="p-8 text-center">
+            <div class="w-16 h-16 bg-cyan-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fas fa-user-shield text-cyan-500 text-2xl"></i>
+            </div>
+            <h2 class="text-white text-xl font-black uppercase tracking-widest mb-1 italic">Админ кириш</h2>
+            <p class="text-gray-400 text-[10px] mb-8 uppercase tracking-tighter">Фақат маъмурият учун</p>
+
             <div class="space-y-4">
-                <input type="password" id="admin-pass-input" placeholder="Паролни киритинг" class="w-full bg-[#010409] border border-[#30363d] rounded-xl p-3 outline-none focus:border-blue-500 text-white text-center font-bold">
-                <button onclick="verifyAccess()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-3 rounded-xl transition uppercase shadow-lg shadow-blue-900/20">Кириш</button>
-                <p id="login-error" class="text-red-500 text-[10px] text-center hidden uppercase font-bold tracking-widest">Парол хато!</p>
+                <input type="text" id="adminLogin" placeholder="Логин" class="w-full bg-black/40 border border-gray-800 p-4 rounded-xl outline-none focus:border-cyan-500 text-white text-sm transition-all">
+                <input type="password" id="adminPass" placeholder="Парол" class="w-full bg-black/40 border border-gray-800 p-4 rounded-xl outline-none focus:border-cyan-500 text-white text-sm transition-all">
+                <button onclick="checkAuth()" class="w-full bg-cyan-600 hover:bg-cyan-500 text-white font-black py-4 rounded-xl uppercase text-xs tracking-widest transition-all shadow-lg active:scale-95">Кириш</button>
             </div>
         </div>
     </div>
+</div>
 
-    <div class="max-w-[1550px] mx-auto">
-        
-        <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4 bg-[#0d1117] p-4 rounded-2xl border border-[#30363d]">
-            <div class="flex items-center gap-3">
-                <i class="far fa-clock text-blue-500 text-xl"></i>
-                <div id="digital-clock" class="text-2xl font-mono font-bold text-blue-500">00:00:00</div>
-            </div>
-            <div class="relative w-full md:w-1/2">
-                <input type="text" id="search-input" onkeyup="searchPosts()" placeholder="Қидириш..." class="w-full bg-[#010409] border border-[#30363d] rounded-xl px-5 py-2.5 text-sm outline-none focus:border-blue-500 transition shadow-inner">
-                <i class="fas fa-search absolute right-4 top-3.5 text-gray-500"></i>
-            </div>
-        </div>
+<script>
+    function enterAdmin() {
+        document.getElementById('adminModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
 
-        <header class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 items-center">
-            <div class="lg:col-span-2 text-center lg:text-left">
-                <h1 class="text-4xl md:text-6xl font-black tracking-tighter uppercase leading-none">UNIVERSAL <span class="gold-text">STUDIO</span></h1>
-                <p class="text-[10px] md:text-xs text-blue-400 uppercase tracking-[6px] mt-3 font-bold opacity-80 italic">Мультимедиа ва ижодий портал</p>
-            </div>
-            <div class="glass-card p-5 border-l-4 border-red-600 bg-gradient-to-br from-[#0d1117] to-[#1a1111]">
-                <div class="flex items-center gap-4 mb-3">
-                    <div class="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center radio-pulse">
-                        <i class="fas fa-broadcast-tower text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <h4 class="font-bold text-sm uppercase text-white text-left">Universal Radio</h4>
-                        <p class="text-[10px] text-red-500 font-bold uppercase animate-pulse">● Live Stream</p>
-                    </div>
-                </div>
-                <audio id="radio-player" class="w-full h-8 rounded-lg" controls src="https://stream.zeno.fm/3oa3vjjpjd6uv" type="audio/mpeg"></audio>
-            </div>
-        </header>
+    function closeModal() {
+        document.getElementById('adminModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
 
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-10">
-            <div onclick="location.href='news.html'" class="cat-card glass-card p-4 text-center border-b-4 border-blue-600 shadow-lg">
-                <i class="fas fa-newspaper text-blue-500 text-xl mb-2"></i>
-                <h3 class="text-[10px] font-bold uppercase">Янгиликлар</h3>
-            </div>
-            <div onclick="location.href='med.html'" class="cat-card glass-card p-4 text-center border-b-4 border-green-600 shadow-lg">
-                <i class="fas fa-heartbeat text-green-500 text-xl mb-2"></i>
-                <h3 class="text-[10px] font-bold uppercase">Табобат</h3>
-            </div>
-            <div onclick="location.href='hikoyalar.html'" class="cat-card glass-card p-4 text-center border-b-4 border-indigo-600 shadow-lg">
-                <i class="fas fa-book text-indigo-500 text-xl mb-2"></i>
-                <h3 class="text-[10px] font-bold uppercase">Ҳикоялар</h3>
-            </div>
-            <div onclick="location.href='poetic.html'" class="cat-card glass-card p-4 text-center border-b-4 border-purple-600 shadow-lg">
-                <i class="fas fa-feather-alt text-purple-500 text-xl mb-2"></i>
-                <h3 class="text-[10px] font-bold uppercase">Шеърият</h3>
-            </div>
-            <div onclick="location.href='baliq-ovi.html'" class="cat-card glass-card p-4 text-center border-b-4 border-yellow-600 shadow-lg">
-                <i class="fas fa-fish text-yellow-500 text-xl mb-2"></i>
-                <h3 class="text-[10px] font-bold uppercase">Балиқ ови</h3>
-            </div>
-        </div>
+    function checkAuth() {
+        const login = document.getElementById('adminLogin').value;
+        const pass = document.getElementById('adminPass').value;
 
-        <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-6 items-start">
-            
-            <div class="md:col-span-4 lg:col-span-3 order-2 lg:order-1">
-                <div class="glass-card p-6 border-t-4 border-yellow-500 shadow-xl">
-                    <h3 class="text-lg font-bold gold-text mb-6 uppercase flex items-center gap-2">
-                        <i class="fas fa-paper-plane"></i> Мурожаат йўллаш
-                    </h3>
-                    <form id="contact-form" class="space-y-4">
-                        <input type="text" id="user-name" placeholder="Исмингиз" required class="w-full bg-[#010409] border border-[#30363d] rounded-xl p-3 text-sm focus:border-yellow-500 outline-none text-white">
-                        <textarea id="user-msg" rows="4" placeholder="Хабар матни..." required class="w-full bg-[#010409] border border-[#30363d] rounded-xl p-3 text-sm focus:border-yellow-500 outline-none resize-none text-white"></textarea>
-                        <button type="button" id="send-btn" onclick="sendToTelegram()" class="w-full bg-yellow-500 hover:bg-yellow-600 text-black font-black py-3 rounded-xl text-xs uppercase transition shadow-lg active:scale-95">Юбориш</button>
-                    </form>
-                    <div id="msg-status" class="hidden mt-4 text-[10px] font-bold text-center uppercase"></div>
-                    
-                    <div class="mt-8 pt-6 border-t border-gray-800 flex justify-center gap-6 text-xl text-gray-500">
-                        <a href="https://t.me/Universalchaneluz" target="_blank" class="hover:text-blue-400"><i class="fab fa-telegram"></i></a>
-                        <a href="#" class="hover:text-pink-500"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="hover:text-red-600"><i class="fab fa-youtube"></i></a>
-                    </div>
-                </div>
-            </div>
-
-            <div class="md:col-span-8 lg:col-span-6 order-1 lg:order-2">
-                <h2 class="text-xl font-black mb-6 flex items-center gap-3 uppercase">
-                    <span class="w-8 h-1 bg-blue-600 rounded-full"></span> Сўнгги Мақолалар
-                </h2>
-                <div id="latest-posts-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-5"></div>
-            </div>
-
-            <div class="md:col-span-4 lg:col-span-3 order-3">
-                <div class="glass-card p-6 border-t-4 border-blue-600 shadow-xl text-center">
-                    <div class="w-16 h-16 bg-blue-600/10 rounded-full mx-auto flex items-center justify-center mb-3 border border-blue-500/20">
-                        <i class="fas fa-user-shield text-3xl text-blue-500"></i>
-                    </div>
-                    <h3 class="font-bold text-md uppercase">Тизимга кириш</h3>
-                    <p class="text-[9px] text-gray-600 uppercase font-bold mt-1 italic">Фақат Администратор</p>
-                    <button onclick="openLogin()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-black py-4 rounded-xl text-xs uppercase transition mt-4 shadow-lg active:scale-95">
-                        <i class="fas fa-lock-open mr-2"></i> КАБИНЕТГА КИРИШ
-                    </button>
-                    <p class="text-[8px] text-gray-700 mt-6 uppercase font-bold">Universal Studio &copy; 2026</p>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <script>
-        // --- ТЕЛЕГРАМ СОЗЛАМАЛАРИ (СИЗНИНГ ТОКЕНИНГИЗ БИЛАН) ---
-        const BOT_TOKEN = "8650685617:AAFMog2-PvXSeMyF_XTyYeDOU3SNvXBMTxM"; 
-        const CHAT_ID = "@Universalchaneluz"; 
-        const SECRET_KEY = "12345"; 
-
-        function sendToTelegram() {
-            const name = document.getElementById('user-name').value;
-            const msg = document.getElementById('user-msg').value;
-            const status = document.getElementById('msg-status');
-            const btn = document.getElementById('send-btn');
-
-            if(!name || !msg) { alert("Илтимос, исмингиз ва хабарни ёзинг!"); return; }
-
-            btn.disabled = true;
-            btn.innerText = "ЮБОРИЛМОҚДА...";
-
-            const text = `📬 ЯНГИ МУРОЖААТ:\n\n👤 Исм: ${name}\n💬 Хабар: ${msg}\n\n🌐 Universal Studio сайтидан юборилди.`;
-            const url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${encodeURIComponent(text)}`;
-
-            fetch(url)
-                .then(response => {
-                    if(response.ok) {
-                        status.innerText = "ХАБАР КАНАЛГА ЮБОРИЛДИ!";
-                        status.className = "mt-4 text-green-500 text-[10px] font-bold text-center uppercase animate-bounce";
-                        document.getElementById('contact-form').reset();
-                    } else {
-                        status.innerText = "ХАТОЛИК! БОТ КАНАЛДА АДМИНМИ?";
-                        status.className = "mt-4 text-red-500 text-[10px] font-bold text-center uppercase";
-                    }
-                })
-                .catch(() => {
-                    status.innerText = "ИНТЕРНЕТНИ ТЕКШИРИНГ!";
-                    status.className = "mt-4 text-red-500 text-[10px] font-bold text-center uppercase";
-                })
-                .finally(() => {
-                    status.classList.remove('hidden');
-                    btn.disabled = false;
-                    btn.innerText = "ЮБОРИШ";
-                    setTimeout(() => { status.classList.add('hidden'); }, 5000);
-                });
+        if (login === "admin" && pass === "studio2026") {
+            sessionStorage.setItem('isLogged', 'true');
+            window.location.href = "admin.html";
+        } else {
+            alert("Маълумотлар хато!");
+            document.getElementById('adminLogin').classList.add('border-red-500');
+            document.getElementById('adminPass').classList.add('border-red-500');
         }
+    }
 
-        // --- ҚОЛГАН ФУНКЦИЯЛАР ---
-        function openLogin() { document.getElementById('login-modal').style.display = 'flex'; }
-        function closeLogin() { document.getElementById('login-modal').style.display = 'none'; }
-        
-        function verifyAccess() {
-            if(document.getElementById('admin-pass-input').value === SECRET_KEY) {
-                sessionStorage.setItem('isLogged', 'true');
-                window.location.href = "admin.html";
-            } else {
-                document.getElementById('login-error').classList.remove('hidden');
-                setTimeout(() => document.getElementById('login-error').classList.add('hidden'), 2000);
-            }
+    document.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter' && !document.getElementById('adminModal').classList.contains('hidden')) {
+            checkAuth();
         }
-
-        function updateClock() {
-            document.getElementById('digital-clock').innerText = new Date().toLocaleTimeString('uz-UZ', {hour12: false});
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-
-        function loadMainPage() {
-            const posts = JSON.parse(localStorage.getItem('my_site_posts') || '[]');
-            renderPosts(posts.reverse().slice(0, 10));
-        }
-
-        function renderPosts(items) {
-            const container = document.getElementById('latest-posts-grid');
-            container.innerHTML = items.length === 0 ? "<p class='text-gray-600 italic py-10'>Мақолалар йўқ.</p>" : 
-            items.map(post => `
-                <div class="glass-card p-4 flex flex-col hover:border-blue-500/50 transition">
-                    ${post.image ? `<img src="${post.image}" class="post-img-preview">` : ''}
-                    <div class="flex items-center gap-2 mb-2">
-                        <span class="text-[8px] font-black text-blue-400 uppercase bg-blue-400/10 px-2 py-0.5 rounded border border-blue-500/20">${post.category}</span>
-                        <span class="text-[9px] text-gray-600 font-mono">${post.date}</span>
-                    </div>
-                    <h3 class="text-sm font-bold text-white mb-2 line-clamp-2">${post.title}</h3>
-                    <div class="text-[11px] text-gray-500 mb-4 line-clamp-3">${post.content.replace(/<[^>]*>/g, '').substring(0, 80)}...</div>
-                    <a href="${getCategoryFile(post.category)}#post-${post.id}" class="mt-auto text-[10px] font-black text-blue-500 hover:text-white transition uppercase">Батафсил <i class="fas fa-arrow-right ml-1"></i></a>
-                </div>
-            `).join('');
-        }
-
-        function searchPosts() {
-            const query = document.getElementById('search-input').value.toLowerCase();
-            const posts = JSON.parse(localStorage.getItem('my_site_posts') || '[]');
-            renderPosts(posts.filter(p => p.title.toLowerCase().includes(query) || p.content.toLowerCase().includes(query)).reverse());
-        }
-
-        function getCategoryFile(cat) {
-            return {'Янгиликлар': 'news.html', 'Табобат': 'med.html', 'Ҳикоялар': 'hikoya.html', 'Шеърият': 'poem.html', 'Балиқ ови': 'fish.html'}[cat] || 'index.html';
-        }
-
-        window.onload = loadMainPage;
-    </script>
+    });
+</script>
 </body>
 </html>
